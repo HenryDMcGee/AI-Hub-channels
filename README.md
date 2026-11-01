@@ -55,6 +55,17 @@ To embed it elsewhere:
 <iframe src="https://henrydmcgee.github.io/AI-Hub-channels/" title="AI-HUB demo" style="width:100%;aspect-ratio:16/10;border:0;border-radius:20px" allow="autoplay"></iframe>
 ```
 
+## Performance notes
+
+The channel art is inline SVG with SMIL animations. Left to themselves, every animated tile repaints at 60 fps, which made the first build lag in a normal browser. The build now:
+
+- pauses every SVG clock and advances only the art that can be seen (the visible page, or the open dialog) from one 15 fps ticker (`ANIM_FPS` in `.build/build.py`);
+- paints the star field once on a canvas and animates only a handful of twinkles with CSS opacity, which the compositor handles off the main thread;
+- splits STARR into a static sand/water layer and a small animated lettering layer so the noise and blur filters are rasterised once;
+- isolates each tile's art in its own paint layer (`contain` + `translateZ(0)`), stops animations on a hidden tab and behind dialogs, and honours `prefers-reduced-motion`.
+
+Headless profile (Chromium, software rasteriser): idle main-thread time went from ~270 ms per second to ~60.
+
 ## Demo captures
 
 `demo/` holds screenshots of the real apps running on dummy data, used by the walkthroughs. Nothing in them is real data.

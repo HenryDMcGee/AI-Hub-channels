@@ -8,6 +8,7 @@ from content import ITEMS, DEMOS, VERSION
 
 A = json.load(open(os.path.join(ROOT, '.build-art.json')))
 ART, STARS, MOON, CLOCK_DEFS = A['art'], A['stars'], A['moon'], A['clock_defs']
+STARS_HTML_UNUSED = "<i style=\"left:73.0%;top:72.4%;width:2.4px;height:2.4px;--lo:0.21;animation-duration:3.7s;animation-delay:-4.3s\"></i><i style=\"left:82.5%;top:61.6%;width:3.6px;height:3.6px;--lo:0.28;animation-duration:4.2s;animation-delay:-0.9s\"></i><i style=\"left:23.3%;top:12.2%;width:2.8px;height:2.8px;--lo:0.16;animation-duration:4.9s;animation-delay:-3.5s\"></i><i style=\"left:64.0%;top:58.6%;width:3.6px;height:3.6px;--lo:0.34;animation-duration:4.6s;animation-delay:-3.3s\"></i><i style=\"left:85.2%;top:8.8%;width:1.6px;height:1.6px;--lo:0.33;animation-duration:2.3s;animation-delay:-4.4s\"></i><i style=\"left:74.8%;top:42.5%;width:2.4px;height:2.4px;--lo:0.22;animation-duration:4.2s;animation-delay:-1.0s\"></i><i style=\"left:47.7%;top:64.6%;width:1.6px;height:1.6px;--lo:0.23;animation-duration:4.4s;animation-delay:-2.3s\"></i><i style=\"left:88.8%;top:11.4%;width:3.6px;height:3.6px;--lo:0.3;animation-duration:3.0s;animation-delay:-3.8s\"></i><i style=\"left:5.3%;top:9.6%;width:2.8px;height:2.8px;--lo:0.4;animation-duration:4.7s;animation-delay:-2.0s\"></i><i style=\"left:62.4%;top:9.2%;width:1.6px;height:1.6px;--lo:0.21;animation-duration:5.0s;animation-delay:-0.0s\"></i><i style=\"left:9.0%;top:60.9%;width:2.4px;height:2.4px;--lo:0.17;animation-duration:5.4s;animation-delay:-2.0s\"></i><i style=\"left:32.3%;top:35.2%;width:2px;height:2px;--lo:0.44;animation-duration:2.5s;animation-delay:-1.7s\"></i><i style=\"left:19.5%;top:17.9%;width:2px;height:2px;--lo:0.29;animation-duration:4.5s;animation-delay:-0.1s\"></i><i style=\"left:78.5%;top:23.4%;width:3.6px;height:3.6px;--lo:0.21;animation-duration:4.0s;animation-delay:-2.2s\"></i><i style=\"left:21.6%;top:54.4%;width:3.6px;height:3.6px;--lo:0.45;animation-duration:3.5s;animation-delay:-2.0s\"></i><i style=\"left:0.6%;top:35.2%;width:2.8px;height:2.8px;--lo:0.21;animation-duration:3.2s;animation-delay:-4.4s\"></i><i style=\"left:63.7%;top:13.5%;width:1.6px;height:1.6px;--lo:0.23;animation-duration:5.5s;animation-delay:-1.1s\"></i><i style=\"left:98.2%;top:42.8%;width:2px;height:2px;--lo:0.21;animation-duration:3.5s;animation-delay:-0.4s\"></i><i style=\"left:39.5%;top:2.6%;width:2.8px;height:2.8px;--lo:0.19;animation-duration:3.4s;animation-delay:-3.1s\"></i><i style=\"left:94.5%;top:62.6%;width:2.8px;height:2.8px;--lo:0.34;animation-duration:2.6s;animation-delay:-1.9s\"></i><i style=\"left:50.3%;top:29.9%;width:2.8px;height:2.8px;--lo:0.37;animation-duration:3.0s;animation-delay:-0.9s\"></i><i style=\"left:89.2%;top:25.9%;width:3.6px;height:3.6px;--lo:0.33;animation-duration:5.3s;animation-delay:-4.4s\"></i><i style=\"left:68.0%;top:6.8%;width:1.6px;height:1.6px;--lo:0.23;animation-duration:2.6s;animation-delay:-2.6s\"></i><i style=\"left:63.3%;top:33.6%;width:2.4px;height:2.4px;--lo:0.24;animation-duration:4.9s;animation-delay:-3.0s\"></i><i style=\"left:28.7%;top:9.5%;width:2px;height:2px;--lo:0.41;animation-duration:3.0s;animation-delay:-2.8s\"></i><i style=\"left:98.9%;top:10.1%;width:2px;height:2px;--lo:0.37;animation-duration:2.9s;animation-delay:-4.6s\"></i><i style=\"left:11.6%;top:35.1%;width:2.4px;height:2.4px;--lo:0.2;animation-duration:3.7s;animation-delay:-0.3s\"></i><i style=\"left:59.6%;top:68.6%;width:2.8px;height:2.8px;--lo:0.19;animation-duration:5.4s;animation-delay:-0.5s\"></i><i style=\"left:72.7%;top:43.0%;width:3.6px;height:3.6px;--lo:0.43;animation-duration:4.6s;animation-delay:-2.6s\"></i><i style=\"left:95.0%;top:5.1%;width:1.6px;height:1.6px;--lo:0.24;animation-duration:3.8s;animation-delay:-1.8s\"></i><i style=\"left:5.9%;top:3.4%;width:2.8px;height:2.8px;--lo:0.37;animation-duration:4.3s;animation-delay:-2.4s\"></i><i style=\"left:51.6%;top:18.1%;width:1.6px;height:1.6px;--lo:0.37;animation-duration:2.4s;animation-delay:-2.7s\"></i><i style=\"left:21.3%;top:44.4%;width:2px;height:2px;--lo:0.17;animation-duration:2.5s;animation-delay:-2.4s\"></i><i style=\"left:67.3%;top:4.5%;width:2.4px;height:2.4px;--lo:0.26;animation-duration:4.1s;animation-delay:-3.1s\"></i><i style=\"left:93.8%;top:2.2%;width:2.8px;height:2.8px;--lo:0.18;animation-duration:2.4s;animation-delay:-0.5s\"></i><i style=\"left:41.7%;top:54.0%;width:3.6px;height:3.6px;--lo:0.36;animation-duration:3.3s;animation-delay:-4.7s\"></i><i style=\"left:73.8%;top:57.1%;width:2.4px;height:2.4px;--lo:0.38;animation-duration:5.0s;animation-delay:-0.4s\"></i><i style=\"left:5.4%;top:40.4%;width:2.8px;height:2.8px;--lo:0.44;animation-duration:2.5s;animation-delay:-0.1s\"></i><i style=\"left:18.7%;top:64.4%;width:2.8px;height:2.8px;--lo:0.42;animation-duration:4.4s;animation-delay:-2.4s\"></i><i style=\"left:59.5%;top:39.2%;width:2px;height:2px;--lo:0.2;animation-duration:4.4s;animation-delay:-1.0s\"></i><i style=\"left:55.4%;top:57.2%;width:2.4px;height:2.4px;--lo:0.35;animation-duration:5.1s;animation-delay:-1.6s\"></i><i style=\"left:32.3%;top:55.9%;width:2px;height:2px;--lo:0.32;animation-duration:5.1s;animation-delay:-1.9s\"></i><i style=\"left:51.2%;top:27.5%;width:2px;height:2px;--lo:0.42;animation-duration:2.6s;animation-delay:-1.8s\"></i><i style=\"left:7.1%;top:8.9%;width:2px;height:2px;--lo:0.29;animation-duration:4.9s;animation-delay:-0.6s\"></i><i style=\"left:34.8%;top:53.6%;width:2.4px;height:2.4px;--lo:0.24;animation-duration:4.3s;animation-delay:-2.5s\"></i><i style=\"left:73.0%;top:41.8%;width:1.6px;height:1.6px;--lo:0.33;animation-duration:4.9s;animation-delay:-1.4s\"></i><i style=\"left:45.5%;top:73.8%;width:2px;height:2px;--lo:0.16;animation-duration:3.2s;animation-delay:-4.0s\"></i><i style=\"left:22.3%;top:52.5%;width:2.4px;height:2.4px;--lo:0.23;animation-duration:2.8s;animation-delay:-3.8s\"></i><i style=\"left:23.1%;top:6.8%;width:3.6px;height:3.6px;--lo:0.31;animation-duration:2.6s;animation-delay:-0.5s\"></i><i style=\"left:59.6%;top:10.6%;width:3.6px;height:3.6px;--lo:0.23;animation-duration:2.9s;animation-delay:-4.1s\"></i><i style=\"left:2.3%;top:61.1%;width:2.8px;height:2.8px;--lo:0.23;animation-duration:4.6s;animation-delay:-0.9s\"></i><i style=\"left:55.9%;top:69.8%;width:3.6px;height:3.6px;--lo:0.45;animation-duration:5.3s;animation-delay:-2.5s\"></i><i style=\"left:26.1%;top:51.0%;width:3.6px;height:3.6px;--lo:0.43;animation-duration:5.2s;animation-delay:-0.4s\"></i><i style=\"left:62.7%;top:17.4%;width:2.4px;height:2.4px;--lo:0.42;animation-duration:3.7s;animation-delay:-3.1s\"></i><i style=\"left:60.9%;top:71.1%;width:2.8px;height:2.8px;--lo:0.4;animation-duration:4.4s;animation-delay:-2.5s\"></i><i style=\"left:55.5%;top:60.0%;width:2px;height:2px;--lo:0.37;animation-duration:4.3s;animation-delay:-1.0s\"></i><i style=\"left:20.3%;top:28.0%;width:2px;height:2px;--lo:0.44;animation-duration:5.2s;animation-delay:-4.9s\"></i><i style=\"left:86.5%;top:41.8%;width:2px;height:2px;--lo:0.25;animation-duration:5.2s;animation-delay:-4.3s\"></i><i style=\"left:13.8%;top:5.5%;width:2.4px;height:2.4px;--lo:0.23;animation-duration:3.3s;animation-delay:-2.1s\"></i><i style=\"left:5.2%;top:28.6%;width:1.6px;height:1.6px;--lo:0.31;animation-duration:3.6s;animation-delay:-0.2s\"></i><i style=\"left:23.0%;top:60.9%;width:2px;height:2px;--lo:0.31;animation-duration:5.5s;animation-delay:-4.5s\"></i><i style=\"left:71.0%;top:63.8%;width:2.8px;height:2.8px;--lo:0.22;animation-duration:5.3s;animation-delay:-0.4s\"></i><i style=\"left:84.8%;top:72.2%;width:2px;height:2px;--lo:0.2;animation-duration:4.9s;animation-delay:-2.8s\"></i><i style=\"left:82.9%;top:72.4%;width:2px;height:2px;--lo:0.4;animation-duration:3.2s;animation-delay:-1.9s\"></i><i style=\"left:98.1%;top:27.4%;width:2px;height:2px;--lo:0.31;animation-duration:5.0s;animation-delay:-4.8s\"></i><i style=\"left:92.3%;top:64.4%;width:2px;height:2px;--lo:0.15;animation-duration:3.6s;animation-delay:-0.6s\"></i><i style=\"left:60.9%;top:4.2%;width:2.8px;height:2.8px;--lo:0.27;animation-duration:5.4s;animation-delay:-2.6s\"></i><i style=\"left:90.6%;top:16.2%;width:2.4px;height:2.4px;--lo:0.43;animation-duration:2.5s;animation-delay:-0.8s\"></i><i style=\"left:74.0%;top:53.6%;width:2.4px;height:2.4px;--lo:0.19;animation-duration:3.1s;animation-delay:-2.4s\"></i><i style=\"left:70.0%;top:61.6%;width:2.8px;height:2.8px;--lo:0.34;animation-duration:3.2s;animation-delay:-1.0s\"></i><b style=\"left:44.7%;top:19.0%;animation-duration:5.6s;animation-delay:-5.9s\"></b><b style=\"left:8.8%;top:27.2%;animation-duration:4.0s;animation-delay:-0.1s\"></b><b style=\"left:48.5%;top:43.6%;animation-duration:5.7s;animation-delay:-1.5s\"></b><b style=\"left:82.9%;top:15.9%;animation-duration:5.0s;animation-delay:-3.5s\"></b><b style=\"left:84.8%;top:34.5%;animation-duration:5.7s;animation-delay:-4.2s\"></b><b style=\"left:73.0%;top:5.4%;animation-duration:4.6s;animation-delay:-2.5s\"></b><b style=\"left:87.8%;top:22.9%;animation-duration:5.1s;animation-delay:-5.2s\"></b>"
 
 CSS = r"""
 :root{--bg:#0B1120;--bg2:#121C33;--frame:#15213A;--rim:#2F4369;--rim-lit:#33476F;--ink:#E6EEF9;--quiet:#8FA3C4;--dim:#5B6E92;--cyan:#5FD4F0;--cyan-lit:#7FE3FF;--amber:#FFD36E;--violet:#B48BFF;--teal:#2BD4A6;color-scheme:dark}
@@ -22,6 +23,11 @@ button{font:inherit;color:inherit}
 .sky .lines{position:absolute;inset:0;background:repeating-linear-gradient(180deg,rgba(255,255,255,.028) 0,rgba(255,255,255,.028) 1px,transparent 1px,transparent 4px)}
 .sky .vig{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 45%,rgba(4,8,18,.7) 100%)}
 .sky .stars{position:absolute;inset:0;width:100%;height:100%}
+.twinkles{position:absolute;inset:0;pointer-events:none}
+.tw{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;background:#fff;clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%);opacity:.3;will-change:opacity,transform;animation:twinkle 3s ease-in-out infinite}
+.tw.dot{width:3px;height:3px;margin:-1.5px 0 0 -1.5px;clip-path:none;border-radius:50%;background:#EAF4FF}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.05)}}
+@media (prefers-reduced-motion:reduce){.tw{animation:none;opacity:.5}}}
 .sky .moon{position:absolute;right:4%;top:24px;width:120px;height:120px;opacity:.9}
 @media (max-width:760px){.sky .moon{width:80px;height:80px;top:14px}}
 
@@ -32,10 +38,10 @@ button{font:inherit;color:inherit}
 .page{flex:0 0 100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;padding:4px}
 @media (max-width:1100px){.page{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
 @media (max-width:760px){.hub{padding:48px 16px 16px}.page{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}}
-.slot{position:relative;aspect-ratio:232/140;--d:0s}
+.slot{position:relative;aspect-ratio:232/140;--d:0s;contain:layout paint style}
 .chan{position:relative;display:block;width:100%;height:100%;border-radius:18px;background:var(--frame);border:2px solid var(--rim);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 10px 24px rgba(0,0,0,.45);overflow:hidden;text-decoration:none;color:var(--ink);cursor:pointer;padding:0;text-align:left;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 .chan:hover,.chan:focus-visible{border-color:var(--cyan);transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 0 3px rgba(95,212,240,.22),0 14px 30px rgba(0,0,0,.5);outline:none}
-.chan .art{position:absolute;inset:0;width:100%;height:100%;display:block}
+.chan .art{position:absolute;inset:0;width:100%;height:100%;display:block;transform:translateZ(0)}
 .chan .name{position:absolute;left:0;right:0;bottom:0;padding:8px 14px 10px;font-weight:800;font-size:15px;letter-spacing:.2px;text-shadow:0 1px 2px rgba(0,0,0,.6);background:linear-gradient(180deg,rgba(11,17,32,0) 0%,rgba(11,17,32,.78) 100%);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chan .sub{display:block;font-weight:600;font-size:11.5px;color:#9FB3D3;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:760px){.chan .name{font-size:12.5px;padding:6px 10px 8px}.chan .sub{font-size:10px}}
@@ -87,7 +93,7 @@ button{font:inherit;color:inherit}
 .mute:hover{border-color:var(--cyan);color:var(--cyan-lit)}
 
 /* ---------- overlays ---------- */
-.scrim{position:fixed;inset:0;z-index:30;background:rgba(5,9,18,.78);backdrop-filter:blur(2px);opacity:0;transition:opacity .25s}
+.scrim{position:fixed;inset:0;z-index:30;background:rgba(5,9,18,.82);opacity:0;transition:opacity .25s}
 .scrim.show{opacity:1}
 .dialog{position:fixed;z-index:31;left:50%;top:50%;transform:translate(-50%,-50%);width:min(900px,calc(100vw - 32px));max-height:calc(100svh - 32px);overflow:auto;border-radius:24px;background:linear-gradient(180deg,#16223D 0%,#101A30 100%);border:2px solid #3C568A;box-shadow:0 0 0 4px rgba(95,212,240,.12),0 30px 80px rgba(0,0,0,.7);padding:26px 28px 28px;display:flex;flex-direction:column;gap:20px}
 .dialog .head{display:flex;align-items:center;justify-content:space-between;gap:16px}
@@ -181,7 +187,7 @@ HTML = r"""<!doctype html>
 <body class="booting">
 <div class="sky" aria-hidden="true">
   <div class="lines"></div>
-  <svg class="stars" viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice">__STARS__</svg>
+  <canvas class="stars" id="stars"></canvas>
   <div class="vig"></div>
   <svg class="moon" viewBox="0 0 160 160">__MOON__</svg>
 </div>
@@ -266,7 +272,7 @@ if (MODE === 'demo') document.getElementById('ribbon').hidden = false;
 
 var $ = function (s, r) { return (r || document).querySelector(s); };
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-function art(id) { return '<svg class="art" viewBox="0 0 232 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' + (ART[id] || '') + '</svg>'; }
+function art(id) { if (ART[id + '_layers']) return ART[id + '_layers']; return '<svg class="art" viewBox="0 0 232 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' + (ART[id] || '') + '</svg>'; }
 
 /* ---------- layout: an ordered list of ids (null = empty slot), padded to whole pages ---------- */
 var layout;
@@ -301,11 +307,13 @@ function render() {
   var pages = layout.length / SLOTS, html = '';
   for (var p = 0; p < pages; p++) { html += '<div class="page" data-page="' + p + '">'; for (var i = 0; i < SLOTS; i++) html += slotHTML(layout[p * SLOTS + i], p * SLOTS + i); html += '</div>'; }
   track.innerHTML = html;
+  Array.prototype.forEach.call(track.querySelectorAll('svg'), function (sv) { if (sv.pauseAnimations) sv.pauseAnimations(); });
   dots.innerHTML = pages > 1 ? Array.apply(null, Array(pages)).map(function (_, i) { return '<i' + (i === page ? ' class="on"' : '') + '></i>'; }).join('') : '';
   goPage(Math.min(page, pages - 1), true);
 }
 function goPage(p, silent) {
   var pages = layout.length / SLOTS; page = Math.max(0, Math.min(p, pages - 1));
+  syncAnim();
   track.style.transform = 'translateX(' + (-page * 100) + '%)';
   Array.prototype.forEach.call(dots.children, function (d, i) { d.classList.toggle('on', i === page); });
   $('#prev').disabled = page === 0; $('#next').disabled = page >= pages - 1 && !editing;
@@ -322,6 +330,31 @@ render();
   track.addEventListener('touchend', function (e) { if (x0 === null || editing) return; var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null; if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) goPage(page + (dx < 0 ? 1 : -1)); }, { passive: true });
 })();
 
+/* channel art is SVG with SMIL animations. Left alone, every animated tile repaints 60 times a second,
+   which is what made the hub lag. Instead all SVG clocks are paused and one ticker advances only the
+   art that can be seen (visible page, or the open dialog) at ANIM_FPS. Nothing runs behind a dialog,
+   on a hidden tab, or for people who asked for reduced motion. */
+var ANIM_FPS = 15;
+var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var animSet = [], animT0 = performance.now();
+function syncAnim() {
+  animSet = [];
+  if (reduce) return;
+  var root = openEl || track.children[page];
+  if (!root) return;
+  Array.prototype.forEach.call(root.querySelectorAll('svg'), function (sv) {
+    if (sv.pauseAnimations && sv.querySelector('animate,animateTransform,animateMotion,set')) animSet.push(sv);
+  });
+}
+function stepAnim() {
+  if (document.hidden || !animSet.length) return;
+  var t = (performance.now() - animT0) / 1000;
+  for (var i = 0; i < animSet.length; i++) { var sv = animSet[i]; if (!sv.animationsPaused()) sv.pauseAnimations(); sv.setCurrentTime(t); }
+}
+setInterval(stepAnim, Math.round(1000 / ANIM_FPS));
+document.addEventListener('visibilitychange', syncAnim);
+syncAnim();
+
 /* ---------- dialogs ---------- */
 var scrim = $('#scrim'), openEl = null, opener = null;
 function openDialog(el, from) {
@@ -330,6 +363,7 @@ function openDialog(el, from) {
   scrim.hidden = false; requestAnimationFrame(function () { scrim.classList.add('show'); });
   el.hidden = false;
   var f = el.querySelector('button, a[href], [tabindex="0"]'); if (f) f.focus();
+  syncAnim();
 }
 function closeDialog(quiet) {
   if (!openEl) return;
@@ -337,6 +371,7 @@ function closeDialog(quiet) {
   scrim.classList.remove('show'); scrim.hidden = true;
   if (opener && document.body.contains(opener)) opener.focus();
   opener = null;
+  syncAnim();
   if (!quiet) tick();
 }
 scrim.addEventListener('click', function () { closeDialog(); });
@@ -440,6 +475,25 @@ track.addEventListener('click', function (e) { var b = e.target.closest('.del');
 function closeAlert() { $('#alert').hidden = true; pending = null; }
 $('#alert-cancel').addEventListener('click', closeAlert);
 $('#alert-ok').addEventListener('click', function () { if (pending) { var i = layout.indexOf(pending); if (i >= 0) layout[i] = null; save(); render(); } closeAlert(); });
+
+/* ---------- stars: the field is painted once on a canvas; only a few twinkles animate, as
+   CSS opacity on their own layers (compositor work, not main-thread paint) ---------- */
+(function () {
+  var cv = $('#stars'), cx = cv.getContext('2d'), stars = [], W = 0, H = 0, seed = 11, sky = cv.parentNode;
+  function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+  for (var i = 0; i < 70; i++) stars.push({ x: rnd(), y: rnd() * 0.74, r: [0.8, 1, 1, 1.2, 1.4, 1.8][Math.floor(rnd() * 6)], a: 0.3 + rnd() * 0.6 });
+  function size() { var d = Math.min(window.devicePixelRatio || 1, 1.5); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; cx.setTransform(d, 0, 0, d, 0, 0); }
+  function draw() {
+    cx.clearRect(0, 0, W, H); cx.fillStyle = '#EAF4FF';
+    for (var i = 0; i < stars.length; i++) { var st = stars[i]; cx.globalAlpha = st.a; cx.beginPath(); cx.arc(st.x * W, st.y * H, st.r, 0, 6.2832); cx.fill(); }
+    cx.globalAlpha = 1;
+  }
+  size(); draw(); window.addEventListener('resize', function () { size(); draw(); });
+  var tw = '';
+  for (var j = 0; j < 7; j++) tw += '<i class="tw" style="left:' + (rnd() * 100).toFixed(1) + '%;top:' + (rnd() * 70).toFixed(1) + '%;animation-duration:' + (2.2 + rnd() * 2.4).toFixed(1) + 's;animation-delay:-' + (rnd() * 4).toFixed(1) + 's"></i>';
+  for (var k = 0; k < 10; k++) tw += '<i class="tw dot" style="left:' + (rnd() * 100).toFixed(1) + '%;top:' + (rnd() * 74).toFixed(1) + '%;animation-duration:' + (1.6 + rnd() * 2).toFixed(1) + 's;animation-delay:-' + (rnd() * 3).toFixed(1) + 's"></i>';
+  var wrap = document.createElement('div'); wrap.className = 'twinkles'; wrap.innerHTML = tw; sky.insertBefore(wrap, cv.nextSibling);
+})();
 
 /* ---------- clock: seven-segment digits ---------- */
 var SEG = { 0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg', 5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg' };
@@ -554,7 +608,7 @@ $('#demo-back').addEventListener('click', function () { demoGo(demoStep - 1); ti
 </html>
 """
 
-out = HTML.replace('__CSS__', CSS).replace('__STARS__', STARS).replace('__MOON__', MOON).replace('__CLOCK_DEFS__', CLOCK_DEFS)
+out = HTML.replace('__CSS__', CSS).replace('__MOON__', MOON).replace('__CLOCK_DEFS__', CLOCK_DEFS)
 out = out.replace('__VERSION__', VERSION).replace('__ITEMS__', json.dumps(ITEMS, ensure_ascii=False)).replace('__ART__', json.dumps(ART, ensure_ascii=False)).replace('__DEMOS__', json.dumps(DEMOS, ensure_ascii=False))
 open(os.path.join(ROOT, 'index.html'), 'w').write(out)
 print('index.html', len(out), 'bytes')
