@@ -174,6 +174,8 @@ button{font:inherit;color:inherit}
 .shot{position:relative;border-radius:14px;overflow:hidden;background:#f6f5f1;border:1px solid var(--rim);aspect-ratio:690/372;flex-shrink:0}
 .shot img{position:absolute;left:0;top:0;width:100%;height:auto;display:block}
 .shot .fade{position:absolute;left:0;right:0;bottom:0;height:36px;background:linear-gradient(180deg,rgba(246,245,241,0),rgba(246,245,241,.9))}
+.shot.dark{background:#18191a}
+.shot.dark .fade{background:linear-gradient(180deg,rgba(24,25,26,0),rgba(24,25,26,.95))}
 .shot .mark{position:absolute;border-radius:6px;border:2px solid var(--cyan);box-shadow:0 0 0 4px rgba(95,212,240,.22),0 0 26px rgba(95,212,240,.55)}
 .shot .badge{position:absolute;width:24px;height:24px;border-radius:50%;background:var(--amber);color:#1A1200;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(255,211,110,.7)}
 .pane h3{margin:0;font-size:24px;font-weight:800;line-height:1.15;letter-spacing:-.3px;color:#EEF4FF}
@@ -702,7 +704,7 @@ function demoRender() {
   $('#demo-kind').textContent = s.kind.toUpperCase() + ' · STEP ' + (i + 1) + ' OF ' + d.steps.length;
   $('#demo-h').textContent = s.title; $('#demo-p').textContent = s.body;
   var shot = $('#demo-shot');
-  if (s.img) { shot.hidden = false; var im = $('#demo-img'), cv = $('#demo-cv'), bm = BITMAPS[s.img];
+  if (s.img) { shot.hidden = false; shot.classList.toggle('dark', !!s.dark); var im = $('#demo-img'), cv = $('#demo-cv'), bm = BITMAPS[s.img];
     if (bm && bm.width) { im.hidden = true; cv.hidden = false; if (cv.dataset.src !== s.img) { cv.dataset.src = s.img; cv.width = bm.width; cv.height = bm.height; cv.getContext('2d').drawImage(bm, 0, 0); } }
     else { cv.hidden = true; im.hidden = false; if (im.getAttribute('src') !== s.img) { im.src = s.img; } }
     im.alt = s.alt || ''; cv.setAttribute('aria-label', s.alt || ''); 
