@@ -97,6 +97,10 @@ button{font:inherit;color:inherit}
 /* ---------- overlays ---------- */
 .scrim{position:fixed;inset:0;z-index:30;background:rgba(5,9,18,.82);opacity:0;transition:opacity .25s}
 .scrim.show{opacity:1}
+.appview{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:#0B1424}
+.appbar{display:flex;align-items:center;gap:14px;padding:8px 12px;background:#101A30;border-bottom:1px solid var(--rim);color:#E8F1FF;font-weight:700;font-size:14px}
+.appbar .appnote{margin-left:auto;font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--quiet);text-transform:uppercase}
+.appview iframe{flex:1;width:100%;border:0;background:#f6f5f1}
 .dialog{position:fixed;z-index:31;left:50%;top:50%;transform:translate(-50%,-50%);width:min(900px,calc(100vw - 32px));max-height:calc(100svh - 32px);overflow:auto;border-radius:24px;background:linear-gradient(180deg,#16223D 0%,#101A30 100%);border:2px solid #3C568A;box-shadow:0 0 0 4px rgba(95,212,240,.12),0 30px 80px rgba(0,0,0,.7);padding:26px 28px 28px;display:flex;flex-direction:column;gap:20px}
 .dialog .head{display:flex;align-items:center;justify-content:space-between;gap:16px}
 .dialog h2{margin:0;font-size:28px;font-weight:800;letter-spacing:-.5px;color:#EEF4FF}
@@ -254,6 +258,10 @@ HTML = r"""<!doctype html>
   </div>
 </div>
 
+<div class="appview" id="app" role="dialog" aria-modal="true" aria-labelledby="app-title" hidden>
+  <div class="appbar"><button class="btn" type="button" id="app-back">&larr; Back to AI-HUB</button><span id="app-title"></span><span class="appnote">demo &middot; sample data</span></div>
+  <iframe id="app-frame" title="Demo app" src="about:blank"></iframe>
+</div>
 <div class="alert" id="alert" role="alertdialog" aria-modal="true" aria-labelledby="alert-h" hidden>
   <h3 id="alert-h">Remove channel?</h3>
   <p id="alert-p">You can bring it back anytime with Reset Layout.</p>
@@ -413,6 +421,19 @@ function openDialog(el, from) {
   var f = el.querySelector('button, a[href], [tabindex="0"]'); if (f) f.focus();
   syncAnim();
 }
+var appOpen = false;
+function openApp(src, name) {
+  closeDialog(true);
+  var v = $('#app'), f = $('#app-frame');
+  $('#app-title').textContent = name || ''; f.title = name || 'Demo app';
+  f.src = src; v.hidden = false; appOpen = true; animSet = []; stopMusic();
+  $('#app-back').focus();
+}
+function closeApp() {
+  if (!appOpen) return;
+  var v = $('#app'), f = $('#app-frame');
+  v.hidden = true; appOpen = false; f.src = 'about:blank'; syncAnim(); if (booted) startMusic();
+}
 function closeDialog(quiet) {
   if (!openEl) return;
   openEl.hidden = true; openEl = null;
@@ -425,7 +446,7 @@ function closeDialog(quiet) {
 scrim.addEventListener('click', function () { closeDialog(); });
 document.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) closeDialog(); });
 document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape') { if (!$('#alert').hidden) closeAlert(); else if (openEl) closeDialog(); else if (editing) exitEdit(); }
+  if (e.key === 'Escape') { if (appOpen) closeApp(); else if (!$('#alert').hidden) closeAlert(); else if (openEl) closeDialog(); else if (editing) exitEdit(); }
   if (openEl === $('#demo')) { if (e.key === 'ArrowRight') demoGo(demoStep + 1); if (e.key === 'ArrowLeft') demoGo(demoStep - 1); }
 });
 
@@ -629,7 +650,9 @@ var demoId = null, demoStep = 0;
 function openDemo(id, from) {
   var d = DEMOS[id]; if (!d) { if (ITEMS[id].kind === 'folder') openFolder(id, from); else openZoom(id, from); return; }
   demoId = id; demoStep = 0;
-  $('#demo-tag').textContent = 'DEMO · ' + d.tag.toUpperCase(); $('#demo-title').textContent = ITEMS[id].name; $('#demo-open').href = d.href || ITEMS[id].href; $('#demo-open').textContent = d.open || 'Open the real app ↗';
+  $('#demo-tag').textContent = 'DEMO · ' + d.tag.toUpperCase(); $('#demo-title').textContent = ITEMS[id].name; var op = $('#demo-open'); op.textContent = d.open || 'Open the real app ↗';
+  if (d.embed) { op.removeAttribute('href'); op.removeAttribute('target'); op.setAttribute('role', 'button'); op.tabIndex = 0; op.dataset.embed = d.embed; }
+  else { op.href = d.href || ITEMS[id].href; op.target = '_blank'; op.removeAttribute('role'); delete op.dataset.embed; }
   $('#steps').innerHTML = d.steps.map(function (s, i) { return '<button class="step" type="button" data-step="' + i + '"><b>' + (i + 1) + '</b><span><span class="k">' + esc(s.kind.toUpperCase()) + '</span><span class="t">' + esc(s.title) + '</span></span></button>'; }).join('');
   $('#pdots').innerHTML = d.steps.map(function () { return '<i></i>'; }).join('');
   openDialog($('#demo'), from); blip(); demoGo(0);
@@ -660,6 +683,9 @@ function demoRender() {
   $('#demo-back').textContent = i === 0 ? 'Close' : 'Back';
 }
 $('#steps').addEventListener('click', function (e) { var b = e.target.closest('.step'); if (b) { demoGo(+b.dataset.step); tick(); } });
+$('#demo-open').addEventListener('click', function (e) { var em = this.dataset.embed; if (em) { e.preventDefault(); openApp(em, ITEMS[demoId].name); blip(); } });
+$('#demo-open').addEventListener('keydown', function (e) { if (this.dataset.embed && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this.click(); } });
+$('#app-back').addEventListener('click', function () { closeApp(); tick(); });
 $('#demo-next').addEventListener('click', function () { demoGo(demoStep + 1); tick(); });
 $('#demo-back').addEventListener('click', function () { demoGo(demoStep - 1); tick(); });
 })();

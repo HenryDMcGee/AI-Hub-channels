@@ -35,7 +35,7 @@ def S(kind, title, body, **kw):
     return d
 
 DEMOS = {
-  "crm": {"tag": "Tracker", "href": "demo/crm/index.html", "open": "Open the demo CRM ↗", "steps": [
+  "crm": {"tag": "Tracker", "href": ITEMS["crm"]["href"], "embed": "demo/crm/index.html", "open": "Open the demo CRM →", "steps": [
     S("What it is", "One place for the whole search",
       "A networking and application tracker for the Summer 2027 internship search. Contacts on one side, the application pipeline on the other, both editable right in the grid."),
     S("How it works", "Add a contact from a name",
@@ -47,7 +47,7 @@ DEMOS = {
     S("Design process", "A 20-story deployment plan",
       "The CRM was planned as 20 user stories with dependencies on a Kanban board (Linear primary, Jira mirror, WIP limits, no sprints). Each story carried acceptance criteria before any code."),
     S("Try it", "Open the demo CRM",
-      "A copy of the real CRM opens in a new tab, running on sample data. Add a contact, try Autofill on a LinkedIn link, edit cells, switch tabs. Edits live in that tab only and nothing is saved."),
+      "A copy of the real CRM opens right here inside the hub, running on sample data. Add a contact, try Autofill on a LinkedIn link, edit cells, switch tabs. Edits live in that tab only and nothing is saved."),
   ]},
   "watch": {"tag": "Private", "href": ITEMS["watch"]["href"], "steps": [
     S("What it is", "A tool that checks 100 companies every morning",
