@@ -85,15 +85,15 @@ DEMOS = {
     S("Try it", "Open mcgeehenry.com",
       "The live site opens in a new tab."),
   ]},
-  "jira": {"tag": "2 boards", "href": ITEMS["jira"]["href"], "steps": [
+  "jira": {"tag": "2 boards", "embed": "demo/jira/index.html", "open": "Open the demo board →", "steps": [
     S("What it is", "Two Kanban boards, kept by Claude",
       "CRM Space holds the Internship CRM deployment backlog. Watch Space holds the internship-watch board. Both are mirrors of Linear, which stays primary."),
     S("How it works", "Henry reads, Claude moves",
       "Henry never edits the boards by hand. Claude creates and moves tickets as work happens, and Henry opens the board as a read-only reference. WIP limits, no sprints, solo."),
     S("Design process", "Why a mirror at all",
       "The boards started on Jira, moved to Linear when the Jira connector kept failing, then came back to Jira as a mirror once the connector worked. The mirror exists so the work is visible where recruiters expect to see it."),
-    S("Try it", "Open the CRM Space board",
-      "The Jira board opens in a new tab. On the real hub this channel opens a dialog listing both boards."),
+    S("Try it", "Open the Watch Space board",
+      "A read-only copy of the internship-watch board opens right here: 9 phase epics, 34 stories and tasks, and 86 merged sub-tasks. Click any card for its acceptance criteria, or switch to Epics to see each phase and its release.", point="open"),
   ]},
   "github": {"tag": "5 repos", "href": ITEMS["github"]["href"], "steps": [
     S("What it is", "Every project's source",
