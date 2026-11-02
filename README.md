@@ -74,13 +74,14 @@ Headless profile (Chromium, software rasteriser): idle main-thread time went fro
 
 ## Demo screens
 
-Demo mode has five screens, side by side on desktop and stacked on phones:
+Demo mode has six screens, side by side on desktop and stacked on phones:
 
 1. **Home**, the mcgeehenry.com hero (replaces the Tap to begin screen).
 2. **AI-HUB**, the channel grid.
 3. **About me**, the About section from mcgeehenry.com with the wiring photo.
 4. **AI fluency**, the AI fluency section from mcgeehenry.com.
 5. **Outside work**, judo coaching, the spring judo camp and the Honolulu Japanese Language Exchange, with three photos (`demo/ow-*.webp`).
+6. **Get in touch**, the contact section from mcgeehenry.com (Email me opens the site's contact section).
 
 Desktop: arrow tabs fixed to the left and right edges (labelled with the destination, shown only when there is one) or ← → move between them; on the hub they step through its pages of apps first. Phones: fixed bars at the top (previous screen) and bottom (next screen), or swipe up from the bottom / down from the top. The arrows hide while a walkthrough or demo app is open. Animations and music run only on the hub. Real mode on the laptop is unchanged; `?landing=0` skips the extra screens.
 
