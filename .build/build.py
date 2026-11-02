@@ -145,6 +145,10 @@ button{font:inherit;color:inherit}
 .boot p{margin:0;font-size:14px;font-weight:700;letter-spacing:2.5px;color:var(--quiet);animation:blink 2.2s ease-in-out infinite}
 
 /* demo */
+.ribbon.update{border-color:var(--cyan);color:#CFEFFF;cursor:pointer;font:inherit;font-weight:800;letter-spacing:1.5px;font-size:12px}
+.ribbon.update i{background:var(--cyan)}
+.ribbon.update.open{max-width:min(620px,calc(100vw - 40px))}
+.ribbon.update.open span{white-space:normal;letter-spacing:.4px;text-transform:none;font-weight:600;font-size:13px}
 .ribbon{position:fixed;left:20px;top:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:999px;background:#16213A;border:2px solid var(--amber);color:#FFE9A8;font-weight:800;font-size:13px;letter-spacing:1.2px}
 .ribbon i{width:10px;height:10px;border-radius:50%;background:var(--amber);display:block;box-shadow:0 0 12px var(--amber)}
 @media (max-width:760px){.ribbon{font-size:11px;top:10px;left:12px}}
@@ -210,6 +214,7 @@ HTML = r"""<!doctype html>
 </div>
 
 <div class="ribbon" id="ribbon" hidden><i></i>DEMO · TAP ANY CHANNEL FOR A WALKTHROUGH</div>
+<button class="ribbon update" id="update" type="button" hidden><i></i><span>UPDATE READY · <b>RELAUNCH TO APPLY</b></span></button>
 
 <main class="hub" aria-label="Channels">
   <button class="tab tab-l" id="prev" aria-label="Previous page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -381,6 +386,24 @@ function stepAnim() {
 (function loop() { stepAnim(); setTimeout(loop, Math.round(1000 / ANIM_FPS)); })();
 document.addEventListener('visibilitychange', syncAnim);
 applyTier();
+
+/* laptop copy: once in a while, look at the repo for a newer build and offer a relaunch (the launcher pulls it) */
+if (MODE === 'real' && isLocal() && location.protocol === 'file:') (function () {
+  var RAW = 'https://raw.githubusercontent.com/HenryDMcGee/AI-Hub-channels/main/index.html', pill = $('#update'), shown = false;
+  function check() {
+    if (shown || document.hidden) return;
+    fetch(RAW, { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
+      var m = /BUILD = '([0-9-]+)'/.exec(t);
+      if (m && m[1] > BUILD) { shown = true; pill.hidden = false; console.log('AI-HUB: build ' + m[1] + ' is on GitHub; this window runs ' + BUILD); }
+    }).catch(function () {});
+  }
+  pill.addEventListener('click', function () {
+    var o = pill.classList.toggle('open');
+    pill.querySelector('span').innerHTML = o ? 'A newer build is on GitHub. Close this window and open AI-HUB again from its shortcut: the launcher pulls it first. (Or run <b>git pull</b> in the folder.)' : 'UPDATE READY · <b>RELAUNCH TO APPLY</b>';
+  });
+  setTimeout(check, 5000); setInterval(check, 30 * 60000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) check(); });
+})();
 
 /* demo walkthrough images: fetch them once, quietly, right after the grid is up, so a step never waits on the network */
 var BITMAPS = {};   // capture url -> decoded ImageBitmap, so a step change is a blit, never a decode

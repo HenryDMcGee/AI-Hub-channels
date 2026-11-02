@@ -15,17 +15,19 @@ The page picks its mode from where it is opened.
 
 Only the demo is ever deployed. The real hub runs from a local clone on my laptop.
 
-## Run the real hub as a laptop app
+## Run the real hub as a laptop app (auto-updating)
 
-1. Clone the repo: `git clone https://github.com/HenryDMcGee/AI-Hub-channels`
-2. Make a desktop shortcut whose target opens the browser in app mode on the local file, for example on Windows:
-   ```
-   "C:\Program Files\Google\Chrome\Application\chrome.exe" --app="file:///C:/path/to/AI-Hub-channels/index.html"
-   ```
-   Edge works the same way with `msedge.exe --app=…`. The hub opens in its own window with no address bar.
-3. To update, fetch and check out the release tag: `git fetch --tags && git checkout v0.1.0`
+1. Clone the repo once: `git clone https://github.com/HenryDMcGee/AI-Hub-channels`
+2. Run `launch\install-shortcut.bat` (Windows). It puts an **AI-HUB** shortcut on the Desktop with the moon icon.
+3. Open the hub from that shortcut. Every launch runs `launch\AI-HUB.bat`, which `git pull`s the latest build (quietly skipped when offline or if you have local edits), then opens `index.html` in Chrome or Edge as an app window with no address bar.
 
-Layout and the music setting are saved in the browser (`aihub-layout-v1`, `aihub-music`). The checked-out version is logged to the console on load.
+macOS / Linux: `launch/ai-hub.sh` does the same (Chrome, Edge or Brave, else the default browser).
+
+While the hub is open it checks GitHub every 30 minutes (and when you come back to the window) for a newer build; if there is one, an **UPDATE READY · RELAUNCH TO APPLY** pill appears top-left. Close and reopen from the shortcut to get it.
+
+To follow tagged releases instead of `main`, set `CHANNEL=release` at the top of `AI-HUB.bat` (or `CHANNEL=release ./ai-hub.sh`).
+
+Layout and the music setting are saved in the browser (`aihub-layout-v1`, `aihub-music`). The version and build id are logged to the console on load.
 
 ## Using the hub
 
