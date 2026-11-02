@@ -10,18 +10,30 @@ set "ROOT=%~dp0.."
 pushd "%ROOT%" || exit /b 1
 for /f "delims=" %%I in ('cd') do set "ABS=%%I"
 
+rem Nothing here needs admin. If this folder is somewhere Windows protects (Program Files, C:\ root)
+rem or was cloned from an admin terminal, pulling is skipped and the hub still opens.
+set "CANWRITE=1"
+(echo.>"%ABS%\.aihub-write-test") 2>nul || set "CANWRITE=0"
+if exist "%ABS%\.aihub-write-test" del "%ABS%\.aihub-write-test" >nul 2>nul
+if "%CANWRITE%"=="0" (
+  echo AI-HUB: this folder needs admin rights to change, so updates are skipped.
+  echo         Clone the repo into your user folder instead, e.g. %USERPROFILE%\AI-Hub-channels
+  goto open
+)
+
 where git >nul 2>nul
 if %errorlevel%==0 (
   if /i "%CHANNEL%"=="release" (
-    git fetch --tags --quiet 2>nul
+    git -c safe.directory="%ABS:\=/%" fetch --tags --quiet 2>nul
     for /f "delims=" %%T in ('git describe --tags --abbrev^=0 origin/main 2^>nul') do git checkout --quiet "%%T" 2>nul
   ) else (
-    git pull --ff-only --quiet 2>nul || echo AI-HUB: offline or local changes - running the copy you already have.
+    git -c safe.directory="%ABS:\=/%" pull --ff-only --quiet 2>nul || echo AI-HUB: offline or local changes - running the copy you already have.
   )
 ) else (
   echo AI-HUB: git not found - running the copy you already have.
 )
 
+:open
 set "URL=file:///%ABS:\=/%/index.html"
 set "PF86=%ProgramFiles(x86)%"
 set "BROWSER="
@@ -32,7 +44,7 @@ if not defined BROWSER if exist "%PF86%\Microsoft\Edge\Application\msedge.exe" s
 if not defined BROWSER if exist "%ProgramFiles%\Microsoft\Edge\Application\msedge.exe" set "BROWSER=%ProgramFiles%\Microsoft\Edge\Application\msedge.exe"
 
 if defined BROWSER (
-  start "" "%BROWSER%" --app=%URL% --window-size=1280,860
+  start "" "%BROWSER%" --app="%URL%" --window-size=1280,860
 ) else (
   start "" "%URL%"
 )

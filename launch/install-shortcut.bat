@@ -1,5 +1,6 @@
 @echo off
 rem Puts an "AI-HUB" shortcut on the Desktop that runs AI-HUB.bat minimised, with the hub icon.
+rem Run it normally (double-click). It only writes to your own Desktop and never needs admin.
 set "HERE=%~dp0"
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "$d=[Environment]::GetFolderPath('Desktop'); $s=(New-Object -ComObject WScript.Shell).CreateShortcut(\"$d\AI-HUB.lnk\");" ^
