@@ -57,7 +57,7 @@ DEMOS = {
       "MBA internships are released daily from multiple sources, requiring tedious manual searches. Internship Watch is a targeted approach to grouping all internships on one platform."),
     S("Design process", "A practical in Spec Driven Development",
       "Internship Watch came to fruition while chatting with a Dell Product Manager about where PM roles are heading and the future of Agile. We had a long discussion about creating spec sheets ahead of code changes, with the roadmap broken down into epics (phases). Internship Watch was a way for me to apply spec-driven development firsthand.",
-      img="demo/watch-epics.webp", alt="The Internship Watch Jira epics: nine phases from Local version to Budgets dialog redesign, each with its release and every story done", shot=0.86),
+      img="demo/watch-phases.webp", alt="All nine Internship Watch epics side by side: Phases 1 to 5 on the left, Phases 6 to 9 on the right, each with its release and summary", ratio=3.0, zoom=True),
     S("How it's built", "Built like a real product",
       "Internship Watch was built with spec sheets, a Jira board, and CI/CD through GitHub and Cloudflare.\n\nSpec sheets are written for each phase of development, down to individual features.\n\nGitHub hosts the code for version control, and GitHub Actions runs the automatic deployments and the daily searches. Releases are cut for each phase (epic) of development.\n\nCloudflare hosts the application with a database and nightly backups.",
       btn={"label": "View all 9 spec sheets →", "embed": "demo/specs/index.html", "name": "Internship Watch spec sheets"}),

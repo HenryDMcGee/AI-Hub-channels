@@ -104,7 +104,7 @@ Desktop: arrow tabs fixed to the left and right edges (labelled with the destina
 
 ## Spec sheets
 
-`demo/specs/` holds Henry's nine Internship Watch phase plans as page images (`phaseN-K.webp`, rendered from the PDFs at 120 dpi) and a small viewer, `index.html`, with a phase list (a picker on phones) and next/previous buttons. Step 3 of the internship-watch walkthrough has a "View all 9 spec sheets" button that opens it inside the hub. A walkthrough step can carry such a button with `btn={"label", "embed", "name"}` in `content.py`. To refresh a sheet, re-render its PDF with `pdftoppm -r 120 -png` and save each page as WebP under the same names.
+`demo/specs/` holds Henry's nine Internship Watch phase plans as page images (`phaseN-K.webp`, rendered from the PDFs at 120 dpi) and a small viewer, `index.html`, with a phase list (a picker on phones) and next/previous buttons. Step 3 of the internship-watch walkthrough has a "View all 9 spec sheets" button that opens it inside the hub. A walkthrough step can carry such a button with `btn={"label", "embed", "name"}` in `content.py`; a step image can set `ratio=` (its frame shape) and `zoom=True` (click to enlarge). To refresh a sheet, re-render its PDF with `pdftoppm -r 120 -png` and save each page as WebP under the same names.
 
 ## Demo captures
 

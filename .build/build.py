@@ -397,6 +397,12 @@ body.dnav .lp-copy{padding-right:96px}
 .more-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border-radius:999px;border:1.5px solid var(--cyan);background:rgba(95,212,240,.08);color:#DFF6FF;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .more-btn:hover,.more-btn:focus-visible{background:rgba(95,212,240,.18)}
 .more-btn[hidden]{display:none}
+.shot.zoomable{cursor:zoom-in}
+.shot.zoomable::after{content:"Click to enlarge";position:absolute;right:10px;bottom:10px;padding:4px 10px;border-radius:999px;background:rgba(11,16,24,.78);color:#E7EEF9;font-size:11.5px;font-weight:700;letter-spacing:.3px;pointer-events:none}
+.lightbox{position:fixed;inset:0;z-index:90;background:rgba(5,9,16,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px;cursor:zoom-out}
+.lightbox[hidden]{display:none}
+.lightbox img{max-width:100%;max-height:calc(100% - 70px);object-fit:contain;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6);background:#fff}
+@media (max-width:760px){.lightbox{display:block;padding:14px 14px 80px;overflow:auto;-webkit-overflow-scrolling:touch}.lightbox img{max-width:none;width:1000px;max-height:none}.lightbox .btn{position:fixed;left:50%;bottom:18px;transform:translateX(-50%)}.lightbox::before{content:"Drag to look around";display:block;margin:0 0 10px;color:#C9D8F2;font-size:12px;font-weight:700;letter-spacing:.4px}}
 .pane .nav{position:relative}
 .pointer{position:absolute;left:52px;bottom:calc(100% + 2px);display:flex;align-items:flex-start;gap:6px;color:var(--amber);pointer-events:none;animation:point 1.1s ease-in-out infinite;will-change:transform}
 .pointer svg{width:84px;height:64px;filter:drop-shadow(0 0 8px rgba(255,211,110,.45))}
@@ -586,6 +592,7 @@ HTML = r"""<!doctype html>
   </div>
 </div>
 
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged image" hidden><img id="lightbox-img" alt=""><button class="btn" type="button" id="lightbox-x">Close</button></div>
 <div class="dialog demo" id="demo" role="dialog" aria-modal="true" aria-labelledby="demo-title" hidden>
   <div class="rail"><div><div class="tag" id="demo-tag"></div><h2 id="demo-title"></h2></div><div class="steps" id="steps"></div></div>
   <div class="pane">
@@ -1212,7 +1219,7 @@ function demoRender() {
   $('#demo-h').textContent = s.title; $('#demo-p').textContent = s.body;
   var mb = $('#demo-more'); mb.hidden = !s.btn; if (s.btn) { mb.textContent = s.btn.label; mb.dataset.embed = s.btn.embed; mb.dataset.name = s.btn.name || ''; }
   var shot = $('#demo-shot');
-  if (s.img) { shot.hidden = false; shot.classList.toggle('dark', !!s.dark); shot.style.width = s.shot ? (s.shot * 100) + '%' : ''; shot.style.alignSelf = s.shot ? 'center' : ''; var im = $('#demo-img'), cv = $('#demo-cv'), bm = BITMAPS[s.img];
+  if (s.img) { shot.hidden = false; shot.classList.toggle('dark', !!s.dark); shot.style.aspectRatio = s.ratio ? String(s.ratio) : ''; shot.classList.toggle('zoomable', !!s.zoom); shot.dataset.zoom = s.zoom ? s.img : ''; if (s.zoom) { shot.setAttribute('role', 'button'); shot.tabIndex = 0; shot.setAttribute('aria-label', 'Enlarge: ' + (s.alt || 'image')); } else { shot.removeAttribute('role'); shot.removeAttribute('tabindex'); shot.removeAttribute('aria-label'); } shot.style.width = s.shot ? (s.shot * 100) + '%' : ''; shot.style.alignSelf = s.shot ? 'center' : ''; var im = $('#demo-img'), cv = $('#demo-cv'), bm = BITMAPS[s.img];
     if (bm && bm.width) { im.hidden = true; cv.hidden = false; if (cv.dataset.src !== s.img) { cv.dataset.src = s.img; cv.width = bm.width; cv.height = bm.height; cv.getContext('2d').drawImage(bm, 0, 0); } }
     else { cv.hidden = true; im.hidden = false; if (im.getAttribute('src') !== s.img) { im.src = s.img; } }
     im.alt = s.alt || ''; cv.setAttribute('aria-label', s.alt || ''); 
@@ -1231,6 +1238,13 @@ function demoRender() {
   $('#demo-back').textContent = i === 0 ? 'Close' : 'Back';
 }
 $('#steps').addEventListener('click', function (e) { var b = e.target.closest('.step'); if (b) { demoGo(+b.dataset.step); tick(); } });
+/* click-to-enlarge for step images marked zoom */
+function openLightbox(src, alt) { var lb = $('#lightbox'); $('#lightbox-img').src = src; $('#lightbox-img').alt = alt || ''; lb.hidden = false; $('#lightbox-x').focus(); }
+function closeLightbox() { var lb = $('#lightbox'); if (lb.hidden) return false; lb.hidden = true; $('#lightbox-img').removeAttribute('src'); var sh = $('#demo-shot'); if (sh && !sh.hidden) sh.focus(); return true; }
+$('#demo-shot').addEventListener('click', function () { if (this.dataset.zoom) openLightbox(this.dataset.zoom, $('#demo-img').alt || ''); });
+$('#demo-shot').addEventListener('keydown', function (e) { if (this.dataset.zoom && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openLightbox(this.dataset.zoom, ''); } });
+$('#lightbox').addEventListener('click', closeLightbox);
+document.addEventListener('keydown', function (e) { if (!$('#lightbox').hidden && (e.key === 'Escape' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.stopImmediatePropagation(); e.preventDefault(); if (e.key === 'Escape') closeLightbox(); } }, true);
 $('#demo-more').addEventListener('click', function () { openApp(this.dataset.embed, this.dataset.name || ITEMS[demoId].name); blip(); });
 $('#demo-open').addEventListener('click', function (e) { var em = this.dataset.embed; if (em) { e.preventDefault(); openApp(em, ITEMS[demoId].name); blip(); } });
 $('#demo-open').addEventListener('keydown', function (e) { if (this.dataset.embed && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this.click(); } });
