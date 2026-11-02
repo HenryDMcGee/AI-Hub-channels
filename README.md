@@ -72,6 +72,10 @@ The channel art is inline SVG with SMIL animations. Left to themselves, every an
 
 Headless profile (Chromium, software rasteriser): idle main-thread time went from ~270 ms per second to ~60.
 
+## Demo landing
+
+In demo mode the hub opens on the mcgeehenry.com hero (portrait, name, role, claim, Wells Fargo line, See the work / Get in touch) instead of the Tap to begin screen. The channel grid sits to the right on desktop and below on phones: click the Projects · AI-HUB tab or See the work, press → or scroll, or swipe up on a phone. On the grid, About Henry (or ←, or a swipe down on a phone) goes back. The last screen is remembered for the browser session. Real mode on the laptop is unchanged. `?landing=0` skips it.
+
 ## Demo CRM
 
 `demo/crm/index.html` is the real Internship CRM UI running on sample data: the Claude capabilities (`db`, `user`, `mcp`) are replaced by a small in-memory shim at the top of the file, so adding, editing, Autofill and the Live activity feed all work, but nothing persists past the tab. It ships inside the hub: the walkthrough's Try-it step opens `demo/crm/index.html` in a full-screen view inside the hub itself (an iframe with a Back bar), so no new tab and no link hand-off to the host page is needed and is also published on its own at https://claude.ai/artifact/WDjxaCiJ8uqrS9vKwmubvc. Rebuild it from a fresh copy of the real CRM by re-running the shim insertion in `/crm-preview` (see the commit that added it).

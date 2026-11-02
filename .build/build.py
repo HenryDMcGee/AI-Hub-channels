@@ -149,6 +149,63 @@ button{font:inherit;color:inherit}
 .ribbon.update i{background:var(--cyan)}
 .ribbon.update.open{max-width:min(620px,calc(100vw - 40px))}
 .ribbon.update.open span{white-space:normal;letter-spacing:.4px;text-transform:none;font-weight:600;font-size:13px}
+/* ---- demo landing: the mcgeehenry.com hero first, AI-HUB one click or swipe away ---- */
+.landing{position:fixed;inset:0;z-index:65;touch-action:none;overscroll-behavior:contain;display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);overflow:hidden;color:#fff;font-family:"IBM Plex Sans",system-ui,sans-serif;font-weight:300;background:radial-gradient(85% 70% at 22% 12%,rgba(92,191,173,.10),transparent 62%),radial-gradient(70% 60% at 78% 88%,rgba(47,109,98,.12),transparent 70%),#0b1018;transition:transform .7s cubic-bezier(.22,.61,.36,1);will-change:transform}
+.landing.away{transform:translateX(-100%)}
+.landing a{color:inherit}
+.lp-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:30px clamp(18px,3.4vw,48px);z-index:3}
+.lp-mark{font-family:Archivo,sans-serif;font-weight:700;font-size:15px;letter-spacing:.02em}
+.lp-mail{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.62)!important;text-decoration:none;margin-right:76px}
+.lp-mail:hover{color:#5cbfad!important}
+.lp-figure{position:relative;height:100%;z-index:1}
+.lp-figure img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 8%}
+.lp-figure::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,#0b1018 0%,transparent 22%,transparent 74%,#0b1018 99%),linear-gradient(to bottom,#0b1018 0%,transparent 16%,transparent 80%,#0b1018 100%)}
+.lp-copy{position:relative;z-index:2;align-self:center;padding:40px 130px 40px 0}
+.lp-copy h1{font-family:Archivo,sans-serif;font-weight:800;font-size:clamp(52px,8.4vw,118px);line-height:.86;letter-spacing:-.035em;text-transform:uppercase;margin:0 0 24px}
+.lp-role{font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.55);margin:0 0 24px;padding-top:22px;border-top:1px solid rgba(255,255,255,.13)}
+.lp-claim{font-family:Archivo,sans-serif;font-weight:700;font-size:clamp(22px,2.5vw,33px);line-height:1.12;letter-spacing:-.02em;margin:0 0 18px;max-width:19ch}
+.lp-sub{font-size:16px;line-height:1.6;color:rgba(255,255,255,.7);max-width:40ch;margin:0 0 32px}
+.lp-actions{display:flex;flex-wrap:wrap;gap:14px}
+.lp-btn{font:600 13.5px Archivo,sans-serif;text-decoration:none;padding:12px 22px;border:1px solid #5cbfad;color:#0b1018;background:#5cbfad;cursor:pointer;min-height:44px}
+.lp-btn:hover,.lp-btn:focus-visible{background:transparent;color:#5cbfad}
+.lp-btn.lp-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.18);display:inline-flex;align-items:center}
+.lp-btn.lp-ghost:hover{border-color:#fff}
+.lp-next{position:absolute;right:0;top:0;bottom:0;width:92px;z-index:4;border:0;border-left:1px solid rgba(255,255,255,.08);background:linear-gradient(to right,rgba(11,16,24,0),rgba(92,191,173,.10));color:#5cbfad;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0;font:inherit}
+.lp-next:hover{background:linear-gradient(to right,rgba(11,16,24,0),rgba(92,191,173,.2))}
+.lp-next-label{writing-mode:vertical-rl;font:700 12px Archivo,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#e7eaf0}
+.lp-next-chev{display:flex;width:44px;height:44px;border-radius:50%;border:1.5px solid #5cbfad;align-items:center;justify-content:center;animation:lpnudge 1.6s ease-in-out infinite}
+.lp-next-chev svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.lp-next-hint{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+@keyframes lpnudge{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+.to-landing{position:fixed;right:20px;top:16px;z-index:6;display:flex;align-items:center;gap:8px;height:44px;padding:0 16px 0 12px;border-radius:999px;border:1.5px solid rgba(92,191,173,.6);background:rgba(11,16,24,.86);color:#e7eaf0;font:700 11.5px Archivo,sans-serif;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
+.to-landing svg{width:15px;height:15px;fill:none;stroke:#5cbfad;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.to-landing:hover{border-color:#5cbfad}
+@media (max-width:760px){
+  .landing{grid-template-columns:1fr;align-items:end}
+  .landing.away{transform:translateY(-100%)}
+  .lp-figure{position:absolute;inset:0;opacity:.5}
+  .lp-figure img{object-position:50% 6%}
+  .lp-figure::after{background:linear-gradient(to bottom,rgba(11,16,24,.35) 0%,rgba(11,16,24,.72) 46%,#0b1018 88%)}
+  .lp-mail{margin-right:0}
+  .lp-copy{align-self:end;padding:0 20px 118px}
+  .lp-copy h1{font-size:52px;margin-bottom:18px}
+  .lp-role{font-size:10.5px;margin-bottom:16px;padding-top:16px}
+  .lp-claim{font-size:23px;margin-bottom:12px}
+  .lp-sub{font-size:15px;line-height:1.55;color:rgba(255,255,255,.75);max-width:32ch;margin-bottom:22px}
+  .lp-next{top:auto;left:0;width:auto;height:92px;border-left:0;border-top:1px solid rgba(255,255,255,.08);flex-direction:column;gap:6px;background:linear-gradient(to bottom,rgba(11,16,24,0),rgba(92,191,173,.12))}
+  .lp-next-label{writing-mode:horizontal-tb;font-size:11.5px;letter-spacing:.24em}
+  .lp-next-label::before{content:"Swipe for "}
+  .lp-next-chev{width:36px;height:36px;transform:rotate(90deg);animation:lpnudgev 1.6s ease-in-out infinite}
+  .lp-next-hint{display:none}
+  .to-landing{left:12px;right:auto;top:8px;height:40px;padding:0 14px 0 10px;font-size:10.5px}
+  .to-landing svg{transform:rotate(90deg)}
+  .to-landing .tl-name{display:none}
+  .lp-on-hub .ribbon{left:auto;right:12px;top:10px}
+  .lp-on-hub .ribbon .rb-more{display:none}
+}
+@keyframes lpnudgev{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(6px)}}
+html.lp-lock,html.lp-lock body{overflow:hidden}
+@media (prefers-reduced-motion:reduce){.landing{transition:none}.lp-next-chev{animation:none}}
 .ribbon{position:fixed;left:20px;top:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:999px;background:#16213A;border:2px solid var(--amber);color:#FFE9A8;font-weight:800;font-size:13px;letter-spacing:1.2px}
 .ribbon i{width:10px;height:10px;border-radius:50%;background:var(--amber);display:block;box-shadow:0 0 12px var(--amber)}
 @media (max-width:760px){.ribbon{font-size:11px;top:10px;left:12px}}
@@ -204,7 +261,7 @@ HTML = r"""<!doctype html>
 <meta name="theme-color" content="#0B1120">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Kalam:wght@700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Kalam:wght@700&family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@300;400&display=swap">
 <style>__CSS__</style>
 </head>
 <body class="booting">
@@ -221,7 +278,24 @@ HTML = r"""<!doctype html>
   <p>TAP TO BEGIN</p>
 </div>
 
-<div class="ribbon" id="ribbon" hidden><i></i>DEMO · TAP ANY CHANNEL FOR A WALKTHROUGH</div>
+<section class="landing" id="landing" aria-label="Henry McGee" hidden>
+  <div class="lp-top"><span class="lp-mark">HM</span><a class="lp-mail" href="https://mcgeehenry.com/#contact" target="_blank" rel="noopener">Email</a></div>
+  <div class="lp-figure"><img src="demo/henry-portrait.webp" alt="Henry McGee" decoding="async"></div>
+  <div class="lp-copy">
+    <h1>Henry<br>McGee</h1>
+    <p class="lp-role">Aspiring Product Manager &mdash; MBA candidate</p>
+    <p class="lp-claim">Bridging the gap between business and technology.</p>
+    <p class="lp-sub">Spent 3.5 years maintaining Wells Fargo&rsquo;s currency trading tools, supporting hundreds of thousands of daily trades worldwide. Now pursuing Product Management, combining my passions for innovation, business, and diverse cultures.</p>
+    <div class="lp-actions"><button class="lp-btn" type="button" id="lpWork">See the work</button><a class="lp-btn lp-ghost" href="https://mcgeehenry.com/#contact" target="_blank" rel="noopener">Get in touch</a></div>
+  </div>
+  <button class="lp-next" type="button" id="lpNext" aria-label="Open AI-HUB, Henry&rsquo;s projects">
+    <span class="lp-next-label">Projects &middot; AI-HUB</span>
+    <span class="lp-next-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span>
+    <span class="lp-next-hint">or press &rarr;</span>
+  </button>
+</section>
+<button class="to-landing" id="toLanding" type="button" hidden aria-label="Back to Henry McGee"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>About<span class="tl-name">&nbsp;Henry</span></button>
+<div class="ribbon" id="ribbon" hidden><i></i>DEMO<span class="rb-more">&nbsp;· TAP ANY CHANNEL FOR A WALKTHROUGH</span></div>
 <button class="ribbon update" id="update" type="button" hidden><i></i><span>UPDATE READY · <b>RELAUNCH TO APPLY</b></span></button>
 
 <main class="hub" aria-label="Channels">
@@ -365,7 +439,7 @@ render();
    on a hidden tab, or for people who asked for reduced motion. */
 var ANIM_FPS = 15;
 var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-var animSet = [], animT0 = performance.now();
+var animSet = [], animT0 = performance.now(), landingShown = false;
 /* quality tiers: 0 = full (15 fps art, twinkling stars), 1 = light (8 fps, no twinkles), 2 = still (art frozen).
    ?tier=N forces one; otherwise the frame monitor below steps down when the browser can't keep up. */
 var tier = Math.max(0, Math.min(2, +(q.get('tier') || 0) || 0));
@@ -377,7 +451,7 @@ function applyTier() {
 }
 function syncAnim() {
   animSet = [];
-  if (reduce || tier >= 2) return;
+  if (reduce || tier >= 2 || landingShown) return;
   var root = openEl || track.children[page];
   if (!root) return;
   Array.prototype.forEach.call(root.querySelectorAll('svg'), function (sv) {
@@ -681,6 +755,60 @@ function begin() {
 boot.addEventListener('click', begin);
 boot.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); begin(); } });
 if (location.hash === '#full' || q.get('boot') === '0') { boot.hidden = true; booted = true; document.body.classList.remove('booting'); document.body.classList.add('booted'); }
+
+/* ---------- demo landing: mcgeehenry.com hero first, AI-HUB to the right (desktop) or below (phone) ---------- */
+var landing = $('#landing'), toLanding = $('#toLanding'), landingLock = 0;
+function landingStore(v) { try { sessionStorage.setItem('aihub-screen', v); } catch (e) {} }
+function showHub(fromUser) {
+  if (!landingShown || Date.now() < landingLock) return;
+  landingShown = false; landingLock = Date.now() + 750;
+  landing.classList.add('away'); landing.setAttribute('aria-hidden', 'true'); landing.inert = true;
+  toLanding.hidden = false; landingStore('hub');
+  window.scrollTo(0, 0); document.documentElement.classList.remove('lp-lock'); document.body.classList.add('lp-on-hub');
+  if (!booted) { booted = true; document.body.classList.remove('booting'); document.body.classList.add('booted'); }
+  if (fromUser) { unlockAudio(); chime(); startMusic(); }
+  syncAnim();
+  var first = track.querySelector('.chan'); if (first && fromUser !== 'pointer') setTimeout(function () { first.focus({ preventScroll: true }); }, 400);
+}
+function showLanding() {
+  if (landingShown || Date.now() < landingLock || openEl || appOpen || editing) return;
+  landingShown = true; landingLock = Date.now() + 750;
+  landing.classList.remove('away'); landing.removeAttribute('aria-hidden'); landing.inert = false;
+  toLanding.hidden = true; landingStore('landing'); stopMusic(); syncAnim();
+  document.documentElement.classList.add('lp-lock'); document.body.classList.remove('lp-on-hub');
+  setTimeout(function () { $('#lpNext').focus({ preventScroll: true }); }, 400);
+}
+if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
+  boot.hidden = true; booted = false;
+  var lastScreen = null; try { lastScreen = sessionStorage.getItem('aihub-screen'); } catch (e) {}
+  landing.hidden = false; landingShown = true; document.documentElement.classList.add('lp-lock'); syncAnim();
+  if (lastScreen === 'hub') showHub(false);
+  $('#lpNext').addEventListener('click', function (e) { showHub(e.detail ? 'pointer' : true); });
+  $('#lpWork').addEventListener('click', function (e) { showHub(e.detail ? 'pointer' : true); });
+  toLanding.addEventListener('click', showLanding);
+  document.addEventListener('keydown', function (e) {
+    if (landingShown && (e.key === 'ArrowRight' || e.key === 'PageDown')) { e.preventDefault(); showHub(true); }
+    else if (!landingShown && e.key === 'ArrowLeft' && page === 0 && !openEl && !appOpen && !editing) { e.preventDefault(); showLanding(); }
+  });
+  landing.addEventListener('wheel', function (e) { if (Math.abs(e.deltaY) > 18 || e.deltaX > 18) showHub(true); }, { passive: true });
+  (function () {
+    var x0 = null, y0 = null;
+    function start(e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }
+    landing.addEventListener('touchstart', start, { passive: true });
+    landing.addEventListener('touchend', function (e) {
+      if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+      if (dy < -50 && Math.abs(dy) > Math.abs(dx)) showHub(true);          /* swipe up: the hub rises from below */
+      else if (dx < -60 && Math.abs(dx) > Math.abs(dy)) showHub(true);
+    }, { passive: true });
+    document.addEventListener('touchstart', function (e) { if (!landingShown) start(e); }, { passive: true });
+    document.addEventListener('touchend', function (e) {
+      if (landingShown || x0 === null || openEl || appOpen || editing) { x0 = null; return; }
+      var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+      if (dy > 80 && Math.abs(dy) > Math.abs(dx) * 1.5) showLanding();     /* swipe down on the hub: back to the landing */
+      else if (page === 0 && dx > 80 && Math.abs(dx) > Math.abs(dy) * 1.5 && window.innerWidth > 760) showLanding();
+    }, { passive: true });
+  })();
+}
 
 /* ---------- demo walkthroughs ---------- */
 var demoId = null, demoStep = 0;
