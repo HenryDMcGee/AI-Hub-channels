@@ -10,8 +10,9 @@ HUB="$(cd "$(dirname "$0")/.." && pwd)"
 SITE="${1:?path to a resume-website clone}"
 [ -f "$SITE/wrangler.jsonc" ] || { echo "no wrangler.jsonc in $SITE"; exit 1; }
 python3 -I "$HUB/.build/build.py" >/dev/null
-rm -rf "$SITE/public"
+# replace only what the hub owns; site-only pages (public/feedback/) stay
 mkdir -p "$SITE/public"
+rm -rf "$SITE/public/index.html" "$SITE/public/demo" "$SITE/public/version.txt"
 cp "$HUB/index.html" "$SITE/public/"
 cp -r "$HUB/demo" "$SITE/public/"
 ( cd "$HUB" && git rev-parse --short HEAD ) > "$SITE/public/version.txt"

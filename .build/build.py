@@ -658,10 +658,10 @@ var MODE = (!isLocal() || q.get('mode') === 'demo') ? 'demo' : 'real';
 console.log('AI-HUB v' + VERSION + ' (build ' + BUILD + ') · ' + MODE + ' mode · ' + (isLocal() ? 'local origin' : location.hostname));
 if (MODE === 'demo') document.getElementById('ribbon').hidden = false;
 else document.title = 'AI-HUB';
-/* contact links are assembled on load so the address never sits in the page source (same as the old mcgeehenry.com) */
+/* contact links are assembled on load so the address never sits in the page source (same as the old mcgeehenry.com); Email opens a new message in Outlook on the web */
 (function () {
   function decode(v) { try { return atob(v); } catch (e) { return ''; } }
-  Array.prototype.forEach.call(document.querySelectorAll('a[data-mail]'), function (a) { var addr = decode(a.getAttribute('data-mail')); if (!addr) return; a.setAttribute('href', 'mail' + 'to:' + addr); a.setAttribute('title', addr); a.removeAttribute('data-mail'); });
+  Array.prototype.forEach.call(document.querySelectorAll('a[data-mail]'), function (a) { var addr = decode(a.getAttribute('data-mail')); if (!addr) return; a.setAttribute('href', 'https://outlook.office.com/mail/deeplink/compose?to=' + encodeURIComponent(addr)); a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener'); a.setAttribute('title', 'Email ' + addr + ' in Outlook'); a.removeAttribute('data-mail'); });
   Array.prototype.forEach.call(document.querySelectorAll('a[data-url]'), function (a) { var u = decode(a.getAttribute('data-url')); if (!u) return; a.setAttribute('href', u); a.removeAttribute('data-url'); });
 })();
 /* demo: the GitHub channel skips its walkthrough and opens straight to the repo list */
