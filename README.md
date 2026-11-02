@@ -74,13 +74,14 @@ Headless profile (Chromium, software rasteriser): idle main-thread time went fro
 
 ## Demo screens
 
-Demo mode has three screens, side by side on desktop and stacked on phones:
+Demo mode has four screens, side by side on desktop and stacked on phones:
 
 1. **Home**, the mcgeehenry.com hero (replaces the Tap to begin screen).
 2. **AI-HUB**, the channel grid.
 3. **About me**, the About section from mcgeehenry.com with the wiring photo.
+4. **AI fluency**, the AI fluency section from mcgeehenry.com.
 
-Desktop: the edge tabs, the Home / About me buttons at the top right, or ← → move between them (→ from the hub only on its last page). Phones: swipe up from the bottom of a screen for the next one, swipe down from the top for the previous one. Animations and music run only on the hub. Real mode on the laptop is unchanged; `?landing=0` skips the extra screens.
+Desktop: the edge tabs, the Home / About me buttons on the hub, or ← → move between them (→ from the hub only on its last page). Phones: swipe up from the bottom of a screen for the next one, swipe down from the top for the previous one. Animations and music run only on the hub. Real mode on the laptop is unchanged; `?landing=0` skips the extra screens.
 
 ## Demo CRM
 

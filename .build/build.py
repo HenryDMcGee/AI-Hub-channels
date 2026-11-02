@@ -233,7 +233,7 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
   .am-back{right:0;bottom:auto;width:auto;height:56px;flex-direction:row;gap:10px;border-right:0;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(to top,rgba(11,16,24,0),rgba(92,191,173,.12))}
   .am-back .lp-next-hint{display:none}
   .am-back-label{writing-mode:horizontal-tb;transform:none;font-size:11.5px;letter-spacing:.24em}
-  .am-back-label::before{content:"Swipe down for "}
+  #aboutMe .am-back-label::before{content:"Swipe down for "}
   .am-chev{width:32px;height:32px;transform:rotate(90deg);animation:amnudgev 1.6s ease-in-out infinite}
   .am-scroll{left:0;top:56px}
   .am-inner{padding:26px 20px 40px}
@@ -242,6 +242,32 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 }
 @keyframes amnudgev{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(-5px)}}
 @media (prefers-reduced-motion:reduce){.about-me{transition:none}.am-chev{animation:none}}
+.about-me.past{transform:translateX(-100%)}
+.am-fwd{position:absolute;right:0;top:0;bottom:0;width:92px;z-index:2;border:0;border-left:1px solid rgba(255,255,255,.08);background:linear-gradient(to right,rgba(11,16,24,0),rgba(92,191,173,.10));color:#5cbfad;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0;font:inherit}
+.am-fwd:hover{background:linear-gradient(to right,rgba(11,16,24,0),rgba(92,191,173,.2))}
+.am-fwd-label{writing-mode:vertical-rl;font:700 12px Archivo,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#e7eaf0}
+.am-fchev{animation:lpnudgef 1.6s ease-in-out infinite}
+@keyframes lpnudgef{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+#aboutMe .am-scroll{right:92px}
+.af-list{margin:0}
+.af-list>div{display:grid;grid-template-columns:minmax(0,280px) minmax(0,1fr);gap:40px;padding:26px 0;border-bottom:1px solid rgba(255,255,255,.13)}
+.af-list>div:first-child{padding-top:4px}
+.af-list>div:last-child{border-bottom:0}
+.af-list dt{font:700 clamp(16px,1.4vw,19px)/1.3 Archivo,sans-serif;color:#5cbfad;letter-spacing:-.01em}
+.af-list dd{margin:0;font-size:clamp(15.5px,1.3vw,18px);line-height:1.75;color:rgba(231,234,240,.86);max-width:66ch}
+@media (max-width:760px){
+  .about-me.past{transform:translateY(-100%)}
+  .am-fwd{top:auto;left:0;width:auto;height:56px;flex-direction:row;gap:10px;border-left:0;border-top:1px solid rgba(255,255,255,.08);background:linear-gradient(to bottom,rgba(11,16,24,.6),rgba(11,16,24,.96));backdrop-filter:none}
+  .am-fwd .lp-next-hint{display:none}
+  .am-fwd-label{writing-mode:horizontal-tb;font-size:11.5px;letter-spacing:.24em}
+  .am-fwd-label::before{content:"Swipe up for "}
+  .am-fchev{width:32px;height:32px;transform:rotate(90deg);animation:amnudgev2 1.6s ease-in-out infinite}
+  #aboutMe .am-scroll{right:0;bottom:56px}
+  #aiFluency .am-back-label::before{content:"Swipe down for "}
+  .af-list>div{grid-template-columns:1fr;gap:10px;padding:20px 0}
+}
+@keyframes amnudgev2{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(5px)}}
+@media (prefers-reduced-motion:reduce){.am-fchev{animation:none}}
 .ribbon{position:fixed;left:20px;top:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:999px;background:#16213A;border:2px solid var(--amber);color:#FFE9A8;font-weight:800;font-size:13px;letter-spacing:1.2px}
 .ribbon i{width:10px;height:10px;border-radius:50%;background:var(--amber);display:block;box-shadow:0 0 12px var(--amber)}
 @media (max-width:760px){.ribbon{font-size:11px;top:10px;left:12px}}
@@ -335,12 +361,12 @@ HTML = r"""<!doctype html>
   <button class="to-landing" id="toAbout" type="button" aria-label="About me">About me<svg class="tl-fwd" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
 </nav>
 <section class="about-me away" id="aboutMe" aria-label="About me" hidden>
-  <button class="am-back" type="button" id="amBack" aria-label="Back to AI-HUB">
+  <button class="am-back" type="button" id="amBack" data-xgo="prev" aria-label="Back to AI-HUB">
     <span class="lp-next-chev am-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span>
     <span class="am-back-label">AI-HUB</span>
     <span class="lp-next-hint">or press &larr;</span>
   </button>
-  <div class="am-scroll" id="amScroll">
+  <div class="am-scroll">
     <div class="am-inner">
       <h2>About me</h2>
       <div class="am-grid">
@@ -351,6 +377,29 @@ HTML = r"""<!doctype html>
         </div>
         <figure class="am-photo"><img src="demo/henry-wiring.webp" width="560" height="747" alt="Rewiring the dashboard of a classic car, wiring harness pulled out from under the dash" loading="lazy" decoding="async"><figcaption>A passion for system design in all its forms</figcaption></figure>
       </div>
+    </div>
+  </div>
+  <button class="am-fwd" type="button" data-xgo="next" aria-label="Next: AI fluency">
+    <span class="am-fwd-label">AI fluency</span>
+    <span class="lp-next-chev am-fchev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span>
+    <span class="lp-next-hint">or press &rarr;</span>
+  </button>
+</section>
+<section class="about-me away has-fwd-none" id="aiFluency" aria-label="AI fluency" hidden>
+  <button class="am-back" type="button" data-xgo="prev" aria-label="Back to About me">
+    <span class="lp-next-chev am-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span>
+    <span class="am-back-label" data-short="About me">About me</span>
+    <span class="lp-next-hint">or press &larr;</span>
+  </button>
+  <div class="am-scroll">
+    <div class="am-inner">
+      <h2>AI fluency</h2>
+      <dl class="af-list">
+        <div><dt>Internship Watch: <span style="white-space:nowrap">spec-driven</span> development with AI agents</dt><dd>I identified a bottleneck in my application process: finding new openings meant checking company career sites by hand. I built Internship Watch to automate it. Every morning it checks about 100 tech companies and gathers new Summer 2027 product roles on one dashboard. I managed the build with spec-driven development: I wrote the product spec, broke a six-phase roadmap into specs with clear scope and acceptance criteria, and directed Claude Code agents to build against them. The spec also sets daily, weekly, and monthly AI budgets, and when the budget runs low, lower-priority steps are cut first.</dd></div>
+        <div><dt>Copilot at Wells Fargo, held to clean code standards</dt><dd>In 2025 I piloted GitHub Copilot across our team&rsquo;s development workflow. When I moved to the FX Platform team, I used AI to learn our code base&rsquo;s style and brainstorm clean code solutions. On a large, established trading platform, managing technical debt was a top priority. I used AI to improve test coverage and hold it at 80% under our test-driven development standards, while keeping the code readable and technical debt low. Code reviews showed we moved faster without lowering our standards, because the team kept ownership of quality.</dd></div>
+        <div><dt>Grounded in the fundamentals</dt><dd>I earned Microsoft&rsquo;s Azure AI Fundamentals certification to learn the foundations: machine learning, computer vision, language models, and responsible AI. I then took a Udemy course on Claude Code so I could run agent-driven development on a real project, not just a demo.</dd></div>
+        <div><dt>CUFindIt: machine learning from the ground up</dt><dd>After graduating from Clemson, my best friend and I built CUFindIt as a COVID project: an AI scavenger hunt for Clemson students. We used transfer learning to adapt a pretrained TensorFlow model and trained it with supervised learning on labeled photos of campus locations. With OpenCV, we altered the photos using Gaussian blur, salt-and-pepper noise, and image hashing to bring out key features and avoid overfitting. Building the model end to end gave me a core understanding of how AI learns. A model is only as good as its training data, and it has to handle photos it has never seen.</dd></div>
+      </dl>
     </div>
   </div>
 </section>
@@ -880,36 +929,46 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
 }
 
 
-/* About me: the 3rd demo screen */
-var aboutEl = $('#aboutMe');
-function showAbout() {
-  if (aboutShown || landingShown || Date.now() < landingLock || openEl || appOpen || editing) return;
-  aboutShown = true; landingLock = Date.now() + 750;
-  aboutEl.classList.remove('away'); aboutEl.removeAttribute('aria-hidden'); aboutEl.inert = false;
-  toLanding.hidden = true; document.documentElement.classList.add('lp-lock'); stopMusic(); syncAnim();
-  $('#amScroll').scrollTop = 0;
-  kbFocus($('#amBack'));
+/* Screens after the hub (demo): 1 About me, 2 AI fluency. Earlier screens slide off to the left (up on phones). */
+var xScreens = [$('#aboutMe'), $('#aiFluency')], xIndex = 0;
+function goExtra(n) {
+  n = Math.max(0, Math.min(xScreens.length, n));
+  if (n === xIndex || landingShown || Date.now() < landingLock || openEl || appOpen || editing) return;
+  landingLock = Date.now() + 750; xIndex = n; aboutShown = n > 0;
+  xScreens.forEach(function (el, k) {
+    var i = k + 1;
+    el.classList.toggle('past', i < n); el.classList.toggle('away', i > n);
+    if (i === n) { el.removeAttribute('aria-hidden'); el.inert = false; el.querySelector('.am-scroll').scrollTop = 0; }
+    else { el.setAttribute('aria-hidden', 'true'); el.inert = true; }
+  });
+  toLanding.hidden = n > 0;
+  document.documentElement.classList.toggle('lp-lock', n > 0);
+  if (n > 0) { stopMusic(); kbFocus(xScreens[n - 1].querySelector('.am-back')); }
+  else { window.scrollTo(0, 0); startMusic(); kbFocus($('#toAbout')); }
+  syncAnim();
 }
-function hideAbout() {
-  if (!aboutShown || Date.now() < landingLock) return;
-  aboutShown = false; landingLock = Date.now() + 750;
-  aboutEl.classList.add('away'); aboutEl.setAttribute('aria-hidden', 'true'); aboutEl.inert = true;
-  toLanding.hidden = false; document.documentElement.classList.remove('lp-lock'); startMusic(); syncAnim();
-  kbFocus($('#toAbout'));
-}
+function showAbout() { goExtra(1); }
+function hideAbout() { goExtra(xIndex - 1); }
 if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
-  aboutEl.hidden = false; aboutEl.inert = true; aboutEl.setAttribute('aria-hidden', 'true');
-  $('#amBack').addEventListener('click', hideAbout);
-  aboutEl.addEventListener('wheel', function (e) { if (e.deltaX < -18) hideAbout(); }, { passive: true });
-  (function () {
-    var x0 = null, y0 = null, sc = $('#amScroll');
-    aboutEl.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
-    aboutEl.addEventListener('touchend', function (e) {
+  xScreens.forEach(function (el) {
+    el.hidden = false; el.inert = true; el.setAttribute('aria-hidden', 'true');
+    el.addEventListener('click', function (e) { var b = e.target.closest('[data-xgo]'); if (b) goExtra(xIndex + (b.dataset.xgo === 'next' ? 1 : -1)); });
+    el.addEventListener('wheel', function (e) { if (e.deltaX < -18) goExtra(xIndex - 1); else if (e.deltaX > 18) goExtra(xIndex + 1); }, { passive: true });
+    var x0 = null, y0 = null, sc = el.querySelector('.am-scroll');
+    el.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    el.addEventListener('touchend', function (e) {
       if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
-      if (dy > 80 && Math.abs(dy) > Math.abs(dx) * 1.5 && sc.scrollTop <= 0) hideAbout();   /* swipe down at the top: back to the hub */
-      else if (dx > 80 && Math.abs(dx) > Math.abs(dy) * 1.5) hideAbout();
+      var atTop = sc.scrollTop <= 0, atBottom = sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4;
+      if (dy > 80 && Math.abs(dy) > Math.abs(dx) * 1.5 && atTop) goExtra(xIndex - 1);          /* swipe down at the top: previous screen */
+      else if (dy < -80 && Math.abs(dy) > Math.abs(dx) * 1.5 && atBottom) goExtra(xIndex + 1);  /* swipe up at the bottom: next screen */
+      else if (dx > 80 && Math.abs(dx) > Math.abs(dy) * 1.5) goExtra(xIndex - 1);
+      else if (dx < -80 && Math.abs(dx) > Math.abs(dy) * 1.5) goExtra(xIndex + 1);
     }, { passive: true });
-  })();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (!aboutShown) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goExtra(xIndex + 1); }
+  });
 }
 
 /* ---------- demo walkthroughs ---------- */
