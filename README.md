@@ -98,6 +98,10 @@ Desktop: arrow tabs fixed to the left and right edges (labelled with the destina
 
 `demo/jira/` is a read-only copy of the internship-watch (IW) Jira board: `data.js` is a snapshot of every IW epic, story, task and sub-task with descriptions and acceptance criteria (taken Nov 1, 2026), and `index.html` draws it as a Kanban board (To Do / In Progress / Done) with search, an epic filter, an Epics view with progress per phase (the view it opens on), and a detail drawer per card. Nothing can be moved or edited and nothing talks to Atlassian. No Atlassian logos or artwork are used. The Jira walkthrough's Try-it step opens it inside the hub. To refresh it, re-export the IW issues into `data.js`.
 
+## Demo Course Planner
+
+`demo/planner/index.html` is the real McCombs Course Planner page (The Codex of Courses) with made-up data: every professor is swapped for a fictional name, ratings are invented and no longer link anywhere, bid-history numbers are jittered, and storage is an in-memory stand-in seeded with a sample Spring 2027 plan and notes, so nothing is saved and there is no shared database. Course codes, titles, times and rooms are the public schedule. Rebuild it from a fresh download of the real planner with `python3 .build/make_planner_demo.py demo/planner/index.html` (run from a folder holding the real page as `real.html`). The planner walkthrough's Try-it step opens it inside the hub.
+
 ## Demo captures
 
 `demo/` holds screenshots of the real apps running on dummy data, used by the walkthroughs. Nothing in them is real data.

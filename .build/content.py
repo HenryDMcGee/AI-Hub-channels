@@ -127,16 +127,14 @@ DEMOS = {
     S("Try it", "Open the gate model",
       "The simulation opens in a new tab. Pull a lever and watch the gates."),
   ]},
-  "planner": {"tag": "Spring 2027", "href": ITEMS["planner"]["href"], "steps": [
+  "planner": {"tag": "Spring 2027", "embed": "demo/planner/index.html", "open": "Open the demo Course Planner →", "steps": [
     S("What it is", "One planner for a bidding problem",
       "McCombs electives are won by bidding a fixed points budget. Bidding well meant cross-referencing the course schedule, the registration list, the catalog, three terms of bid results, professor ratings and concentration rules by hand. The planner puts all of it on one page."),
     S("How it works", "Eight sources, one view",
       "The schedule, registration list and catalog come from the bidding platform, the bid results from the bidding spreadsheets, the ratings from a ratings site, and the concentration rules from the catalog. Dashed links in the source map are built by matching class times and course lists across sources."),
     S("How it works", "Plan a semester, see the cost",
       "Pick courses for Spring 2027 and the planner shows the points each one cleared at in past terms, so the bid budget can be spread where it matters."),
-    S("Design process", "Started from the problem slide",
-      "The Codex of Courses deck opened with the problem, scattered data with no way to compare, and the source map from that slide is the same one this channel animates. The data model followed the map, not the other way round."),
     S("Try it", "Open the planner",
-      "The Spring 2027 planner opens in a new tab."),
+      "A copy of the planner opens right here with a sample Spring 2027 plan already in it. Pick sections, spread bid points and watch the budget badge, then check the weekly schedule, Concentration and Roadmap tabs. Professor names, ratings and bid results are made up, and nothing is saved.", point="open"),
   ]},
 }
