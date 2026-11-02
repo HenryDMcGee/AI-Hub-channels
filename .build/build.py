@@ -237,7 +237,7 @@ HTML = r"""<!doctype html>
   <div class="rail"><div><div class="tag" id="demo-tag"></div><h2 id="demo-title"></h2></div><div class="steps" id="steps"></div></div>
   <div class="pane">
     <div class="head"><div class="kind" id="demo-kind"></div><button class="close" type="button" data-close aria-label="Close the walkthrough" style="width:40px;height:40px"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-    <div class="shot" id="demo-shot" hidden><img id="demo-img" alt=""><div class="fade"></div><div class="mark" id="demo-mark" hidden></div><span class="badge" id="demo-badge" hidden></span></div>
+    <div class="shot" id="demo-shot" hidden><img id="demo-img" decoding="async" alt=""><div class="fade"></div><div class="mark" id="demo-mark" hidden></div><span class="badge" id="demo-badge" hidden></span></div>
     <h3 id="demo-h"></h3>
     <p id="demo-p"></p>
     <div class="nav">
