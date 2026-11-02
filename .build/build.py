@@ -526,11 +526,11 @@ HTML = r"""<!doctype html>
   </div>
 </section>
 
-<section class="about-me away" id="outsideWork" aria-label="Outside work" hidden>
+<section class="about-me away" id="outsideWork" aria-label="Leadership" hidden>
   <div class="more-hint" aria-hidden="true">Scroll for more &darr;</div>
   <div class="am-scroll">
     <div class="am-inner">
-      <h2>Outside work</h2>
+      <h2>Leadership</h2>
       <div class="ow-grid">
       <div class="am-prose ow-prose">
         <p>Coaching judo for children with special needs taught me that leadership means meeting people where they are, adjusting the lesson rather than the child, and reading frustration before it became a shutdown. Patience, I found, is a skill rather than a personality trait.</p>
@@ -1104,7 +1104,7 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
 
 /* Screen order: 0 Home (landing), 1 AI-HUB, 2 About me, 3 AI fluency. On computers the side arrows
    also step through the hub's pages of apps; on phones the bars move whole screens. */
-var scrPrev = $('#scrPrev'), scrNext = $('#scrNext'), dnav = false, SCR_NAMES = ['Home', 'AI-HUB', 'About me', 'Video', 'AI fluency', 'Outside work', 'Get in touch'];
+var scrPrev = $('#scrPrev'), scrNext = $('#scrNext'), dnav = false, SCR_NAMES = ['Home', 'AI-HUB', 'About me', 'Video', 'AI fluency', 'Leadership', 'Get in touch'];
 function curScreen() { return landingShown ? 0 : (xIndex > 0 ? 1 + xIndex : 1); }
 function navTarget(dir, keys) {
   var sc = curScreen(), pages = layout.length / SLOTS;
