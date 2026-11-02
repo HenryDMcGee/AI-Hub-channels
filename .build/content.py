@@ -114,6 +114,8 @@ DEMOS = {
       "Record a run of a story, upload it, and get feedback with pip scores per dimension, a summary, and a line to try next time. Pitch versions keep a history so the opening line can be compared across takes."),
     S("How it works", "Upload Videos of Yourself",
       "Users can match a video to a STARR story prompt to see what they actually look like to interviewers."),
+    S("Design process", "It's fun!",
+      "A unique seafloor theme with sand you can write on. Interviews are stressful and this app makes me smile."),
     S("Try it", "Open the story bank",
       "The live bank opens in a new tab. The stories are Henry's own prep, so read rather than edit."),
   ]},
