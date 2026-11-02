@@ -144,7 +144,12 @@ button{font:inherit;color:inherit}
 .ribbon{position:fixed;left:20px;top:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:999px;background:#16213A;border:2px solid var(--amber);color:#FFE9A8;font-weight:800;font-size:13px;letter-spacing:1.2px}
 .ribbon i{width:10px;height:10px;border-radius:50%;background:var(--amber);display:block;box-shadow:0 0 12px var(--amber)}
 @media (max-width:760px){.ribbon{font-size:11px;top:10px;left:12px}}
-.demo{width:min(1000px,calc(100vw - 32px));height:min(620px,calc(100svh - 32px));padding:0;gap:0;overflow:hidden;flex-direction:row;box-shadow:0 0 0 4px rgba(255,211,110,.14),0 30px 80px rgba(0,0,0,.7)}
+.demo{width:min(1000px,calc(100vw - 32px));height:min(620px,calc(100svh - 32px));padding:0;gap:0;overflow:hidden;flex-direction:row;box-shadow:0 0 0 4px rgba(255,211,110,.14)}
+.demo::before{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:0 30px 80px rgba(0,0,0,.7);z-index:-1;will-change:transform;pointer-events:none}
+.dialog:not([hidden]){will-change:transform}
+.demo .rail,.demo .pane{contain:paint}
+.demo .shot{contain:strict;will-change:transform}
+.shot canvas{position:absolute;left:0;top:0;width:100%;height:auto;display:block}
 .rail{width:290px;flex-shrink:0;padding:26px 20px;background:rgba(7,12,24,.55);border-right:1px solid var(--rim);display:flex;flex-direction:column;gap:16px;overflow:auto}
 .rail .tag{font-size:11.5px;font-weight:800;letter-spacing:1.5px;color:var(--amber)}
 .rail h2{font-size:24px;margin-top:4px}
@@ -239,7 +244,7 @@ HTML = r"""<!doctype html>
   <div class="rail"><div><div class="tag" id="demo-tag"></div><h2 id="demo-title"></h2></div><div class="steps" id="steps"></div></div>
   <div class="pane">
     <div class="head"><div class="kind" id="demo-kind"></div><button class="close" type="button" data-close aria-label="Close the walkthrough" style="width:40px;height:40px"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-    <div class="shot" id="demo-shot" hidden><img id="demo-img" decoding="async" loading="eager" alt=""><div class="fade"></div><div class="mark" id="demo-mark" hidden></div><span class="badge" id="demo-badge" hidden></span></div>
+    <div class="shot" id="demo-shot" hidden><canvas id="demo-cv" hidden></canvas><img id="demo-img" decoding="async" loading="eager" alt=""><div class="fade"></div><div class="mark" id="demo-mark" hidden></div><span class="badge" id="demo-badge" hidden></span></div>
     <h3 id="demo-h"></h3>
     <p id="demo-p"></p>
     <div class="nav">
@@ -367,10 +372,14 @@ document.addEventListener('visibilitychange', syncAnim);
 applyTier();
 
 /* demo walkthrough images: fetch them once, quietly, right after the grid is up, so a step never waits on the network */
+var BITMAPS = {};   // capture url -> decoded ImageBitmap, so a step change is a blit, never a decode
 if (MODE === 'demo') setTimeout(function () {
-  var seen = {};
-  Object.keys(DEMOS).forEach(function (k) { DEMOS[k].steps.forEach(function (st) { if (st.img && !seen[st.img]) { seen[st.img] = true; var im = new Image(); im.decoding = 'async'; im.src = st.img; } }); });
-}, 1500);
+  Object.keys(DEMOS).forEach(function (k) { DEMOS[k].steps.forEach(function (st) {
+    if (!st.img || BITMAPS[st.img]) return; BITMAPS[st.img] = true;
+    var im = new Image(); im.decoding = 'async'; im.src = st.img;
+    if (im.decode && window.createImageBitmap) im.decode().then(function () { return createImageBitmap(im); }).then(function (bm) { BITMAPS[st.img] = bm; if (openEl === $('#demo')) demoRender(); }).catch(function () {});
+  }); });
+}, 1200);
 
 /* frame monitor: if more than a quarter of frames in a 5 s window run long, drop a tier (never back up, no flapping).
    ?perf=1 shows the numbers in a corner so a slow machine can be diagnosed. */
@@ -625,17 +634,27 @@ function openDemo(id, from) {
   $('#pdots').innerHTML = d.steps.map(function () { return '<i></i>'; }).join('');
   openDialog($('#demo'), from); blip(); demoGo(0);
 }
+var demoRaf = 0;
 function demoGo(i) {
   var d = DEMOS[demoId]; if (!d) return;
   if (i < 0) { closeDialog(); return; }
   if (i >= d.steps.length) { closeDialog(); return; }
-  demoStep = i; var s = d.steps[i];
+  demoStep = i;
+  /* several clicks inside one frame collapse into a single render of the last step */
+  if (!demoRaf) demoRaf = requestAnimationFrame(function () { demoRaf = 0; demoRender(); });
+}
+function demoRender() {
+  var d = DEMOS[demoId]; if (!d || openEl !== $('#demo')) return;
+  var i = demoStep, s = d.steps[i];
   Array.prototype.forEach.call($('#steps').children, function (b, j) { b.classList.toggle('on', j === i); b.classList.toggle('done', j < i); });
   Array.prototype.forEach.call($('#pdots').children, function (b, j) { b.classList.toggle('on', j === i); });
   $('#demo-kind').textContent = s.kind.toUpperCase() + ' · STEP ' + (i + 1) + ' OF ' + d.steps.length;
   $('#demo-h').textContent = s.title; $('#demo-p').textContent = s.body;
   var shot = $('#demo-shot');
-  if (s.img) { shot.hidden = false; $('#demo-img').src = s.img; $('#demo-img').alt = s.alt || ''; var mk = $('#demo-mark'), bd = $('#demo-badge'); if (s.mark) { mk.hidden = false; mk.style.left = s.mark[0] + '%'; mk.style.top = s.mark[1] + '%'; mk.style.width = s.mark[2] + '%'; mk.style.height = s.mark[3] + '%'; bd.hidden = false; bd.textContent = i + 1; bd.style.left = (s.mark[0] + s.mark[2] - 1.5) + '%'; bd.style.top = (s.mark[1] - 4) + '%'; } else { mk.hidden = true; bd.hidden = true; } }
+  if (s.img) { shot.hidden = false; var im = $('#demo-img'), cv = $('#demo-cv'), bm = BITMAPS[s.img];
+    if (bm && bm.width) { im.hidden = true; cv.hidden = false; if (cv.dataset.src !== s.img) { cv.dataset.src = s.img; cv.width = bm.width; cv.height = bm.height; cv.getContext('2d').drawImage(bm, 0, 0); } }
+    else { cv.hidden = true; im.hidden = false; if (im.getAttribute('src') !== s.img) { im.src = s.img; } }
+    im.alt = s.alt || ''; cv.setAttribute('aria-label', s.alt || ''); var mk = $('#demo-mark'), bd = $('#demo-badge'); if (s.mark) { mk.hidden = false; mk.style.left = s.mark[0] + '%'; mk.style.top = s.mark[1] + '%'; mk.style.width = s.mark[2] + '%'; mk.style.height = s.mark[3] + '%'; bd.hidden = false; bd.textContent = i + 1; bd.style.left = (s.mark[0] + s.mark[2] - 1.5) + '%'; bd.style.top = (s.mark[1] - 4) + '%'; } else { mk.hidden = true; bd.hidden = true; } }
   else shot.hidden = true;
   $('#demo-next').textContent = i === d.steps.length - 1 ? 'Done' : 'Next';
   $('#demo-back').textContent = i === 0 ? 'Close' : 'Back';
