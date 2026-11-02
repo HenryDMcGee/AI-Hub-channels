@@ -711,7 +711,7 @@ function demoRender() {
   $('#demo-kind').textContent = s.kind.toUpperCase() + ' · STEP ' + (i + 1) + ' OF ' + d.steps.length;
   $('#demo-h').textContent = s.title; $('#demo-p').textContent = s.body;
   var shot = $('#demo-shot');
-  if (s.img) { shot.hidden = false; shot.classList.toggle('dark', !!s.dark); var im = $('#demo-img'), cv = $('#demo-cv'), bm = BITMAPS[s.img];
+  if (s.img) { shot.hidden = false; shot.classList.toggle('dark', !!s.dark); shot.style.width = s.shot ? (s.shot * 100) + '%' : ''; shot.style.alignSelf = s.shot ? 'center' : ''; var im = $('#demo-img'), cv = $('#demo-cv'), bm = BITMAPS[s.img];
     if (bm && bm.width) { im.hidden = true; cv.hidden = false; if (cv.dataset.src !== s.img) { cv.dataset.src = s.img; cv.width = bm.width; cv.height = bm.height; cv.getContext('2d').drawImage(bm, 0, 0); } }
     else { cv.hidden = true; im.hidden = false; if (im.getAttribute('src') !== s.img) { im.src = s.img; } }
     im.alt = s.alt || ''; cv.setAttribute('aria-label', s.alt || ''); 
