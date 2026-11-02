@@ -76,6 +76,10 @@ Headless profile (Chromium, software rasteriser): idle main-thread time went fro
 
 `demo/crm/index.html` is the real Internship CRM UI running on sample data: the Claude capabilities (`db`, `user`, `mcp`) are replaced by a small in-memory shim at the top of the file, so adding, editing, Autofill and the Live activity feed all work, but nothing persists past the tab. It ships inside the hub: the walkthrough's Try-it step opens `demo/crm/index.html` in a full-screen view inside the hub itself (an iframe with a Back bar), so no new tab and no link hand-off to the host page is needed and is also published on its own at https://claude.ai/artifact/WDjxaCiJ8uqrS9vKwmubvc. Rebuild it from a fresh copy of the real CRM by re-running the shim insertion in `/crm-preview` (see the commit that added it).
 
+## Demo Internship Watch
+
+`demo/watch/` is the real Internship Watch dashboard front end (`frontend/index.html`, `app.js`, `style.css` and the three.js city background, copied from HenryDMcGee/internship-watch with asset paths made relative) plus `demo-api.js`, which answers every `/api` call from sample data in memory. No Cloudflare Access sign-in, no Worker, nothing saved. Search now and per-company Check now are switched off because a real search spends Claude credits; budgets, companies, titles, locations, applied/hidden/deleted all work against the sample data until the page reloads. The internship-watch walkthrough's Try-it step opens it inside the hub.
+
 ## Demo captures
 
 `demo/` holds screenshots of the real apps running on dummy data, used by the walkthroughs. Nothing in them is real data.

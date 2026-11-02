@@ -52,7 +52,7 @@ DEMOS = {
     S("Try it", "Open the demo CRM",
       "A copy of the real CRM opens right here inside the hub, running on sample data. Add a contact, try Autofill on a LinkedIn link, edit cells, switch tabs. Edits live in that tab only and nothing is saved.", point="open"),
   ]},
-  "watch": {"tag": "Private", "href": ITEMS["watch"]["href"], "steps": [
+  "watch": {"tag": "Private", "href": ITEMS["watch"]["href"], "embed": "demo/watch/index.html", "open": "Open the demo Internship Watch →", "steps": [
     S("What it is", "A tool that checks 100 companies every morning",
       "Internship Watch checks 100 tech companies every morning and keeps only the real Summer 2027 MBA product internships that are still open. Built because the postings scatter across a hundred career pages and close without notice."),
     S("How it works", "Four ways to look, cheapest first",
@@ -63,8 +63,8 @@ DEMOS = {
       "Before the first line of code there was a spec and a nine-phase roadmap with an exit gate per phase. Releases shipped as apples, bananas, coconuts, daiquiri, eggfruit, fig, guava and hazelnut between Sep 21 and Oct 20, each adding one thing."),
     S("Design process", "Rolling out safely",
       "The public board went live behind switches, with fallbacks when careers pages fail (Playwright behind Cloudflare Browser Run), guardrails on visitor feedback, and a view counter so Phase 9 could be measured rather than assumed."),
-    S("Try it", "Open internship-watch",
-      "The private dashboard opens in a new tab. The public job board is its own channel on this grid."),
+    S("Try it", "Open the demo Internship Watch",
+      "A copy of the private dashboard opens right here inside the hub, running on sample data with no sign-in. Mark postings applied, edit budgets, add companies, browse the Titles and Locations settings. Nothing is saved, and Search now is switched off because a real search spends Claude credits.", point="open"),
   ]},
   "jobs": {"tag": "Public", "href": ITEMS["jobs"]["href"], "steps": [
     S("What it is", "Internship-watch opened up to my classmates",
