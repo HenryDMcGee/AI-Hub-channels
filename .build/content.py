@@ -93,7 +93,7 @@ DEMOS = {
     S("Design process", "Why a mirror at all",
       "The boards started on Jira, moved to Linear when the Jira connector kept failing, then came back to Jira as a mirror once the connector worked. The mirror exists so the work is visible where recruiters expect to see it."),
     S("Try it", "Open the Watch Space board",
-      "A read-only copy of the internship-watch board opens right here: 9 phase epics, 34 stories and tasks, and 86 merged sub-tasks. Click any card for its acceptance criteria, or switch to Epics to see each phase and its release.", point="open"),
+      "A read-only copy of the internship-watch board opens right here: 9 phase epics, 34 stories and tasks, and 86 merged sub-tasks. It opens on the Epics view, one row per phase with its release. Click a phase to see its stories on the board, and any card for its acceptance criteria.", point="open"),
   ]},
   "github": {"tag": "5 repos", "href": ITEMS["github"]["href"], "steps": [
     S("What it is", "Every project's source",

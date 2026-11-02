@@ -96,7 +96,7 @@ Desktop: arrow tabs fixed to the left and right edges (labelled with the destina
 
 ## Demo Jira board
 
-`demo/jira/` is a read-only copy of the internship-watch (IW) Jira board: `data.js` is a snapshot of every IW epic, story, task and sub-task with descriptions and acceptance criteria (taken Nov 1, 2026), and `index.html` draws it as a Kanban board (To Do / In Progress / Done) with search, an epic filter, an Epics view with progress per phase, and a detail drawer per card. Nothing can be moved or edited and nothing talks to Atlassian. No Atlassian logos or artwork are used. The Jira walkthrough's Try-it step opens it inside the hub. To refresh it, re-export the IW issues into `data.js`.
+`demo/jira/` is a read-only copy of the internship-watch (IW) Jira board: `data.js` is a snapshot of every IW epic, story, task and sub-task with descriptions and acceptance criteria (taken Nov 1, 2026), and `index.html` draws it as a Kanban board (To Do / In Progress / Done) with search, an epic filter, an Epics view with progress per phase (the view it opens on), and a detail drawer per card. Nothing can be moved or edited and nothing talks to Atlassian. No Atlassian logos or artwork are used. The Jira walkthrough's Try-it step opens it inside the hub. To refresh it, re-export the IW issues into `data.js`.
 
 ## Demo captures
 

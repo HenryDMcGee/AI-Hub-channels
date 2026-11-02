@@ -118,19 +118,19 @@ main{flex:1;min-height:0;overflow:auto;padding:0 24px 24px}
     <div class="ro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Read-only</div>
   </div>
   <div class="tabs" role="tablist">
-    <button role="tab" id="tabBoard" aria-selected="true" aria-controls="viewBoard">Board</button>
-    <button role="tab" id="tabEpics" aria-selected="false" aria-controls="viewEpics">Epics</button>
+    <button role="tab" id="tabEpics" aria-selected="true" aria-controls="viewEpics">Epics</button>
+    <button role="tab" id="tabBoard" aria-selected="false" aria-controls="viewBoard">Board</button>
   </div>
 </header>
-<div class="toolbar">
+<div class="toolbar" hidden>
   <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="q" type="search" placeholder="Search this board" aria-label="Search this board"></label>
   <select id="epicSel" aria-label="Filter by epic"><option value="">All epics</option></select>
   <button class="chip" id="typeTasks" aria-pressed="false" type="button">Tasks only</button>
   <span class="count-note" id="countNote"></span>
 </div>
 <main>
-  <section id="viewBoard" role="tabpanel" aria-labelledby="tabBoard"><div class="board" id="board"></div></section>
-  <section id="viewEpics" role="tabpanel" aria-labelledby="tabEpics" hidden><div class="epics" id="epics"></div></section>
+  <section id="viewBoard" role="tabpanel" aria-labelledby="tabBoard" hidden><div class="board" id="board"></div></section>
+  <section id="viewEpics" role="tabpanel" aria-labelledby="tabEpics"><div class="epics" id="epics"></div></section>
 </main>
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle" inert>
@@ -249,7 +249,7 @@ main{flex:1;min-height:0;overflow:auto;padding:0 24px 24px}
   document.addEventListener('pointerdown', function (ev) { dragged = false; var c = ev.target.closest('.card'); down = c ? { x: ev.clientX, y: ev.clientY } : null; });
   document.addEventListener('pointermove', function (ev) { if (down && Math.abs(ev.clientX - down.x) + Math.abs(ev.clientY - down.y) > 24 && ev.pointerType === 'mouse') { down = null; dragged = true; toast('Read-only demo · cards can’t be moved'); } });
   document.addEventListener('pointerup', function () { down = null; });
-  renderBoard(); renderEpics();
+  renderBoard(); renderEpics(); view('epics');   /* opens on the Epics view */
 })();
 </script>
 </body>
