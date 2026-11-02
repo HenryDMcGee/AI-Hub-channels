@@ -64,6 +64,9 @@ The channel art is inline SVG with SMIL animations. Left to themselves, every an
 - splits STARR into a static sand/water layer and a small animated lettering layer so the noise and blur filters are rasterised once;
 - isolates each tile's art in its own paint layer (`contain` + `translateZ(0)`), stops animations on a hidden tab and behind dialogs, and honours `prefers-reduced-motion`.
 
+- adapts: a frame monitor drops to a lighter tier (8 fps art, no twinkles) and then to still art if more than a quarter of frames run long. `?tier=0|1|2` forces a tier, `?perf=1` shows fps, long-frame share, tier and device info in a corner.
+- walkthrough screenshots are 1400 px WebP (~60–80 KB each) and are fetched quietly right after the grid appears, so no step waits on the network.
+
 Headless profile (Chromium, software rasteriser): idle main-thread time went from ~270 ms per second to ~60.
 
 ## Demo CRM

@@ -24,6 +24,8 @@ button{font:inherit;color:inherit}
 .sky .vig{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 45%,rgba(4,8,18,.7) 100%)}
 .sky .stars{position:absolute;inset:0;width:100%;height:100%}
 .twinkles{position:absolute;inset:0;pointer-events:none}
+[data-tier="1"] .twinkles,[data-tier="2"] .twinkles{display:none}
+#perf{position:fixed;left:8px;bottom:8px;z-index:99;margin:0;padding:8px 10px;font:11px/1.5 ui-monospace,Menlo,Consolas,monospace;color:#cfe9f7;background:rgba(6,12,24,.85);border:1px solid rgba(95,212,240,.35);border-radius:8px;pointer-events:none;white-space:pre-wrap;max-width:60vw}
 .tw{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;background:#fff;clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%);opacity:.3;will-change:opacity,transform;animation:twinkle 3s ease-in-out infinite}
 .tw.dot{width:3px;height:3px;margin:-1.5px 0 0 -1.5px;clip-path:none;border-radius:50%;background:#EAF4FF}
 @keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.05)}}
@@ -237,7 +239,7 @@ HTML = r"""<!doctype html>
   <div class="rail"><div><div class="tag" id="demo-tag"></div><h2 id="demo-title"></h2></div><div class="steps" id="steps"></div></div>
   <div class="pane">
     <div class="head"><div class="kind" id="demo-kind"></div><button class="close" type="button" data-close aria-label="Close the walkthrough" style="width:40px;height:40px"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-    <div class="shot" id="demo-shot" hidden><img id="demo-img" decoding="async" alt=""><div class="fade"></div><div class="mark" id="demo-mark" hidden></div><span class="badge" id="demo-badge" hidden></span></div>
+    <div class="shot" id="demo-shot" hidden><img id="demo-img" decoding="async" loading="eager" alt=""><div class="fade"></div><div class="mark" id="demo-mark" hidden></div><span class="badge" id="demo-badge" hidden></span></div>
     <h3 id="demo-h"></h3>
     <p id="demo-p"></p>
     <div class="nav">
@@ -337,9 +339,18 @@ render();
 var ANIM_FPS = 15;
 var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var animSet = [], animT0 = performance.now();
+/* quality tiers: 0 = full (15 fps art, twinkling stars), 1 = light (8 fps, no twinkles), 2 = still (art frozen).
+   ?tier=N forces one; otherwise the frame monitor below steps down when the browser can't keep up. */
+var tier = Math.max(0, Math.min(2, +(q.get('tier') || 0) || 0));
+function applyTier() {
+  document.documentElement.setAttribute('data-tier', tier);
+  ANIM_FPS = tier === 0 ? 15 : 8;
+  if (tier >= 2) animSet = []; else syncAnim();
+  console.log('AI-HUB quality tier ' + tier + (tier ? ' (' + (tier === 1 ? 'light motion' : 'motion off') + ')' : ''));
+}
 function syncAnim() {
   animSet = [];
-  if (reduce) return;
+  if (reduce || tier >= 2) return;
   var root = openEl || track.children[page];
   if (!root) return;
   Array.prototype.forEach.call(root.querySelectorAll('svg'), function (sv) {
@@ -351,9 +362,37 @@ function stepAnim() {
   var t = (performance.now() - animT0) / 1000;
   for (var i = 0; i < animSet.length; i++) { var sv = animSet[i]; if (!sv.animationsPaused()) sv.pauseAnimations(); sv.setCurrentTime(t); }
 }
-setInterval(stepAnim, Math.round(1000 / ANIM_FPS));
+(function loop() { stepAnim(); setTimeout(loop, Math.round(1000 / ANIM_FPS)); })();
 document.addEventListener('visibilitychange', syncAnim);
-syncAnim();
+applyTier();
+
+/* demo walkthrough images: fetch them once, quietly, right after the grid is up, so a step never waits on the network */
+if (MODE === 'demo') setTimeout(function () {
+  var seen = {};
+  Object.keys(DEMOS).forEach(function (k) { DEMOS[k].steps.forEach(function (st) { if (st.img && !seen[st.img]) { seen[st.img] = true; var im = new Image(); im.decoding = 'async'; im.src = st.img; } }); });
+}, 1500);
+
+/* frame monitor: if more than a quarter of frames in a 5 s window run long, drop a tier (never back up, no flapping).
+   ?perf=1 shows the numbers in a corner so a slow machine can be diagnosed. */
+(function () {
+  var last = 0, frames = 0, longF = 0, win0 = performance.now(), start = win0, hud = null, fps = 0, pct = 0;
+  if (q.get('perf') === '1') { hud = document.createElement('pre'); hud.id = 'perf'; document.body.appendChild(hud); }
+  function tick(now) {
+    if (last) { frames++; if (now - last > 40) longF++; }
+    last = now;
+    if (now - win0 >= 5000) {
+      fps = frames / ((now - win0) / 1000); pct = frames ? longF / frames : 0;
+      if (now - start > 8000 && pct > 0.25 && tier < 2 && !q.get('tier')) { tier++; applyTier(); }
+      frames = 0; longF = 0; win0 = now;
+    }
+    if (hud) {
+      var mem = performance.memory ? (performance.memory.usedJSHeapSize / 1048576).toFixed(1) + ' MB heap' : '';
+      hud.textContent = 'AI-HUB v' + VERSION + ' · ' + MODE + '\n' + fps.toFixed(0) + ' fps · ' + (pct * 100).toFixed(0) + '% long frames · tier ' + tier + '\n' + animSet.length + ' animated svgs · ' + mem + '\n' + (navigator.hardwareConcurrency || '?') + ' cores · dpr ' + (window.devicePixelRatio || 1) + ' · ' + innerWidth + 'x' + innerHeight + '\n' + navigator.userAgent.replace(/Mozilla\/5\.0 \(|\) AppleWebKit.*$/g, '');
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
 
 /* ---------- dialogs ---------- */
 var scrim = $('#scrim'), openEl = null, opener = null;
