@@ -15,19 +15,18 @@ The page picks its mode from where it is opened.
 
 Only the demo is ever deployed. The real hub runs from a local clone on my laptop.
 
-## Run the real hub as a laptop app (auto-updating)
+## Run the real hub as a laptop app
 
-1. Clone the repo once: `git clone https://github.com/HenryDMcGee/AI-Hub-channels`
-2. Run `launch\install-shortcut.bat` (Windows). It puts an **AI-HUB** shortcut on the Desktop with the moon icon.
-3. Open the hub from that shortcut. Every launch runs `launch\AI-HUB.bat`, which `git pull`s the latest build (quietly skipped when offline or if you have local edits), then opens `index.html` in Chrome or Edge as an app window with no address bar.
+**Windows: `AI-HUB.exe`** (source in `app/`). A 3 MB native window around the hub using the Edge WebView2 runtime that ships with Windows 10/11, so it has its own taskbar entry and moon icon and can be pinned.
 
-macOS / Linux: `launch/ai-hub.sh` does the same (Chrome, Edge or Brave, else the default browser).
+1. Clone the repo, then put `AI-HUB.exe` in the folder that *contains* the clone (it looks for a sibling `AI-Hub-channels` or `AI-Hub-channels-main` folder with `index.html`; or set `AIHUB_DIR`).
+2. Run it, right-click its taskbar icon, **Pin to taskbar**.
 
-While the hub is open it checks GitHub every 30 minutes (and when you come back to the window) for a newer build; if there is one, an **UPDATE READY · RELAUNCH TO APPLY** pill appears top-left. Close and reopen from the shortcut to get it.
+On each start it opens the hub at once and runs `git pull --ff-only` in the background (no console). If that lands a new build in the first few seconds it reloads; later than that, the **UPDATED** pill appears. Web links (Start, Open the real app, repo links) open in your default browser; the hub's layout and settings are kept in `%LOCALAPPDATA%\AI-HUB`.
 
-To follow tagged releases instead of `main`, set `CHANNEL=release` at the top of `AI-HUB.bat` (or `CHANNEL=release ./ai-hub.sh`).
+Build: `app/build.sh` (Go 1.22+, any OS).
 
-Layout and the music setting are saved in the browser (`aihub-layout-v1`, `aihub-music`). The version and build id are logged to the console on load.
+**Without the exe:** `launch\AI-HUB.bat` / `launch/ai-hub.sh` pull and then open `index.html` as a Chrome or Edge app window; `launch\install-shortcut.bat` makes a Desktop shortcut for it.
 
 ## Using the hub
 
