@@ -117,7 +117,7 @@ DEMOS = {
     S("Design process", "It's fun!",
       "A unique seafloor theme with sand you can write on. Interviews are stressful and this app makes me smile."),
     S("Try it", "Open the story bank",
-      "The live bank opens in a new tab. The stories are Henry's own prep, so read rather than edit."),
+      "The live bank opens in a new tab. The stories are Henry's own prep, so read rather than edit.", point="open"),
   ]},
   "mars": {"tag": "Simulation", "href": ITEMS["mars"]["href"], "steps": [
     S("What it is", "An outpost plan you can run",
