@@ -271,7 +271,7 @@ HTML = r"""<!doctype html>
 <script>
 (function () {
 'use strict';
-var VERSION = '__VERSION__';
+var VERSION = '__VERSION__', BUILD = '__BUILD__';
 var ITEMS = __ITEMS__;
 var ART = __ART__;
 var DEMOS = __DEMOS__;
@@ -282,7 +282,7 @@ var KEY = 'aihub-layout-v1', MKEY = 'aihub-music', SLOTS = 12;
 function isLocal() { return location.protocol === 'file:' || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname); }
 var q = new URLSearchParams(location.search);
 var MODE = (!isLocal() || q.get('mode') === 'demo') ? 'demo' : 'real';
-console.log('AI-HUB v' + VERSION + ' · ' + MODE + ' mode · ' + (isLocal() ? 'local origin' : location.hostname));
+console.log('AI-HUB v' + VERSION + ' (build ' + BUILD + ') · ' + MODE + ' mode · ' + (isLocal() ? 'local origin' : location.hostname));
 if (MODE === 'demo') document.getElementById('ribbon').hidden = false;
 
 var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -370,8 +370,11 @@ function syncAnim() {
     if (sv.pauseAnimations && sv.querySelector('animate,animateTransform,animateMotion,set')) animSet.push(sv);
   });
 }
+var blurred = false;   // another window (the app you just launched) is in front: idle the hub as if it were hidden
+window.addEventListener('blur', function () { blurred = true; stopMusic(); });
+window.addEventListener('focus', function () { blurred = false; if (booted && !appOpen) startMusic(); });
 function stepAnim() {
-  if (document.hidden || !animSet.length) return;
+  if (document.hidden || blurred || !animSet.length) return;
   var t = (performance.now() - animT0) / 1000;
   for (var i = 0; i < animSet.length; i++) { var sv = animSet[i]; if (!sv.animationsPaused()) sv.pauseAnimations(); sv.setCurrentTime(t); }
 }
@@ -404,7 +407,7 @@ if (MODE === 'demo') setTimeout(function () {
     }
     if (hud) {
       var mem = performance.memory ? (performance.memory.usedJSHeapSize / 1048576).toFixed(1) + ' MB heap' : '';
-      hud.textContent = 'AI-HUB v' + VERSION + ' · ' + MODE + '\n' + fps.toFixed(0) + ' fps · ' + (pct * 100).toFixed(0) + '% long frames · tier ' + tier + '\n' + animSet.length + ' animated svgs · ' + mem + '\n' + (navigator.hardwareConcurrency || '?') + ' cores · dpr ' + (window.devicePixelRatio || 1) + ' · ' + innerWidth + 'x' + innerHeight + '\n' + navigator.userAgent.replace(/Mozilla\/5\.0 \(|\) AppleWebKit.*$/g, '');
+      hud.textContent = 'AI-HUB v' + VERSION + ' build ' + BUILD + ' · ' + MODE + '\n' + fps.toFixed(0) + ' fps · ' + (pct * 100).toFixed(0) + '% long frames · tier ' + tier + '\n' + animSet.length + ' animated svgs · ' + mem + '\n' + (navigator.hardwareConcurrency || '?') + ' cores · dpr ' + (window.devicePixelRatio || 1) + ' · ' + innerWidth + 'x' + innerHeight + '\n' + navigator.userAgent.replace(/Mozilla\/5\.0 \(|\) AppleWebKit.*$/g, '');
     }
     requestAnimationFrame(tick);
   }
@@ -697,6 +700,8 @@ $('#demo-back').addEventListener('click', function () { demoGo(demoStep - 1); ti
 """
 
 out = HTML.replace('__CSS__', CSS).replace('__MOON__', MOON).replace('__CLOCK_DEFS__', CLOCK_DEFS)
-out = out.replace('__VERSION__', VERSION).replace('__ITEMS__', json.dumps(ITEMS, ensure_ascii=False)).replace('__ART__', json.dumps(ART, ensure_ascii=False)).replace('__DEMOS__', json.dumps(DEMOS, ensure_ascii=False))
+import datetime
+BUILD = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%d-%H%M')
+out = out.replace('__VERSION__', VERSION).replace('__BUILD__', BUILD).replace('__ITEMS__', json.dumps(ITEMS, ensure_ascii=False)).replace('__ART__', json.dumps(ART, ensure_ascii=False)).replace('__DEMOS__', json.dumps(DEMOS, ensure_ascii=False))
 open(os.path.join(ROOT, 'index.html'), 'w').write(out)
 print('index.html', len(out), 'bytes')
