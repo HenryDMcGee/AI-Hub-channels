@@ -69,8 +69,8 @@ DEMOS = {
   "jobs": {"tag": "Public", "href": ITEMS["jobs"]["href"], "steps": [
     S("What it is", "Internship-watch opened up to my classmates",
       "A public view of the postings Internship Watch verifies, built for MBA classmates who do not want to run the tool themselves. No login, nothing to install."),
-    S("How it works", "Browse, filter, leave feedback",
-      "Visitors browse the open Summer 2027 MBA product internships, filter by company or title, and can leave feedback on a posting. Feedback is capped so one visitor cannot flood the board."),
+    S("How it works", "Feedback open from all classmates",
+      "Students can provide feedback that goes directly into a GitHub Issue. From there I choose whether to craft a Jira story. Claude then automatically drafts the concept and the code change architecture within the GitHub Issue, and from there I can merge it into my next release."),
     S("Design process", "Phase 7 of the roadmap",
       "The board was proposed as Phase 7 of the Internship Watch plan and shipped in the fig release on Oct 14, along with the switch to test-driven development. Phase 8 (guava) gave it an animated city background and a new palette, Phase 9 (hazelnut) a view counter."),
     S("Design process", "Written for Dana",
