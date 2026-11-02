@@ -176,6 +176,9 @@ button{font:inherit;color:inherit}
 .pane p{margin:0;font-size:15px;line-height:1.55;font-weight:600;color:#B8C7E2}
 .pane .nav{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .pane .nav a{font-size:13.5px;font-weight:800;text-decoration:none}
+.pane .nav .links{display:flex;align-items:center;gap:14px}
+.pane .nav #demo-real{color:var(--quiet)}
+.appbar a{color:var(--cyan);font-size:13px;font-weight:800;text-decoration:none}
 .pane .btn{min-width:100px;height:46px;font-size:15px}
 .pdots{display:flex;gap:6px}.pdots i{display:block;width:10px;height:10px;border-radius:5px;background:var(--rim);transition:width .2s}.pdots i.on{width:28px;background:var(--cyan)}
 @media (max-width:760px){.demo{flex-direction:column;height:calc(100svh - 24px)}.rail{width:100%;flex-direction:row;align-items:flex-start;gap:12px;padding:14px;border-right:0;border-bottom:1px solid var(--rim)}.rail h2{font-size:18px}.steps{flex-direction:row;overflow:auto;gap:4px}.step{padding:6px 8px}.step span{display:none}.pane{padding:14px}.pane h3{font-size:19px}.pane p{font-size:14px}}
@@ -252,14 +255,14 @@ HTML = r"""<!doctype html>
     <h3 id="demo-h"></h3>
     <p id="demo-p"></p>
     <div class="nav">
-      <a id="demo-open" href="#" target="_blank" rel="noopener">Open the real app ↗</a>
+      <span class="links"><a id="demo-open" href="#" target="_blank" rel="noopener">Open the real app ↗</a><a id="demo-real" href="#" target="_blank" rel="noopener" hidden>Real app ↗</a></span>
       <div style="display:flex;align-items:center;gap:12px"><div class="pdots" id="pdots" aria-hidden="true"></div><button class="btn" type="button" id="demo-back">Back</button><button class="btn primary" type="button" id="demo-next">Next</button></div>
     </div>
   </div>
 </div>
 
 <div class="appview" id="app" role="dialog" aria-modal="true" aria-labelledby="app-title" hidden>
-  <div class="appbar"><button class="btn" type="button" id="app-back">&larr; Back to AI-HUB</button><span id="app-title"></span><span class="appnote">demo &middot; sample data</span></div>
+  <div class="appbar"><button class="btn" type="button" id="app-back">&larr; Back to AI-HUB</button><span id="app-title"></span><span class="appnote">demo &middot; sample data</span><a id="app-real" href="#" target="_blank" rel="noopener">Open the real app ↗</a></div>
   <iframe id="app-frame" title="Demo app" src="about:blank"></iframe>
 </div>
 <div class="alert" id="alert" role="alertdialog" aria-modal="true" aria-labelledby="alert-h" hidden>
@@ -422,8 +425,9 @@ function openDialog(el, from) {
   syncAnim();
 }
 var appOpen = false;
-function openApp(src, name) {
+function openApp(src, name, real) {
   closeDialog(true);
+  var ar = $('#app-real'); if (real) { ar.hidden = false; ar.href = real; } else ar.hidden = true;
   var v = $('#app'), f = $('#app-frame');
   $('#app-title').textContent = name || ''; f.title = name || 'Demo app';
   f.src = src; v.hidden = false; appOpen = true; animSet = []; stopMusic();
@@ -651,8 +655,9 @@ function openDemo(id, from) {
   var d = DEMOS[id]; if (!d) { if (ITEMS[id].kind === 'folder') openFolder(id, from); else openZoom(id, from); return; }
   demoId = id; demoStep = 0;
   $('#demo-tag').textContent = 'DEMO · ' + d.tag.toUpperCase(); $('#demo-title').textContent = ITEMS[id].name; var op = $('#demo-open'); op.textContent = d.open || 'Open the real app ↗';
-  if (d.embed) { op.removeAttribute('href'); op.removeAttribute('target'); op.setAttribute('role', 'button'); op.tabIndex = 0; op.dataset.embed = d.embed; }
-  else { op.href = d.href || ITEMS[id].href; op.target = '_blank'; op.removeAttribute('role'); delete op.dataset.embed; }
+  var real = $('#demo-real');
+  if (d.embed) { op.removeAttribute('href'); op.removeAttribute('target'); op.setAttribute('role', 'button'); op.tabIndex = 0; op.dataset.embed = d.embed; real.hidden = false; real.href = d.href || ITEMS[id].href; }
+  else { op.href = d.href || ITEMS[id].href; op.target = '_blank'; op.removeAttribute('role'); delete op.dataset.embed; real.hidden = true; }
   $('#steps').innerHTML = d.steps.map(function (s, i) { return '<button class="step" type="button" data-step="' + i + '"><b>' + (i + 1) + '</b><span><span class="k">' + esc(s.kind.toUpperCase()) + '</span><span class="t">' + esc(s.title) + '</span></span></button>'; }).join('');
   $('#pdots').innerHTML = d.steps.map(function () { return '<i></i>'; }).join('');
   openDialog($('#demo'), from); blip(); demoGo(0);
@@ -683,7 +688,7 @@ function demoRender() {
   $('#demo-back').textContent = i === 0 ? 'Close' : 'Back';
 }
 $('#steps').addEventListener('click', function (e) { var b = e.target.closest('.step'); if (b) { demoGo(+b.dataset.step); tick(); } });
-$('#demo-open').addEventListener('click', function (e) { var em = this.dataset.embed; if (em) { e.preventDefault(); openApp(em, ITEMS[demoId].name); blip(); } });
+$('#demo-open').addEventListener('click', function (e) { var em = this.dataset.embed; if (em) { e.preventDefault(); openApp(em, ITEMS[demoId].name, (DEMOS[demoId].href || ITEMS[demoId].href)); blip(); } });
 $('#demo-open').addEventListener('keydown', function (e) { if (this.dataset.embed && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this.click(); } });
 $('#app-back').addEventListener('click', function () { closeApp(); tick(); });
 $('#demo-next').addEventListener('click', function () { demoGo(demoStep + 1); tick(); });
