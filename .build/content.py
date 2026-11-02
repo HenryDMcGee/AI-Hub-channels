@@ -53,8 +53,8 @@ DEMOS = {
       "A copy of the real CRM opens right here inside the hub, running on sample data. Add a contact, try Autofill on a LinkedIn link, edit cells, switch tabs. Edits live in that tab only and nothing is saved.", point="open"),
   ]},
   "watch": {"tag": "Private", "href": ITEMS["watch"]["href"], "embed": "demo/watch/index.html", "open": "Open the demo Internship Watch →", "steps": [
-    S("What it is", "A tool that checks 100 companies every morning",
-      "Internship Watch checks 100 tech companies every morning and keeps only the real Summer 2027 MBA product internships that are still open. Built because the postings scatter across a hundred career pages and close without notice."),
+    S("The problem", "New internships every day, in too many places",
+      "MBA internships are released daily from multiple sources, requiring tedious manual searches. Internship Watch is a targeted approach to grouping all internships on one platform."),
     S("How it works", "Four ways to look, cheapest first",
       "At 8:00 Central it tries company job feeds first (Greenhouse, Lever, Ashby, Workday), then careers pages read by a small model, then a direct web search only for what is left. A source scout moves companies onto cheaper routes over time."),
     S("How it works", "Strict verification, honest cost",
