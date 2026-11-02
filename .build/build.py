@@ -105,6 +105,9 @@ button{font:inherit;color:inherit}
 .dialog .head{display:flex;align-items:center;justify-content:space-between;gap:16px}
 .dialog h2{margin:0;font-size:28px;font-weight:800;letter-spacing:-.5px;color:#EEF4FF}
 .dialog .hint{font-size:13.5px;font-weight:600;color:var(--quiet)}
+.folder-more{align-self:center;display:inline-flex;align-items:center;min-height:42px;padding:0 20px;border-radius:999px;border:1.5px solid var(--cyan);background:rgba(95,212,240,.08);color:#DFF6FF;font-size:14px;font-weight:700;text-decoration:none}
+.folder-more:hover,.folder-more:focus-visible{background:rgba(95,212,240,.18)}
+.folder-more[hidden]{display:none}
 .close{width:48px;height:48px;border-radius:50%;background:#1C2A47;border:2px solid var(--rim-lit);color:#C9D8F2;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex-shrink:0}
 .close svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
 .close:hover{border-color:var(--cyan);color:var(--cyan-lit)}
@@ -581,6 +584,7 @@ HTML = r"""<!doctype html>
 <div class="dialog" id="folder" role="dialog" aria-modal="true" aria-labelledby="folder-title" hidden>
   <div class="head"><div><h2 id="folder-title"></h2><div class="hint" id="folder-hint"></div></div><button class="close" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="kids" id="kids"></div>
+  <a class="folder-more" id="folder-more" href="#" target="_blank" rel="noopener" hidden></a>
   <div class="foot">Esc or tap outside to close</div>
 </div>
 
@@ -635,16 +639,8 @@ var q = new URLSearchParams(location.search);
 var MODE = (!isLocal() || q.get('mode') === 'demo') ? 'demo' : 'real';
 console.log('AI-HUB v' + VERSION + ' (build ' + BUILD + ') · ' + MODE + ' mode · ' + (isLocal() ? 'local origin' : location.hostname));
 if (MODE === 'demo') document.getElementById('ribbon').hidden = false;
-/* demo: the GitHub channel skips its walkthrough and opens straight to the AI app repos
-   (no Resume-Website or Mars, matching the channels the demo shows) */
-if (MODE === 'demo') {
-  delete DEMOS.github;
-  var gh = ITEMS.github, ghHide = ['Resume-Website', 'Mars'];
-  gh.kids = gh.kids.filter(function (k) { return ghHide.indexOf(k.name) < 0; });
-  var nRepo = gh.kids.filter(function (k) { return !k.waiting; }).length;
-  gh.sub = nRepo + ' repos · opens a list';
-  ART.github = ART.github.replace(/>\d+<\/text>/, '>' + nRepo + '</text>');
-}
+/* demo: the GitHub channel skips its walkthrough and opens straight to the repo list */
+if (MODE === 'demo') delete DEMOS.github;
 
 var $ = function (s, r) { return (r || document).querySelector(s); };
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -841,6 +837,7 @@ function openFolder(id, from) {
   var it = ITEMS[id];
   $('#folder-title').textContent = it.name;
   var nWait = it.kids.filter(function (k) { return k.waiting; }).length;
+  var fm = $('#folder-more'); fm.hidden = !it.more; if (it.more) { fm.href = it.more.href; fm.textContent = it.more.label; }
   $('#folder-hint').textContent = (it.kids.length - nWait) + (it.kidNoun ? ' ' + it.kidNoun : ' items') + (nWait ? ' + ' + nWait + ' coming' : '') + ' · pick one to open it in a new tab';
   $('#kids').innerHTML = it.kids.map(function (k) {
     if (k.waiting) return '<div class="slot"><div class="chan waiting" role="note" aria-label="' + esc(k.aria || k.name) + '">' + art(k.art) + '<span class="name">' + esc(k.name) + '<span class="sub">' + esc(k.sub || '') + '</span></span></div></div>';
