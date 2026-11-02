@@ -393,7 +393,10 @@ body.dnav .lp-copy{padding-right:96px}
 .shot .mark{position:absolute;border-radius:6px;border:2px solid var(--cyan);box-shadow:0 0 0 4px rgba(95,212,240,.22),0 0 26px rgba(95,212,240,.55)}
 .shot .badge{position:absolute;width:24px;height:24px;border-radius:50%;background:var(--amber);color:#1A1200;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(255,211,110,.7)}
 .pane h3{margin:0;font-size:24px;font-weight:800;line-height:1.15;letter-spacing:-.3px;color:#EEF4FF}
-.pane p{margin:0;font-size:15px;line-height:1.55;font-weight:600;color:#B8C7E2}
+.pane p{margin:0;font-size:15px;line-height:1.55;font-weight:600;color:#B8C7E2;white-space:pre-line}
+.more-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border-radius:999px;border:1.5px solid var(--cyan);background:rgba(95,212,240,.08);color:#DFF6FF;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.more-btn:hover,.more-btn:focus-visible{background:rgba(95,212,240,.18)}
+.more-btn[hidden]{display:none}
 .pane .nav{position:relative}
 .pointer{position:absolute;left:52px;bottom:calc(100% + 2px);display:flex;align-items:flex-start;gap:6px;color:var(--amber);pointer-events:none;animation:point 1.1s ease-in-out infinite;will-change:transform}
 .pointer svg{width:84px;height:64px;filter:drop-shadow(0 0 8px rgba(255,211,110,.45))}
@@ -590,6 +593,7 @@ HTML = r"""<!doctype html>
     <div class="shot" id="demo-shot" hidden><canvas id="demo-cv" hidden></canvas><img id="demo-img" decoding="async" loading="eager" alt=""><div class="fade"></div><div id="demo-marks"></div></div>
     <h3 id="demo-h"></h3>
     <p id="demo-p"></p>
+    <button class="more-btn" type="button" id="demo-more" hidden></button>
     <div class="nav">
       <span class="pointer" id="demo-pointer" aria-hidden="true" hidden><svg viewBox="0 0 120 92"><path d="M110 8 C 92 10, 40 14, 22 66" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M8 54 L 21 77 L 38 57" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Try it</b></span>
       <a id="demo-open" href="#" target="_blank" rel="noopener">Open the real app ↗</a>
@@ -788,7 +792,7 @@ function openApp(src, name) {
   closeDialog(true);
   var v = $('#app'), f = $('#app-frame');
   $('#app-title').textContent = name || ''; f.title = name || 'Demo app';
-  $('#app-note').hidden = /demo\/jira\//.test(src);   /* the board is a real snapshot, not sample data */
+  $('#app-note').hidden = /demo\/(jira|specs)\//.test(src);   /* the board is a real snapshot, not sample data */
   f.src = src; v.hidden = false; appOpen = true; animSet = []; stopMusic();
   $('#app-back').focus(); updateNav();
 }
@@ -1206,6 +1210,7 @@ function demoRender() {
   Array.prototype.forEach.call($('#pdots').children, function (b, j) { b.classList.toggle('on', j === i); });
   $('#demo-kind').textContent = s.kind.toUpperCase() + ' · STEP ' + (i + 1) + ' OF ' + d.steps.length;
   $('#demo-h').textContent = s.title; $('#demo-p').textContent = s.body;
+  var mb = $('#demo-more'); mb.hidden = !s.btn; if (s.btn) { mb.textContent = s.btn.label; mb.dataset.embed = s.btn.embed; mb.dataset.name = s.btn.name || ''; }
   var shot = $('#demo-shot');
   if (s.img) { shot.hidden = false; shot.classList.toggle('dark', !!s.dark); shot.style.width = s.shot ? (s.shot * 100) + '%' : ''; shot.style.alignSelf = s.shot ? 'center' : ''; var im = $('#demo-img'), cv = $('#demo-cv'), bm = BITMAPS[s.img];
     if (bm && bm.width) { im.hidden = true; cv.hidden = false; if (cv.dataset.src !== s.img) { cv.dataset.src = s.img; cv.width = bm.width; cv.height = bm.height; cv.getContext('2d').drawImage(bm, 0, 0); } }
@@ -1226,6 +1231,7 @@ function demoRender() {
   $('#demo-back').textContent = i === 0 ? 'Close' : 'Back';
 }
 $('#steps').addEventListener('click', function (e) { var b = e.target.closest('.step'); if (b) { demoGo(+b.dataset.step); tick(); } });
+$('#demo-more').addEventListener('click', function () { openApp(this.dataset.embed, this.dataset.name || ITEMS[demoId].name); blip(); });
 $('#demo-open').addEventListener('click', function (e) { var em = this.dataset.embed; if (em) { e.preventDefault(); openApp(em, ITEMS[demoId].name); blip(); } });
 $('#demo-open').addEventListener('keydown', function (e) { if (this.dataset.embed && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); this.click(); } });
 $('#app-back').addEventListener('click', function () { closeApp(); tick(); });

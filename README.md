@@ -102,6 +102,10 @@ Desktop: arrow tabs fixed to the left and right edges (labelled with the destina
 
 `demo/planner/index.html` is the real McCombs Course Planner page (The Codex of Courses) with made-up data: every professor is swapped for a fictional name, ratings are invented and no longer link anywhere, bid-history numbers are jittered, and storage is an in-memory stand-in seeded with a sample Spring 2027 plan and notes, so nothing is saved and there is no shared database. Course codes, titles, times and rooms are the public schedule. Rebuild it from a fresh download of the real planner with `python3 .build/make_planner_demo.py demo/planner/index.html` (run from a folder holding the real page as `real.html`). The planner walkthrough's Try-it step opens it inside the hub.
 
+## Spec sheets
+
+`demo/specs/` holds Henry's nine Internship Watch phase plans as page images (`phaseN-K.webp`, rendered from the PDFs at 120 dpi) and a small viewer, `index.html`, with a phase list (a picker on phones) and next/previous buttons. Step 3 of the internship-watch walkthrough has a "View all 9 spec sheets" button that opens it inside the hub. A walkthrough step can carry such a button with `btn={"label", "embed", "name"}` in `content.py`. To refresh a sheet, re-render its PDF with `pdftoppm -r 120 -png` and save each page as WebP under the same names.
+
 ## Demo captures
 
 `demo/` holds screenshots of the real apps running on dummy data, used by the walkthroughs. Nothing in them is real data.
