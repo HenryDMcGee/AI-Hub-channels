@@ -106,6 +106,17 @@ Desktop: arrow tabs fixed to the left and right edges (labelled with the destina
 
 `demo/specs/` holds Henry's nine Internship Watch phase plans as page images (`phaseN-K.webp`, rendered from the PDFs at 120 dpi) and a small viewer, `index.html`, with a phase list (a picker on phones) and next/previous buttons. Step 3 of the internship-watch walkthrough has a "View all 9 spec sheets" button that opens it inside the hub. A walkthrough step can carry such a button with `btn={"label", "embed", "name"}` in `content.py`; a step image can set `ratio=` (its frame shape) and `zoom=True` (click to enlarge). To refresh a sheet, re-render its PDF with `pdftoppm -r 120 -png` and save each page as WebP under the same names.
 
+## mcgeehenry.com
+
+The demo is also the home page of mcgeehenry.com. That domain is served by the `resume-website` Cloudflare Worker (Workers Static Assets from `public/`) in the HenryDMcGee/Resume-Website repo, and pushing that repo's `main` deploys it. To ship the current hub there:
+
+```sh
+.build/deploy_site.sh /path/to/resume-website          # stage public/ and review the diff
+.build/deploy_site.sh /path/to/resume-website --push   # stage, commit and push = deploy
+```
+
+It copies `index.html` and `demo/` into `public/` and writes `public/version.txt` with the hub commit. The page carries the site's title, description, canonical URL, link-preview tags and icons (`demo/site/`), and the Email and LinkedIn links are base64 in the source and assembled on load, as on the old site. The old resume site is kept at the `classic-site` tag in that repo.
+
 ## Demo captures
 
 `demo/` holds screenshots of the real apps running on dummy data, used by the walkthroughs. Nothing in them is real data.

@@ -425,9 +425,27 @@ HTML = r"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AI-HUB</title>
-<meta name="description" content="Henry McGee's app hub: a night channel grid linking every project.">
+<title>Henry McGee — Product Management</title>
+<meta name="description" content="Henry McGee - aspiring product manager and MBA candidate at UT Austin McCombs. Former software engineer on Wells Fargo's currency trading platform. Projects built with AI, each with a walkthrough.">
 <meta name="theme-color" content="#0B1120">
+<link rel="canonical" href="https://mcgeehenry.com/">
+<link rel="icon" href="demo/site/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="demo/site/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="demo/site/favicon-16.png">
+<link rel="apple-touch-icon" href="demo/site/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Henry McGee">
+<meta property="og:title" content="Henry McGee - Product Management">
+<meta property="og:description" content="Aspiring product manager and MBA candidate at UT Austin McCombs. Former software engineer on Wells Fargo's currency trading platform.">
+<meta property="og:url" content="https://mcgeehenry.com/">
+<meta property="og:image" content="https://mcgeehenry.com/demo/site/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Henry McGee - bridging business and technology">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Henry McGee - Product Management">
+<meta name="twitter:description" content="Aspiring product manager and MBA candidate at UT Austin McCombs.">
+<meta name="twitter:image" content="https://mcgeehenry.com/demo/site/og-image.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Kalam:wght@700&family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@300;400&display=swap">
@@ -448,7 +466,7 @@ HTML = r"""<!doctype html>
 </div>
 
 <section class="landing" id="landing" aria-label="Henry McGee" hidden>
-  <div class="lp-top"><span class="lp-mark">HM</span><a class="lp-mail" href="https://mcgeehenry.com/#contact" target="_blank" rel="noopener">Email</a></div>
+  <div class="lp-top"><span class="lp-mark">HM</span><a class="lp-mail" data-mail="aGVucnltY2dlZUBteS51dGV4YXMuZWR1">Email</a></div>
   <div class="lp-figure"><img src="demo/henry-portrait.webp" alt="Henry McGee" decoding="async"></div>
   <div class="lp-copy">
     <h1>Henry<br>McGee</h1>
@@ -553,7 +571,7 @@ HTML = r"""<!doctype html>
     <div class="am-inner git-inner">
       <h2 class="git-h">Get in touch</h2>
       <p class="git-p">I&rsquo;m looking for a product management internship for summer 2027. If you&rsquo;re hiring, or you just want to talk about what the work is really like, I&rsquo;d like to hear from you.</p>
-      <div class="lp-actions"><a class="lp-btn" href="https://mcgeehenry.com/#contact" target="_blank" rel="noopener">Email me</a><a class="lp-btn lp-ghost" id="gitLinkedIn" href="" target="_blank" rel="noopener" hidden>LinkedIn</a></div>
+      <div class="lp-actions"><a class="lp-btn" data-mail="aGVucnltY2dlZUBteS51dGV4YXMuZWR1">Email me</a><a class="lp-btn lp-ghost" id="gitLinkedIn" data-url="aHR0cHM6Ly93d3cubGlua2VkaW4uY29tL2luL2hlbnJ5LW1jZ2VlLw==" target="_blank" rel="noopener">LinkedIn</a></div>
       <div class="git-foot"><span>Henry McGee</span><span>Austin, Texas</span></div>
     </div>
   </div>
@@ -639,6 +657,13 @@ var q = new URLSearchParams(location.search);
 var MODE = (!isLocal() || q.get('mode') === 'demo') ? 'demo' : 'real';
 console.log('AI-HUB v' + VERSION + ' (build ' + BUILD + ') · ' + MODE + ' mode · ' + (isLocal() ? 'local origin' : location.hostname));
 if (MODE === 'demo') document.getElementById('ribbon').hidden = false;
+else document.title = 'AI-HUB';
+/* contact links are assembled on load so the address never sits in the page source (same as the old mcgeehenry.com) */
+(function () {
+  function decode(v) { try { return atob(v); } catch (e) { return ''; } }
+  Array.prototype.forEach.call(document.querySelectorAll('a[data-mail]'), function (a) { var addr = decode(a.getAttribute('data-mail')); if (!addr) return; a.setAttribute('href', 'mail' + 'to:' + addr); a.setAttribute('title', addr); a.removeAttribute('data-mail'); });
+  Array.prototype.forEach.call(document.querySelectorAll('a[data-url]'), function (a) { var u = decode(a.getAttribute('data-url')); if (!u) return; a.setAttribute('href', u); a.removeAttribute('data-url'); });
+})();
 /* demo: the GitHub channel skips its walkthrough and opens straight to the repo list */
 if (MODE === 'demo') delete DEMOS.github;
 
