@@ -300,7 +300,7 @@ function slotHTML(id, i) {
   if (!id) return '<div class="slot" data-i="' + i + '" style="--d:' + d + '"><div class="empty"></div></div>';
   var it = ITEMS[id], body;
   if (it.kind === 'waiting') body = '<div class="chan waiting" role="note" aria-label="' + esc(it.aria || it.name) + '">' + art(id) + '<span class="name">' + esc(it.name) + '<span class="sub">' + esc(it.sub || '') + '</span></span></div>';
-  else body = '<a class="chan" href="' + esc(it.href || '#') + '" target="_blank" rel="noopener" data-id="' + id + '" draggable="false"' + (it.kind === 'folder' ? ' aria-haspopup="dialog"' : '') + '>' + art(id) + '<span class="name">' + esc(it.name) + '<span class="sub">' + esc(it.sub || '') + '</span></span></a>';
+  else body = '<a class="chan"' + (MODE === 'demo' ? ' role="button" tabindex="0"' : ' href="' + esc(it.href || '#') + '" target="_blank" rel="noopener"') + ' data-id="' + id + '" draggable="false"' + (it.kind === 'folder' || MODE === 'demo' ? ' aria-haspopup="dialog"' : '') + '>' + art(id) + '<span class="name">' + esc(it.name) + '<span class="sub">' + esc(it.sub || '') + '</span></span></a>';
   return '<div class="slot" data-i="' + i + '" data-id="' + id + '" style="--d:' + d + '">' + body + '<button class="del" type="button" data-del="' + id + '" aria-label="Remove ' + esc(it.name) + '"><svg viewBox="0 0 10 10"><path d="M2 2l6 6M8 2L2 8"/></svg></button></div>';
 }
 function render() {
@@ -405,11 +405,12 @@ track.addEventListener('click', function (e) {
   var a = e.target.closest('.chan[data-id]'); if (!a) return;
   if (editing || suppressClick) { e.preventDefault(); return; }
   var id = a.dataset.id, it = ITEMS[id];
-  if (e.metaKey || e.ctrlKey || e.button === 1) return;          // let the browser open the link directly
+  if (a.hasAttribute('href') && (e.metaKey || e.ctrlKey || e.button === 1)) return;   // let the browser open the link directly
   e.preventDefault();
   if (MODE === 'demo') { openDemo(id, a); return; }
   if (it.kind === 'folder') openFolder(id, a); else openZoom(id, a);
 });
+track.addEventListener('keydown', function (e) { var a = e.target.closest('.chan[role="button"]'); if (a && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); a.click(); } });
 track.addEventListener('mouseover', function (e) { var a = e.target.closest('.chan'); if (a && a !== hovered) { hovered = a; tick(); } });
 track.addEventListener('mouseout', function (e) { if (!e.relatedTarget || !e.relatedTarget.closest('.chan')) hovered = null; });
 var hovered = null;
@@ -425,6 +426,7 @@ track.addEventListener('pointerdown', function (e) {
   var slot = e.target.closest('.slot'); if (!slot || e.target.closest('.del')) return;
   if (e.pointerType === 'mouse' && e.button !== 0) return;
   if (!editing) {
+    if (MODE === 'demo') return;
     var last = e;
     var cancel = function () { clearTimeout(pressTimer); pressTimer = null; window.removeEventListener('pointerup', cancel); window.removeEventListener('pointercancel', cancel); window.removeEventListener('pointermove', move); };
     var move = function (ev) { last = ev; if (Math.abs(ev.clientX - e.clientX) > 8 || Math.abs(ev.clientY - e.clientY) > 8) cancel(); };
