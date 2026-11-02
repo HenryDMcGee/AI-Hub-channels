@@ -55,8 +55,9 @@ DEMOS = {
   "watch": {"tag": "Private", "href": ITEMS["watch"]["href"], "embed": "demo/watch/index.html", "open": "Open the demo Internship Watch →", "steps": [
     S("The problem", "New internships every day, in too many places",
       "MBA internships are released daily from multiple sources, requiring tedious manual searches. Internship Watch is a targeted approach to grouping all internships on one platform."),
-    S("How it works", "Four ways to look, cheapest first",
-      "At 8:00 Central it tries company job feeds first (Greenhouse, Lever, Ashby, Workday), then careers pages read by a small model, then a direct web search only for what is left. A source scout moves companies onto cheaper routes over time."),
+    S("Design process", "A practical in Spec Driven Development",
+      "Internship Watch came to fruition while chatting with a Dell Product Manager about where PM roles are heading and the future of Agile. We had a long discussion about creating spec sheets ahead of code changes, with the roadmap broken down into epics (phases). Internship Watch was a way for me to apply spec-driven development firsthand.",
+      img="demo/watch-epics.webp", alt="The Internship Watch Jira epics: nine phases from Local version to Budgets dialog redesign, each with its release and every story done", shot=0.86),
     S("How it works", "Strict verification, honest cost",
       "A posting only counts once it has been confirmed open, and a closed one leaves the list. Caching skips repeat searches and known rejections, and every run reports what it cost."),
     S("Design process", "Spec first, nine phases, fruit-named releases",
