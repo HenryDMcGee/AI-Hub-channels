@@ -50,7 +50,7 @@ DEMOS = {
       "The CRM was planned as 20 user stories with dependencies on a Kanban board (Linear primary, Jira mirror, WIP limits, no sprints). Each story carried acceptance criteria before any code.",
       img="demo/crm-board.webp", alt="The CRM Kanban board, Email feeds epic: stories in To Do, In Progress and Done", dark=True),
     S("Try it", "Open the demo CRM",
-      "A copy of the real CRM opens right here inside the hub, running on sample data. Add a contact, try Autofill on a LinkedIn link, edit cells, switch tabs. Edits live in that tab only and nothing is saved."),
+      "A copy of the real CRM opens right here inside the hub, running on sample data. Add a contact, try Autofill on a LinkedIn link, edit cells, switch tabs. Edits live in that tab only and nothing is saved.", point="open"),
   ]},
   "watch": {"tag": "Private", "href": ITEMS["watch"]["href"], "steps": [
     S("What it is", "A tool that checks 100 companies every morning",

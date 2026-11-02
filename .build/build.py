@@ -180,6 +180,12 @@ button{font:inherit;color:inherit}
 .shot .badge{position:absolute;width:24px;height:24px;border-radius:50%;background:var(--amber);color:#1A1200;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(255,211,110,.7)}
 .pane h3{margin:0;font-size:24px;font-weight:800;line-height:1.15;letter-spacing:-.3px;color:#EEF4FF}
 .pane p{margin:0;font-size:15px;line-height:1.55;font-weight:600;color:#B8C7E2}
+.pane .nav{position:relative}
+.pointer{position:absolute;left:52px;bottom:calc(100% + 2px);display:flex;align-items:flex-start;gap:6px;color:var(--amber);pointer-events:none;animation:point 1.1s ease-in-out infinite;will-change:transform}
+.pointer svg{width:84px;height:64px;filter:drop-shadow(0 0 8px rgba(255,211,110,.45))}
+.pointer b{margin-top:-6px;font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+@keyframes point{0%,100%{transform:translate(0,0)}50%{transform:translate(-5px,7px)}}
+@media (prefers-reduced-motion:reduce){.pointer{animation:none}}
 .pane .nav{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .pane .nav a{font-size:13.5px;font-weight:800;text-decoration:none}
 .pane .btn{min-width:100px;height:46px;font-size:15px}
@@ -259,6 +265,7 @@ HTML = r"""<!doctype html>
     <h3 id="demo-h"></h3>
     <p id="demo-p"></p>
     <div class="nav">
+      <span class="pointer" id="demo-pointer" aria-hidden="true" hidden><svg viewBox="0 0 120 92"><path d="M110 8 C 92 10, 40 14, 22 66" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M8 54 L 21 77 L 38 57" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Try it</b></span>
       <a id="demo-open" href="#" target="_blank" rel="noopener">Open the real app ↗</a>
       <div style="display:flex;align-items:center;gap:12px"><div class="pdots" id="pdots" aria-hidden="true"></div><button class="btn" type="button" id="demo-back">Back</button><button class="btn primary" type="button" id="demo-next">Next</button></div>
     </div>
@@ -718,6 +725,7 @@ function demoRender() {
              '<span class="badge" style="left:' + bl.toFixed(2) + '%;top:' + bt.toFixed(2) + '%">' + esc(String(m.n)) + '</span>';
     }).join(''); }
   else shot.hidden = true;
+  $('#demo-pointer').hidden = s.point !== 'open';
   $('#demo-next').textContent = i === d.steps.length - 1 ? 'Done' : 'Next';
   $('#demo-back').textContent = i === 0 ? 'Close' : 'Back';
 }
