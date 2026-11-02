@@ -635,6 +635,16 @@ var q = new URLSearchParams(location.search);
 var MODE = (!isLocal() || q.get('mode') === 'demo') ? 'demo' : 'real';
 console.log('AI-HUB v' + VERSION + ' (build ' + BUILD + ') · ' + MODE + ' mode · ' + (isLocal() ? 'local origin' : location.hostname));
 if (MODE === 'demo') document.getElementById('ribbon').hidden = false;
+/* demo: the GitHub channel skips its walkthrough and opens straight to the AI app repos
+   (no Resume-Website or Mars, matching the channels the demo shows) */
+if (MODE === 'demo') {
+  delete DEMOS.github;
+  var gh = ITEMS.github, ghHide = ['Resume-Website', 'Mars'];
+  gh.kids = gh.kids.filter(function (k) { return ghHide.indexOf(k.name) < 0; });
+  var nRepo = gh.kids.filter(function (k) { return !k.waiting; }).length;
+  gh.sub = nRepo + ' repos · opens a list';
+  ART.github = ART.github.replace(/>\d+<\/text>/, '>' + nRepo + '</text>');
+}
 
 var $ = function (s, r) { return (r || document).querySelector(s); };
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -830,7 +840,8 @@ document.addEventListener('keydown', function (e) {
 function openFolder(id, from) {
   var it = ITEMS[id];
   $('#folder-title').textContent = it.name;
-  $('#folder-hint').textContent = it.kids.length + (it.kidNoun ? ' ' + it.kidNoun : ' items') + ' · pick one to open it in a new tab';
+  var nWait = it.kids.filter(function (k) { return k.waiting; }).length;
+  $('#folder-hint').textContent = (it.kids.length - nWait) + (it.kidNoun ? ' ' + it.kidNoun : ' items') + (nWait ? ' + ' + nWait + ' coming' : '') + ' · pick one to open it in a new tab';
   $('#kids').innerHTML = it.kids.map(function (k) {
     if (k.waiting) return '<div class="slot"><div class="chan waiting" role="note" aria-label="' + esc(k.aria || k.name) + '">' + art(k.art) + '<span class="name">' + esc(k.name) + '<span class="sub">' + esc(k.sub || '') + '</span></span></div></div>';
     return '<div class="slot"><a class="chan" href="' + esc(k.href) + '" target="_blank" rel="noopener">' + art(k.art) + '<span class="name">' + esc(k.name) + '<span class="sub">' + esc(k.sub || '') + '</span></span></a></div>';
