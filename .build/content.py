@@ -37,7 +37,7 @@ def S(kind, title, body, **kw):
 DEMOS = {
   "crm": {"tag": "Tracker", "href": ITEMS["crm"]["href"], "embed": "demo/crm/index.html", "open": "Open the demo CRM →", "steps": [
     S("What it is", "One place for the whole search",
-      "A networking and application tracker for the Summer 2027 internship search. Contacts on one side, the application pipeline on the other, both editable right in the grid."),
+      "A networking and application tracker for the Summer 2027 internship search. Contacts can easily be added from their LinkedIn URL, with notes on how we met. Job applications are tracked through email, with reminders and their current status."),
     S("How it works", "Autofill new contacts from LinkedIn",
       "Click Add contact and paste the person's LinkedIn profile link. Autofill pulls their name, current title and company straight from LinkedIn into the new row, so nobody gets retyped by hand. Every cell still edits in place, and Enter saves and moves down.",
       img="demo/crm-network.webp", alt="The CRM's Network tab: the Add contact button, and a new contact row filled in from LinkedIn",
