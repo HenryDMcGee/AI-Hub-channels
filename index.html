@@ -654,6 +654,9 @@ function load() {
 }
 function save() { try { localStorage.setItem(KEY, JSON.stringify({ order: trim(layout), known: Object.keys(ITEMS), v: VERSION })); } catch (e) {} }
 layout = load();
+/* the demo shows a fixed set of channels: no Henry Website or Mars tiles */
+var DEMO_HIDE = ['site', 'mars'];
+if (MODE === 'demo') layout = pad(DEFAULT.filter(function (id) { return DEMO_HIDE.indexOf(id) < 0; }));
 
 /* ---------- render ---------- */
 var track = $('#track'), dots = $('#dots'), page = 0;
