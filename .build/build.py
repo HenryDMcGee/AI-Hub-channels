@@ -151,7 +151,7 @@ button{font:inherit;color:inherit}
 .ribbon.update.open{max-width:min(620px,calc(100vw - 40px))}
 .ribbon.update.open span{white-space:normal;letter-spacing:.4px;text-transform:none;font-weight:600;font-size:13px}
 /* ---- demo landing: the mcgeehenry.com hero first, AI-HUB one click or swipe away ---- */
-.landing{position:fixed;inset:0;z-index:65;touch-action:none;overscroll-behavior:contain;display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);overflow:hidden;color:#fff;font-family:"IBM Plex Sans",system-ui,sans-serif;font-weight:300;background:radial-gradient(85% 70% at 22% 12%,rgba(92,191,173,.10),transparent 62%),radial-gradient(70% 60% at 78% 88%,rgba(47,109,98,.12),transparent 70%),#0b1018;transition:transform .7s cubic-bezier(.22,.61,.36,1);will-change:transform}
+.landing{position:fixed;inset:0;z-index:65;touch-action:none;overscroll-behavior:contain;display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);grid-template-rows:minmax(0,1fr);overflow:hidden;color:#fff;font-family:"IBM Plex Sans",system-ui,sans-serif;font-weight:300;background:radial-gradient(85% 70% at 22% 12%,rgba(92,191,173,.10),transparent 62%),radial-gradient(70% 60% at 78% 88%,rgba(47,109,98,.12),transparent 70%),#0b1018;transition:transform .7s cubic-bezier(.22,.61,.36,1);will-change:transform}
 .landing.away{transform:translateX(-100%)}
 .landing a{color:inherit}
 .lp-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:30px clamp(18px,3.4vw,48px);z-index:3}
@@ -293,6 +293,38 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 .vid-caption a{font-size:14px;color:rgba(231,234,240,.45);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:2px;white-space:nowrap;transition:color .18s,border-color .18s}
 .vid-caption a:hover,.vid-caption a:focus-visible{color:#5cbfad;border-color:#5cbfad}
 @media (max-width:760px){.vid-frame,.vid-caption{max-width:100%}.vid-play{width:68px;height:68px}}
+/* ---- laptop fit: the screens after the hub size themselves to short windows ---- */
+@media (min-width:761px){
+  .ow-grid{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(0,.68fr);gap:clamp(28px,3.4vw,52px);align-items:start}
+  .ow-grid .ow-photos{margin-top:6px;grid-template-columns:1fr 1fr;gap:14px}
+  .ow-grid .ow-photos figure:first-child{grid-column:1/-1}
+  .ow-grid .am-photo figcaption{font-size:12px;margin-top:6px}
+  .am-prose p{font-size:clamp(14.5px,min(1.3vw,2.45vh),18.5px)}
+  .ow-prose p{line-height:1.7;margin-bottom:.9em}
+}
+@media (min-width:1100px){
+  .af-list{display:grid;grid-template-columns:1fr 1fr;column-gap:52px}
+  .af-list>div{grid-template-columns:1fr;gap:6px;padding:16px 0;align-content:start}
+  #aiFluency .am-inner{width:min(1260px,100%)}
+  .af-list>div:nth-child(2){padding-top:4px}
+  .af-list>div:nth-child(3){border-bottom:0}
+  .af-list dd{font-size:clamp(14px,min(1.1vw,2.2vh),17px);line-height:1.62;max-width:none}
+  .af-list dt{font-size:clamp(15.5px,min(1.25vw,2.5vh),18px)}
+}
+@media (min-width:761px) and (max-height:860px){
+  .am-inner{padding-top:clamp(22px,4vh,34px);padding-bottom:clamp(22px,4vh,34px)}
+  .am-inner h2{font-size:clamp(28px,min(3.2vw,5.6vh),44px);margin-bottom:16px;padding-bottom:16px}
+  .git-inner .git-h{font-size:clamp(44px,min(5.4vw,9vh),72px)}
+  .lp-copy{padding-top:78px;padding-bottom:28px}
+  .lp-copy h1{font-size:clamp(46px,min(8.4vw,13vh),118px);margin-bottom:2.6vh}
+  .lp-role{margin-bottom:2.4vh;padding-top:2.4vh}
+  .lp-claim{font-size:clamp(20px,min(2.5vw,4.2vh),33px);margin-bottom:2vh}
+  .lp-sub{font-size:clamp(14px,2.3vh,16px);line-height:1.55;margin-bottom:3.4vh;max-width:44ch}
+}
+/* when a screen still runs past the window, a fade and a hint say there is more below */
+.about-me .more-hint{position:absolute;left:0;right:0;bottom:0;height:70px;z-index:3;pointer-events:none;background:linear-gradient(to bottom,rgba(11,16,24,0),#0b1018 78%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;font:700 10.5px Archivo,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(231,234,240,.55);opacity:0;transition:opacity .25s}
+.about-me.more .more-hint{opacity:1}
+@media (max-width:760px){body.dnav .about-me .more-hint{bottom:52px}body.dnav #getInTouch .more-hint{bottom:0}}
 /* ---- demo: persistent screen navigation (side arrows on computers, top/bottom bars on phones) ---- */
 .scr-nav{position:fixed;top:50%;transform:translateY(-50%);z-index:66;width:56px;min-height:156px;padding:18px 0;border:1.5px solid rgba(92,191,173,.5);background:rgba(11,16,24,.84);color:#5cbfad;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,color .2s}
 .scr-nav[hidden]{display:none}
@@ -426,6 +458,7 @@ HTML = r"""<!doctype html>
 <button class="scr-nav scr-prev" id="scrPrev" type="button" hidden><span class="sn-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span><span class="sn-label"></span></button>
 <button class="scr-nav scr-next" id="scrNext" type="button" hidden><span class="sn-label"></span><span class="sn-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span></button>
 <section class="about-me away" id="aboutMe" aria-label="About me" hidden>
+  <div class="more-hint" aria-hidden="true">Scroll for more &darr;</div>
   <button class="am-back" type="button" id="amBack" data-xgo="prev" aria-label="Back to AI-HUB">
     <span class="lp-next-chev am-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span>
     <span class="am-back-label">AI-HUB</span>
@@ -451,6 +484,7 @@ HTML = r"""<!doctype html>
   </button>
 </section>
 <section class="about-me away" id="videoScreen" aria-label="Video" hidden>
+  <div class="more-hint" aria-hidden="true">Scroll for more &darr;</div>
   <div class="am-scroll">
     <div class="am-inner vid-inner">
       <div class="vid-frame" id="vidFrame">
@@ -461,6 +495,7 @@ HTML = r"""<!doctype html>
   </div>
 </section>
 <section class="about-me away has-fwd-none" id="aiFluency" aria-label="AI fluency" hidden>
+  <div class="more-hint" aria-hidden="true">Scroll for more &darr;</div>
   <button class="am-back" type="button" data-xgo="prev" aria-label="Back to About me">
     <span class="lp-next-chev am-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span>
     <span class="am-back-label" data-short="About me">About me</span>
@@ -480,9 +515,11 @@ HTML = r"""<!doctype html>
 </section>
 
 <section class="about-me away" id="outsideWork" aria-label="Outside work" hidden>
+  <div class="more-hint" aria-hidden="true">Scroll for more &darr;</div>
   <div class="am-scroll">
     <div class="am-inner">
       <h2>Outside work</h2>
+      <div class="ow-grid">
       <div class="am-prose ow-prose">
         <p>Coaching judo for children with special needs taught me that leadership means meeting people where they are, adjusting the lesson rather than the child, and reading frustration before it became a shutdown. Patience, I found, is a skill rather than a personality trait.</p>
         <p>Organizing a spring judo camp stretched that further: I managed scheduling, logistics, and volunteer recruitment while bridging differences in how Japanese, Hawaiian, and mainland judo communities approach hierarchy and teaching. It was hands-on experience leading a project under real constraints with a group that didn&rsquo;t share a single cultural frame of reference.</p>
@@ -493,11 +530,13 @@ HTML = r"""<!doctype html>
         <figure class="am-photo"><img src="demo/ow-tea.webp" width="900" height="675" alt="Henry and the instructor kneeling in a tatami tea room" loading="lazy" decoding="async"><figcaption>Green Tea Ceremony Class</figcaption></figure>
         <figure class="am-photo"><img src="demo/ow-exchange.webp" width="900" height="675" alt="A circle of people talking on the mats of a dojo" loading="lazy" decoding="async"><figcaption>Honolulu Japanese Language Exchange</figcaption></figure>
       </div>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="about-me away" id="getInTouch" aria-label="Get in touch" hidden>
+  <div class="more-hint" aria-hidden="true">Scroll for more &darr;</div>
   <div class="am-scroll">
     <div class="am-inner git-inner">
       <h2 class="git-h">Get in touch</h2>
@@ -1085,7 +1124,7 @@ function goExtra(n, jump) {
   document.documentElement.classList.toggle('lp-lock', n > 0);
   if (n > 0) { stopMusic(); kbFocus(xScreens[n - 1].querySelector('.am-back') || scrPrev); }
   else { window.scrollTo(0, 0); startMusic(); kbFocus($('#toAbout')); }
-  syncAnim(); updateNav(); vidSync();
+  syncAnim(); updateNav(); vidSync(); moreSync();
 }
 /* The video player is only created while its screen is showing (and removed on leaving, which stops playback).
    Hosts whose content security policy blocks other sites' frames (claude.ai artifacts) keep the Watch on YouTube card. */
@@ -1101,6 +1140,17 @@ function vidSync() {
     f.referrerPolicy = 'strict-origin-when-cross-origin'; box.appendChild(f);
   } else if (!on && f) f.remove();
 }
+function moreSync() {
+  xScreens.forEach(function (el, k) {
+    var sc = el.querySelector('.am-scroll');
+    el.classList.toggle('more', k + 1 === xIndex && sc.scrollHeight - sc.scrollTop - sc.clientHeight > 12);
+  });
+}
+xScreens.forEach(function (el) {
+  el.querySelector('.am-scroll').addEventListener('scroll', moreSync, { passive: true });
+  Array.prototype.forEach.call(el.querySelectorAll('img'), function (im) { im.addEventListener('load', moreSync); });
+});
+window.addEventListener('resize', moreSync);
 function showAbout() { goExtra(1); }
 function hideAbout() { goExtra(xIndex - 1); }
 if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
