@@ -67,7 +67,7 @@ DEMOS = {
       "The private dashboard opens in a new tab. The public job board is its own channel on this grid."),
   ]},
   "jobs": {"tag": "Public", "href": ITEMS["jobs"]["href"], "steps": [
-    S("What it is", "The same list, open to classmates",
+    S("What it is", "Internship-watch opened up to my classmates",
       "A public view of the postings Internship Watch verifies, built for MBA classmates who do not want to run the tool themselves. No login, nothing to install."),
     S("How it works", "Browse, filter, leave feedback",
       "Visitors browse the open Summer 2027 MBA product internships, filter by company or title, and can leave feedback on a posting. Feedback is capped so one visitor cannot flood the board."),
