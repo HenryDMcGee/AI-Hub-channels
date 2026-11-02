@@ -1,6 +1,6 @@
 /* Read-only snapshot of the internship-watch (IW) board, taken Nov 1, 2026. Demo only: nothing here talks to a server. */
 window.IW_BOARD = {
-  project: { key: "IW", name: "Watch Space", board: "IW board", snapshot: "Nov 1, 2026" },
+  project: { key: "IW", name: "Watch Space", board: "Internship Watch board", snapshot: "Nov 1, 2026" },
   epics: [
     { key: "IW-6", summary: "Phase 1: Local version", status: "Done", priority: "High", release: "apples",
       description: "Repository, database schema, API, and dashboard running locally with real data. Approved Sep 19, shipped Sep 21 as release apples." },

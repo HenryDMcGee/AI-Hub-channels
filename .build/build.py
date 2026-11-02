@@ -560,7 +560,7 @@ HTML = r"""<!doctype html>
 </div>
 
 <div class="appview" id="app" role="dialog" aria-modal="true" aria-labelledby="app-title" hidden>
-  <div class="appbar"><button class="btn" type="button" id="app-back">&larr; Back to AI-HUB</button><span id="app-title"></span><span class="appnote">demo &middot; sample data</span></div>
+  <div class="appbar"><button class="btn" type="button" id="app-back">&larr; Back to AI-HUB</button><span id="app-title"></span><span class="appnote" id="app-note">demo &middot; sample data</span></div>
   <iframe id="app-frame" title="Demo app" src="about:blank"></iframe>
 </div>
 <div class="alert" id="alert" role="alertdialog" aria-modal="true" aria-labelledby="alert-h" hidden>
@@ -749,6 +749,7 @@ function openApp(src, name) {
   closeDialog(true);
   var v = $('#app'), f = $('#app-frame');
   $('#app-title').textContent = name || ''; f.title = name || 'Demo app';
+  $('#app-note').hidden = /demo\/jira\//.test(src);   /* the board is a real snapshot, not sample data */
   f.src = src; v.hidden = false; appOpen = true; animSet = []; stopMusic();
   $('#app-back').focus(); updateNav();
 }

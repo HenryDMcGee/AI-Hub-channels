@@ -85,7 +85,7 @@ DEMOS = {
     S("Try it", "Open mcgeehenry.com",
       "The live site opens in a new tab."),
   ]},
-  "jira": {"tag": "2 boards", "embed": "demo/jira/index.html", "open": "Open the demo board →", "steps": [
+  "jira": {"tag": "2 boards", "embed": "demo/jira/index.html", "open": "Open demo Internship Watch App Jira →", "steps": [
     S("What it is", "Two Kanban boards, kept by Claude",
       "CRM Space holds the Internship CRM deployment backlog. Watch Space holds the internship-watch board. Both are mirrors of Linear, which stays primary."),
     S("How it works", "Henry reads, Claude moves",
