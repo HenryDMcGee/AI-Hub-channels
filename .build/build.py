@@ -253,7 +253,7 @@ HTML = r"""<!doctype html>
   <div class="rail"><div><div class="tag" id="demo-tag"></div><h2 id="demo-title"></h2></div><div class="steps" id="steps"></div></div>
   <div class="pane">
     <div class="head"><div class="kind" id="demo-kind"></div><button class="close" type="button" data-close aria-label="Close the walkthrough" style="width:40px;height:40px"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-    <div class="shot" id="demo-shot" hidden><canvas id="demo-cv" hidden></canvas><img id="demo-img" decoding="async" loading="eager" alt=""><div class="fade"></div><div class="mark" id="demo-mark" hidden></div><span class="badge" id="demo-badge" hidden></span></div>
+    <div class="shot" id="demo-shot" hidden><canvas id="demo-cv" hidden></canvas><img id="demo-img" decoding="async" loading="eager" alt=""><div class="fade"></div><div id="demo-marks"></div></div>
     <h3 id="demo-h"></h3>
     <p id="demo-p"></p>
     <div class="nav">
@@ -705,7 +705,16 @@ function demoRender() {
   if (s.img) { shot.hidden = false; var im = $('#demo-img'), cv = $('#demo-cv'), bm = BITMAPS[s.img];
     if (bm && bm.width) { im.hidden = true; cv.hidden = false; if (cv.dataset.src !== s.img) { cv.dataset.src = s.img; cv.width = bm.width; cv.height = bm.height; cv.getContext('2d').drawImage(bm, 0, 0); } }
     else { cv.hidden = true; im.hidden = false; if (im.getAttribute('src') !== s.img) { im.src = s.img; } }
-    im.alt = s.alt || ''; cv.setAttribute('aria-label', s.alt || ''); var mk = $('#demo-mark'), bd = $('#demo-badge'); if (s.mark) { mk.hidden = false; mk.style.left = s.mark[0] + '%'; mk.style.top = s.mark[1] + '%'; mk.style.width = s.mark[2] + '%'; mk.style.height = s.mark[3] + '%'; bd.hidden = false; bd.textContent = i + 1; bd.style.left = (s.mark[0] + s.mark[2] - 1.5) + '%'; bd.style.top = (s.mark[1] - 4) + '%'; } else { mk.hidden = true; bd.hidden = true; } }
+    im.alt = s.alt || ''; cv.setAttribute('aria-label', s.alt || ''); 
+    /* numbered call-outs on the screenshot: each is a highlight box plus a yellow bubble,
+       the bubble either on the box's top-right corner or just to its right */
+    var marks = s.marks || (s.mark ? [{ box: s.mark, n: i + 1 }] : []);
+    $('#demo-marks').innerHTML = marks.map(function (m) {
+      var b = m.box, bl, bt;
+      if (m.badge === 'right') { bl = b[0] + b[2] + 0.9; bt = b[1] + b[3] / 2 - 3.4; } else { bl = b[0] + b[2] - 1.5; bt = b[1] - 4; }
+      return '<div class="mark" style="left:' + b[0] + '%;top:' + b[1] + '%;width:' + b[2] + '%;height:' + b[3] + '%"></div>' +
+             '<span class="badge" style="left:' + bl.toFixed(2) + '%;top:' + bt.toFixed(2) + '%">' + esc(String(m.n)) + '</span>';
+    }).join(''); }
   else shot.hidden = true;
   $('#demo-next').textContent = i === d.steps.length - 1 ? 'Done' : 'Next';
   $('#demo-back').textContent = i === 0 ? 'Close' : 'Back';
