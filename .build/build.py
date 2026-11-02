@@ -268,6 +268,34 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 }
 @keyframes amnudgev2{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(5px)}}
 @media (prefers-reduced-motion:reduce){.am-fchev{animation:none}}
+/* ---- demo: persistent screen navigation (side arrows on computers, top/bottom bars on phones) ---- */
+.scr-nav{position:fixed;top:50%;transform:translateY(-50%);z-index:66;width:56px;min-height:156px;padding:18px 0;border:1.5px solid rgba(92,191,173,.5);background:rgba(11,16,24,.84);color:#5cbfad;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,color .2s}
+.scr-nav[hidden]{display:none}
+.scr-prev{left:0;border-left:0;border-radius:0 18px 18px 0}
+.scr-next{right:0;border-right:0;border-radius:18px 0 0 18px}
+.scr-nav:hover,.scr-nav:focus-visible{border-color:#5cbfad;background:rgba(18,38,42,.94);color:#8fe3d4}
+.sn-chev{display:flex}
+.sn-chev svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.sn-label{writing-mode:vertical-rl;font:700 11px Archivo,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#e7eaf0;white-space:nowrap}
+.scr-prev .sn-label{transform:rotate(180deg)}
+body.dnav .lp-next,body.dnav .am-back,body.dnav .am-fwd,body.dnav .hub-nav{display:none!important}
+body.dnav .am-scroll,body.dnav #aboutMe .am-scroll{left:56px;right:56px}
+body.dnav .lp-copy{padding-right:96px}
+@media (min-width:761px){body.dnav .hub .tab{display:none}}
+@media (max-width:760px){
+  .scr-nav{transform:none;left:0;right:0;width:auto;min-height:0;height:48px;padding:0 16px;flex-direction:row;gap:10px;border:0;border-radius:0;background:rgba(11,16,24,.95)}
+  .scr-prev{top:0;border-bottom:1px solid rgba(92,191,173,.4)}
+  .scr-next{top:auto;bottom:0;height:calc(52px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);border-top:1px solid rgba(92,191,173,.4)}
+  .scr-nav:hover{background:rgba(11,16,24,.95);color:#5cbfad}
+  .sn-label{writing-mode:horizontal-tb;font-size:11.5px}
+  .scr-prev .sn-label{transform:none}
+  .sn-chev{transform:rotate(90deg)}
+  body.dnav .am-scroll,body.dnav #aboutMe .am-scroll{left:0;right:0;top:48px;bottom:52px}
+  body.dnav .lp-copy{padding-bottom:84px}
+  body.dnav.lp-on-hub .ribbon{top:58px}
+  body.dnav .hub{padding-top:104px}
+  body.dnav.lp-on-hub .clock-block{padding-bottom:84px}
+}
 .ribbon{position:fixed;left:20px;top:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:999px;background:#16213A;border:2px solid var(--amber);color:#FFE9A8;font-weight:800;font-size:13px;letter-spacing:1.2px}
 .ribbon i{width:10px;height:10px;border-radius:50%;background:var(--amber);display:block;box-shadow:0 0 12px var(--amber)}
 @media (max-width:760px){.ribbon{font-size:11px;top:10px;left:12px}}
@@ -360,6 +388,8 @@ HTML = r"""<!doctype html>
   <button class="to-landing" id="toLanding" type="button" aria-label="Home: Henry McGee"><svg class="tl-back" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Home</button>
   <button class="to-landing" id="toAbout" type="button" aria-label="About me">About me<svg class="tl-fwd" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
 </nav>
+<button class="scr-nav scr-prev" id="scrPrev" type="button" hidden><span class="sn-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span><span class="sn-label"></span></button>
+<button class="scr-nav scr-next" id="scrNext" type="button" hidden><span class="sn-label"></span><span class="sn-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span></button>
 <section class="about-me away" id="aboutMe" aria-label="About me" hidden>
   <button class="am-back" type="button" id="amBack" data-xgo="prev" aria-label="Back to AI-HUB">
     <span class="lp-next-chev am-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span>
@@ -530,6 +560,7 @@ function goPage(p, silent) {
   Array.prototype.forEach.call(dots.children, function (d, i) { d.classList.toggle('on', i === page); });
   $('#prev').disabled = page === 0; $('#next').disabled = page >= pages - 1 && !editing;
   if (!silent) tick();
+  updateNav();
 }
 $('#prev').addEventListener('click', function () { goPage(page - 1); });
 $('#next').addEventListener('click', function () { if (page >= layout.length / SLOTS - 1 && editing) { layout = pad(layout.concat([null])); render(); } goPage(page + 1); });
@@ -637,7 +668,7 @@ function openDialog(el, from) {
   scrim.hidden = false; requestAnimationFrame(function () { scrim.classList.add('show'); });
   el.hidden = false;
   var f = el.querySelector('button, a[href], [tabindex="0"]'); if (f) f.focus();
-  syncAnim();
+  syncAnim(); updateNav();
 }
 var appOpen = false;
 function openApp(src, name) {
@@ -645,12 +676,12 @@ function openApp(src, name) {
   var v = $('#app'), f = $('#app-frame');
   $('#app-title').textContent = name || ''; f.title = name || 'Demo app';
   f.src = src; v.hidden = false; appOpen = true; animSet = []; stopMusic();
-  $('#app-back').focus();
+  $('#app-back').focus(); updateNav();
 }
 function closeApp() {
   if (!appOpen) return;
   var v = $('#app'), f = $('#app-frame');
-  v.hidden = true; appOpen = false; f.src = 'about:blank'; syncAnim(); if (booted) startMusic();
+  v.hidden = true; appOpen = false; f.src = 'about:blank'; syncAnim(); if (booted) startMusic(); updateNav();
 }
 function closeDialog(quiet) {
   if (!openEl) return;
@@ -658,7 +689,7 @@ function closeDialog(quiet) {
   scrim.classList.remove('show'); scrim.hidden = true;
   if (opener && document.body.contains(opener)) opener.focus();
   opener = null;
-  syncAnim();
+  syncAnim(); updateNav();
   if (!quiet) tick();
 }
 scrim.addEventListener('click', function () { closeDialog(); });
@@ -869,7 +900,7 @@ if (location.hash === '#full' || q.get('boot') === '0') { boot.hidden = true; bo
 var landing = $('#landing'), toLanding = $('#hubNav'), landingLock = 0, kbNav = false;
 document.addEventListener('keydown', function () { kbNav = true; }, true);
 ['pointerdown', 'touchstart'].forEach(function (ev) { document.addEventListener(ev, function () { kbNav = false; }, { capture: true, passive: true }); });
-function kbFocus(el) { if (kbNav && el) setTimeout(function () { el.focus({ preventScroll: true }); }, 400); }
+function kbFocus(el) { if (kbNav && el) setTimeout(function () { if (dnav && !el.getClientRects().length) el = !scrNext.hidden ? scrNext : scrPrev; el.focus({ preventScroll: true }); }, 400); }
 function landingStore(v) { try { sessionStorage.setItem('aihub-screen', v); } catch (e) {} }
 function showHub(fromUser) {
   if (!landingShown || Date.now() < landingLock) return;
@@ -879,14 +910,14 @@ function showHub(fromUser) {
   window.scrollTo(0, 0); document.documentElement.classList.remove('lp-lock'); document.body.classList.add('lp-on-hub');
   if (!booted) { booted = true; document.body.classList.remove('booting'); document.body.classList.add('booted'); }
   if (fromUser) { unlockAudio(); chime(); startMusic(); }
-  syncAnim();
+  syncAnim(); updateNav();
   kbFocus(track.querySelector('.chan'));
 }
 function showLanding() {
   if (landingShown || aboutShown || Date.now() < landingLock || openEl || appOpen || editing) return;
   landingShown = true; landingLock = Date.now() + 750;
   landing.classList.remove('away'); landing.removeAttribute('aria-hidden'); landing.inert = false;
-  toLanding.hidden = true; landingStore('landing'); stopMusic(); syncAnim();
+  toLanding.hidden = true; landingStore('landing'); stopMusic(); syncAnim(); updateNav();
   document.documentElement.classList.add('lp-lock'); document.body.classList.remove('lp-on-hub');
   kbFocus($('#lpNext'));
 }
@@ -900,10 +931,10 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
   $('#toLanding').addEventListener('click', showLanding);
   $('#toAbout').addEventListener('click', showAbout);
   document.addEventListener('keydown', function (e) {
-    if (landingShown && (e.key === 'ArrowRight' || e.key === 'PageDown')) { e.preventDefault(); showHub(true); }
-    else if (aboutShown && (e.key === 'ArrowLeft' || e.key === 'Escape')) { e.preventDefault(); hideAbout(); }
-    else if (!landingShown && !aboutShown && e.key === 'ArrowRight' && page >= layout.length / SLOTS - 1 && !openEl && !appOpen && !editing) { e.preventDefault(); showAbout(); }
-    else if (!landingShown && !aboutShown && e.key === 'ArrowLeft' && page === 0 && !openEl && !appOpen && !editing) { e.preventDefault(); showLanding(); }
+    if (openEl || appOpen || editing || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.target && e.target.closest && e.target.closest('input,textarea,select,[contenteditable]')) return;
+    var dir = (e.key === 'ArrowRight' || e.key === 'PageDown') ? 1 : (e.key === 'ArrowLeft' || e.key === 'PageUp' || (e.key === 'Escape' && aboutShown)) ? -1 : 0;
+    var t = dir && navTarget(dir, true); if (t) { e.preventDefault(); t.go(true); }
   });
   landing.addEventListener('wheel', function (e) { if (Math.abs(e.deltaY) > 18 || e.deltaX > 18) showHub(true); }, { passive: true });
   (function () {
@@ -929,6 +960,29 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
 }
 
 
+/* Screen order: 0 Home (landing), 1 AI-HUB, 2 About me, 3 AI fluency. On computers the side arrows
+   also step through the hub's pages of apps; on phones the bars move whole screens. */
+var scrPrev = $('#scrPrev'), scrNext = $('#scrNext'), dnav = false, SCR_NAMES = ['Home', 'AI-HUB', 'About me', 'AI fluency'];
+function curScreen() { return landingShown ? 0 : (xIndex > 0 ? 1 + xIndex : 1); }
+function navTarget(dir, keys) {
+  var sc = curScreen(), pages = layout.length / SLOTS;
+  if (sc === 1 && (keys || window.innerWidth > 760)) {
+    if (dir < 0 && page > 0) return { label: 'Previous apps', go: function () { goPage(page - 1); } };
+    if (dir > 0 && page < pages - 1) return { label: 'More apps', go: function () { goPage(page + 1); } };
+  }
+  var t = sc + dir; if (t < 0 || t >= SCR_NAMES.length) return null;
+  return { label: SCR_NAMES[t], go: function (how) { if (t === 0) showLanding(); else if (sc === 0) showHub(how || true); else goExtra(t - 1); } };
+}
+function updateNav() {
+  if (!dnav) return;
+  var block = openEl || appOpen || editing;
+  [[scrPrev, -1], [scrNext, 1]].forEach(function (p) {
+    var t = block ? null : navTarget(p[1]);
+    p[0].hidden = !t;
+    if (t) { p[0].querySelector('.sn-label').textContent = t.label; p[0].setAttribute('aria-label', (p[1] < 0 ? 'Back to ' : 'Next: ') + t.label); }
+  });
+}
+
 /* Screens after the hub (demo): 1 About me, 2 AI fluency. Earlier screens slide off to the left (up on phones). */
 var xScreens = [$('#aboutMe'), $('#aiFluency')], xIndex = 0;
 function goExtra(n) {
@@ -945,7 +999,7 @@ function goExtra(n) {
   document.documentElement.classList.toggle('lp-lock', n > 0);
   if (n > 0) { stopMusic(); kbFocus(xScreens[n - 1].querySelector('.am-back')); }
   else { window.scrollTo(0, 0); startMusic(); kbFocus($('#toAbout')); }
-  syncAnim();
+  syncAnim(); updateNav();
 }
 function showAbout() { goExtra(1); }
 function hideAbout() { goExtra(xIndex - 1); }
@@ -965,11 +1019,14 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
       else if (dx < -80 && Math.abs(dx) > Math.abs(dy) * 1.5) goExtra(xIndex + 1);
     }, { passive: true });
   });
-  document.addEventListener('keydown', function (e) {
-    if (!aboutShown) return;
-    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goExtra(xIndex + 1); }
-  });
+  /* persistent arrows / bars */
+  dnav = true; document.body.classList.add('dnav');
+  scrPrev.addEventListener('click', function (e) { var t = navTarget(-1); if (t) t.go(e.detail ? 'pointer' : true); });
+  scrNext.addEventListener('click', function (e) { var t = navTarget(1); if (t) t.go(e.detail ? 'pointer' : true); });
+  window.addEventListener('resize', updateNav);
+  updateNav();
 }
+
 
 /* ---------- demo walkthroughs ---------- */
 var demoId = null, demoStep = 0;
