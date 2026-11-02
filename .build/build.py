@@ -579,7 +579,7 @@ var demoId = null, demoStep = 0;
 function openDemo(id, from) {
   var d = DEMOS[id]; if (!d) { if (ITEMS[id].kind === 'folder') openFolder(id, from); else openZoom(id, from); return; }
   demoId = id; demoStep = 0;
-  $('#demo-tag').textContent = 'DEMO · ' + d.tag.toUpperCase(); $('#demo-title').textContent = ITEMS[id].name; $('#demo-open').href = d.href || ITEMS[id].href;
+  $('#demo-tag').textContent = 'DEMO · ' + d.tag.toUpperCase(); $('#demo-title').textContent = ITEMS[id].name; $('#demo-open').href = d.href || ITEMS[id].href; $('#demo-open').textContent = d.open || 'Open the real app ↗';
   $('#steps').innerHTML = d.steps.map(function (s, i) { return '<button class="step" type="button" data-step="' + i + '"><b>' + (i + 1) + '</b><span><span class="k">' + esc(s.kind.toUpperCase()) + '</span><span class="t">' + esc(s.title) + '</span></span></button>'; }).join('');
   $('#pdots').innerHTML = d.steps.map(function () { return '<i></i>'; }).join('');
   openDialog($('#demo'), from); blip(); demoGo(0);

@@ -66,6 +66,10 @@ The channel art is inline SVG with SMIL animations. Left to themselves, every an
 
 Headless profile (Chromium, software rasteriser): idle main-thread time went from ~270 ms per second to ~60.
 
+## Demo CRM
+
+`demo/crm/index.html` is the real Internship CRM UI running on sample data: the Claude capabilities (`db`, `user`, `mcp`) are replaced by a small in-memory shim at the top of the file, so adding, editing, Autofill and the Live activity feed all work, but nothing persists past the tab. It is published as its own artifact (https://claude.ai/artifact/WDjxaCiJ8uqrS9vKwmubvc) and the CRM walkthrough in demo mode links to it instead of the real tracker. Rebuild it from a fresh copy of the real CRM by re-running the shim insertion in `/crm-preview` (see the commit that added it).
+
 ## Demo captures
 
 `demo/` holds screenshots of the real apps running on dummy data, used by the walkthroughs. Nothing in them is real data.
