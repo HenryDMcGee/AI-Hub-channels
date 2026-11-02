@@ -278,6 +278,18 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 .git-inner .lp-btn[hidden]{display:none}
 .git-foot{display:flex;justify-content:space-between;gap:20px;margin-top:64px;padding-top:28px;border-top:1px solid rgba(255,255,255,.13);font-size:14.5px;color:rgba(231,234,240,.45)}
 @media (max-width:760px){.git-inner .git-h{font-size:44px}.git-p{font-size:16.5px}.git-foot{margin-top:44px}}
+.vid-inner h2{margin-bottom:26px}
+.vid-frame{position:relative;width:100%;max-width:min(100%,calc((100vh - 250px) * 16 / 9));aspect-ratio:16/9;background:radial-gradient(70% 90% at 50% 40%,rgba(92,191,173,.16),transparent 70%),#111a26;border:1px solid rgba(255,255,255,.12);overflow:hidden}
+.vid-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+.vid-poster{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:#e7eaf0;text-decoration:none}
+.vid-play{display:flex;width:84px;height:84px;border-radius:50%;background:#5cbfad;align-items:center;justify-content:center;box-shadow:0 10px 40px rgba(92,191,173,.35);transition:transform .2s}
+.vid-play svg{width:34px;height:34px;fill:#0b1018;margin-left:4px}
+.vid-poster:hover .vid-play,.vid-poster:focus-visible .vid-play{transform:scale(1.06)}
+.vid-cta{font:700 12px Archivo,sans-serif;letter-spacing:.24em;text-transform:uppercase}
+.vid-alt{margin:14px 0 0;font-size:14px}
+.vid-alt a{color:#5cbfad;text-decoration:none}
+.vid-alt a:hover{text-decoration:underline}
+@media (max-width:760px){.vid-frame{max-width:100%}.vid-play{width:68px;height:68px}}
 /* ---- demo: persistent screen navigation (side arrows on computers, top/bottom bars on phones) ---- */
 .scr-nav{position:fixed;top:50%;transform:translateY(-50%);z-index:66;width:56px;min-height:156px;padding:18px 0;border:1.5px solid rgba(92,191,173,.5);background:rgba(11,16,24,.84);color:#5cbfad;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,color .2s}
 .scr-nav[hidden]{display:none}
@@ -434,6 +446,17 @@ HTML = r"""<!doctype html>
     <span class="lp-next-chev am-fchev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span>
     <span class="lp-next-hint">or press &rarr;</span>
   </button>
+</section>
+<section class="about-me away" id="videoScreen" aria-label="Video" hidden>
+  <div class="am-scroll">
+    <div class="am-inner vid-inner">
+      <h2>Video</h2>
+      <div class="vid-frame" id="vidFrame">
+        <a class="vid-poster" href="https://www.youtube.com/watch?v=05zyH7eds8s" target="_blank" rel="noopener" aria-label="Watch the video on YouTube (opens a new tab)"><span class="vid-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="vid-cta">Watch on YouTube</span></a>
+      </div>
+      <p class="vid-alt"><a href="https://www.youtube.com/watch?v=05zyH7eds8s" target="_blank" rel="noopener">Open on YouTube &#8599;</a></p>
+    </div>
+  </div>
 </section>
 <section class="about-me away has-fwd-none" id="aiFluency" aria-label="AI fluency" hidden>
   <button class="am-back" type="button" data-xgo="prev" aria-label="Back to About me">
@@ -1011,7 +1034,7 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
 
 /* Screen order: 0 Home (landing), 1 AI-HUB, 2 About me, 3 AI fluency. On computers the side arrows
    also step through the hub's pages of apps; on phones the bars move whole screens. */
-var scrPrev = $('#scrPrev'), scrNext = $('#scrNext'), dnav = false, SCR_NAMES = ['Home', 'AI-HUB', 'About me', 'AI fluency', 'Outside work', 'Get in touch'];
+var scrPrev = $('#scrPrev'), scrNext = $('#scrNext'), dnav = false, SCR_NAMES = ['Home', 'AI-HUB', 'About me', 'Video', 'AI fluency', 'Outside work', 'Get in touch'];
 function curScreen() { return landingShown ? 0 : (xIndex > 0 ? 1 + xIndex : 1); }
 function navTarget(dir, keys) {
   var sc = curScreen(), pages = layout.length / SLOTS;
@@ -1033,7 +1056,7 @@ function updateNav() {
 }
 
 /* Screens after the hub (demo): 1 About me, 2 AI fluency. Earlier screens slide off to the left (up on phones). */
-var xScreens = [$('#aboutMe'), $('#aiFluency'), $('#outsideWork'), $('#getInTouch')], xIndex = 0;
+var xScreens = [$('#aboutMe'), $('#videoScreen'), $('#aiFluency'), $('#outsideWork'), $('#getInTouch')], xIndex = 0;
 function goExtra(n) {
   n = Math.max(0, Math.min(xScreens.length, n));
   if (n === xIndex || landingShown || Date.now() < landingLock || openEl || appOpen || editing) return;
@@ -1048,7 +1071,21 @@ function goExtra(n) {
   document.documentElement.classList.toggle('lp-lock', n > 0);
   if (n > 0) { stopMusic(); kbFocus(xScreens[n - 1].querySelector('.am-back') || scrPrev); }
   else { window.scrollTo(0, 0); startMusic(); kbFocus($('#toAbout')); }
-  syncAnim(); updateNav();
+  syncAnim(); updateNav(); vidSync();
+}
+/* The video player is only created while its screen is showing (and removed on leaving, which stops playback).
+   Hosts whose content security policy blocks other sites' frames (claude.ai artifacts) keep the Watch on YouTube card. */
+var vidBlocked = false, VID_SRC = 'https://www.youtube-nocookie.com/embed/05zyH7eds8s?rel=0&playsinline=1';
+document.addEventListener('securitypolicyviolation', function (e) {
+  if (/youtube/.test(e.blockedURI || '')) { vidBlocked = true; var f = $('#vidFrame iframe'); if (f) f.remove(); }
+});
+function vidSync() {
+  var on = xIndex > 0 && xScreens[xIndex - 1].id === 'videoScreen', box = $('#vidFrame'), f = box.querySelector('iframe');
+  if (on && !f && !vidBlocked) {
+    f = document.createElement('iframe'); f.src = VID_SRC; f.title = 'Video';
+    f.allow = 'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen'; f.allowFullscreen = true;
+    f.referrerPolicy = 'strict-origin-when-cross-origin'; box.appendChild(f);
+  } else if (!on && f) f.remove();
 }
 function showAbout() { goExtra(1); }
 function hideAbout() { goExtra(xIndex - 1); }
