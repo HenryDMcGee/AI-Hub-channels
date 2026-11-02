@@ -71,7 +71,7 @@ Headless profile (Chromium, software rasteriser): idle main-thread time went fro
 
 ## Demo CRM
 
-`demo/crm/index.html` is the real Internship CRM UI running on sample data: the Claude capabilities (`db`, `user`, `mcp`) are replaced by a small in-memory shim at the top of the file, so adding, editing, Autofill and the Live activity feed all work, but nothing persists past the tab. It is published as its own artifact (https://claude.ai/artifact/WDjxaCiJ8uqrS9vKwmubvc) and the CRM walkthrough in demo mode links to it instead of the real tracker. Rebuild it from a fresh copy of the real CRM by re-running the shim insertion in `/crm-preview` (see the commit that added it).
+`demo/crm/index.html` is the real Internship CRM UI running on sample data: the Claude capabilities (`db`, `user`, `mcp`) are replaced by a small in-memory shim at the top of the file, so adding, editing, Autofill and the Live activity feed all work, but nothing persists past the tab. It ships inside the hub (the walkthrough's Try-it step links to `demo/crm/index.html`, so it is served from the same place as the hub and never leaves the artifact or the Pages site) and is also published on its own at https://claude.ai/artifact/WDjxaCiJ8uqrS9vKwmubvc. Rebuild it from a fresh copy of the real CRM by re-running the shim insertion in `/crm-preview` (see the commit that added it).
 
 ## Demo captures
 

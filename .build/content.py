@@ -35,7 +35,7 @@ def S(kind, title, body, **kw):
     return d
 
 DEMOS = {
-  "crm": {"tag": "Tracker", "href": "https://claude.ai/artifact/WDjxaCiJ8uqrS9vKwmubvc", "open": "Open the demo CRM ↗", "steps": [
+  "crm": {"tag": "Tracker", "href": "demo/crm/index.html", "open": "Open the demo CRM ↗", "steps": [
     S("What it is", "One place for the whole search",
       "A networking and application tracker for the Summer 2027 internship search. Contacts on one side, the application pipeline on the other, both editable right in the grid."),
     S("How it works", "Add a contact from a name",

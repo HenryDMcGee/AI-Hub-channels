@@ -23,7 +23,7 @@
   function slugName(url) { var m = /linkedin\.com\/in\/([^/?#]+)/i.exec(url || ''); if (!m) return 'Sample Person'; return m[1].split(/[-_]/).filter(function (p) { return p && !/\d/.test(p); }).slice(0, 3).map(function (p) { return p[0].toUpperCase() + p.slice(1); }).join(' '); }
   var TITLES = ['Product Manager, Platform', 'Senior Product Manager', 'Technical Program Manager', 'Director of Product', 'Product Lead, Growth'];
   var COS = ['Acme Cloud', 'Northwind Labs', 'Contoso', 'Globex', 'Initech'];
-  window.claude = {
+  var demoClaude = {
     use: function (cap) {
       if (cap === 'db') return Promise.resolve({ collection: col });
       if (cap === 'user') return Promise.resolve({ can: function () { return Promise.resolve(true); } });
@@ -44,6 +44,8 @@
       return Promise.resolve(null);
     }
   };
+  window.__demoClaude = demoClaude;
+  try { window.claude = demoClaude; } catch (e) {}
 })();
 </script>
 <style>
@@ -1257,7 +1259,7 @@ $('#add-contact-btn').addEventListener('click', () => {
 
 /* ---------- capabilities boot ---------- */
 (async () => {
-  const db = await claude.use('db');
+  const db = await (window.__demoClaude || window.claude).use('db');
   if (!db) { state.dbMissing = true; renderAll(); return; }
   state.db = db;
   db.collection('contacts').onSnapshot((snap) => {
@@ -1273,21 +1275,21 @@ $('#add-contact-btn').addEventListener('click', () => {
 })();
 
 (async () => {
-  const sample = await claude.use('sample');
+  const sample = await (window.__demoClaude || window.claude).use('sample');
   if (!sample) return;
   state.sample = sample;
   try { const lim = await sample.limits(); state.sampleImages = !!(lim && lim.images); } catch (e) { state.sampleImages = false; }
 })();
 
 (async () => {
-  const user = await claude.use('user');
+  const user = await (window.__demoClaude || window.claude).use('user');
   state.canWrite = user ? await user.can('data.write') : null;
   if (state.canWrite === false) { $('#add-contact-btn').hidden = true; }
   renderAll();
 })();
 
 (async () => {
-  const mcp = await claude.use('mcp');
+  const mcp = await (window.__demoClaude || window.claude).use('mcp');
   if (!mcp) {
     state.mcpMissing = true;
     state.appMail.err = { code: 'capability_disabled' };
