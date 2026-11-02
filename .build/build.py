@@ -270,7 +270,7 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.am-fchev{animation:none}}
 .ow-prose p{max-width:66ch}
 .ow-photos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:34px}
-.ow-photos img{aspect-ratio:374/278;object-fit:cover;border-radius:4px}
+.ow-photos img{aspect-ratio:4/3;object-fit:cover;border-radius:4px}
 @media (max-width:760px){.ow-photos{grid-template-columns:1fr;gap:18px;max-width:420px}}
 .git-inner .git-h{font-size:clamp(44px,5.4vw,72px);line-height:.95;letter-spacing:-.03em;margin-bottom:28px;padding-bottom:18px}
 .git-p{font-size:clamp(17px,1.45vw,20px);line-height:1.75;color:rgba(231,234,240,.8);max-width:44ch;margin:0 0 34px}
@@ -278,18 +278,21 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 .git-inner .lp-btn[hidden]{display:none}
 .git-foot{display:flex;justify-content:space-between;gap:20px;margin-top:64px;padding-top:28px;border-top:1px solid rgba(255,255,255,.13);font-size:14.5px;color:rgba(231,234,240,.45)}
 @media (max-width:760px){.git-inner .git-h{font-size:44px}.git-p{font-size:16.5px}.git-foot{margin-top:44px}}
-.vid-inner h2{margin-bottom:26px}
-.vid-frame{position:relative;width:100%;max-width:min(100%,calc((100vh - 250px) * 16 / 9));aspect-ratio:16/9;background:radial-gradient(70% 90% at 50% 40%,rgba(92,191,173,.16),transparent 70%),#111a26;border:1px solid rgba(255,255,255,.12);overflow:hidden}
+.vid-inner{width:min(1180px,100%)}
+.vid-frame{position:relative;width:100%;max-width:min(100%,calc((100vh - 200px) * 16 / 9));margin:0 auto;aspect-ratio:16/9;background:radial-gradient(70% 90% at 50% 40%,rgba(92,191,173,.16),transparent 70%),#111a26;border:1px solid rgba(255,255,255,.12);overflow:hidden}
 .vid-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
 .vid-poster{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:#e7eaf0;text-decoration:none}
 .vid-play{display:flex;width:84px;height:84px;border-radius:50%;background:#5cbfad;align-items:center;justify-content:center;box-shadow:0 10px 40px rgba(92,191,173,.35);transition:transform .2s}
 .vid-play svg{width:34px;height:34px;fill:#0b1018;margin-left:4px}
 .vid-poster:hover .vid-play,.vid-poster:focus-visible .vid-play{transform:scale(1.06)}
 .vid-cta{font:700 12px Archivo,sans-serif;letter-spacing:.24em;text-transform:uppercase}
-.vid-alt{margin:14px 0 0;font-size:14px}
-.vid-alt a{color:#5cbfad;text-decoration:none}
-.vid-alt a:hover{text-decoration:underline}
-@media (max-width:760px){.vid-frame{max-width:100%}.vid-play{width:68px;height:68px}}
+.vid-poster img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%;opacity:.45;filter:saturate(.8)}
+.vid-poster .vid-play,.vid-poster .vid-cta{position:relative}
+.vid-caption{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 32px;margin:22px auto 0;max-width:min(100%,calc((100vh - 200px) * 16 / 9))}
+.vid-caption p{margin:0;font-size:16px;color:rgba(231,234,240,.7)}
+.vid-caption a{font-size:14px;color:rgba(231,234,240,.45);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:2px;white-space:nowrap;transition:color .18s,border-color .18s}
+.vid-caption a:hover,.vid-caption a:focus-visible{color:#5cbfad;border-color:#5cbfad}
+@media (max-width:760px){.vid-frame,.vid-caption{max-width:100%}.vid-play{width:68px;height:68px}}
 /* ---- demo: persistent screen navigation (side arrows on computers, top/bottom bars on phones) ---- */
 .scr-nav{position:fixed;top:50%;transform:translateY(-50%);z-index:66;width:56px;min-height:156px;padding:18px 0;border:1.5px solid rgba(92,191,173,.5);background:rgba(11,16,24,.84);color:#5cbfad;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,color .2s}
 .scr-nav[hidden]{display:none}
@@ -408,7 +411,7 @@ HTML = r"""<!doctype html>
     <p class="lp-role">Aspiring Product Manager &mdash; MBA candidate</p>
     <p class="lp-claim">Bridging the gap between business and technology.</p>
     <p class="lp-sub">Spent 3.5 years maintaining Wells Fargo&rsquo;s currency trading tools, supporting hundreds of thousands of daily trades worldwide. Now pursuing Product Management, combining my passions for innovation, business, and diverse cultures.</p>
-    <div class="lp-actions"><button class="lp-btn" type="button" id="lpWork">See the work</button><a class="lp-btn lp-ghost" href="https://mcgeehenry.com/#contact" target="_blank" rel="noopener">Get in touch</a></div>
+    <div class="lp-actions"><button class="lp-btn" type="button" id="lpWork">See the work</button><button class="lp-btn lp-ghost" type="button" id="lpContact">Get in touch</button></div>
   </div>
   <button class="lp-next" type="button" id="lpNext" aria-label="Open AI-HUB, Henry&rsquo;s projects">
     <span class="lp-next-label">Projects &middot; AI-HUB</span>
@@ -450,11 +453,10 @@ HTML = r"""<!doctype html>
 <section class="about-me away" id="videoScreen" aria-label="Video" hidden>
   <div class="am-scroll">
     <div class="am-inner vid-inner">
-      <h2>Video</h2>
       <div class="vid-frame" id="vidFrame">
-        <a class="vid-poster" href="https://www.youtube.com/watch?v=05zyH7eds8s" target="_blank" rel="noopener" aria-label="Watch the video on YouTube (opens a new tab)"><span class="vid-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="vid-cta">Watch on YouTube</span></a>
+        <a class="vid-poster" href="https://youtu.be/05zyH7eds8s" target="_blank" rel="noopener" aria-label="Watch my creative intro on YouTube (opens a new tab)"><img src="demo/henry-portrait.webp" alt="" decoding="async"><span class="vid-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="vid-cta">Watch on YouTube</span></a>
       </div>
-      <p class="vid-alt"><a href="https://www.youtube.com/watch?v=05zyH7eds8s" target="_blank" rel="noopener">Open on YouTube &#8599;</a></p>
+      <div class="vid-caption"><p>My creative intro</p><a href="https://youtu.be/05zyH7eds8s" target="_blank" rel="noopener">Watch on YouTube</a></div>
     </div>
   </div>
 </section>
@@ -487,9 +489,9 @@ HTML = r"""<!doctype html>
         <p>Founding the Honolulu Japanese Language Exchange tested my persistence in a different way, since attendance was thin for weeks, but I kept showing up at the same time and place and treated growth as a marketing problem, posting flyers across campus where Japanese learners and native speakers already gathered. Attendance rose steadily, and the exchange became a real community.</p>
       </div>
       <div class="ow-photos">
-        <figure class="am-photo"><img src="demo/ow-judo.webp" width="374" height="278" alt="Mid-air judo throw on blue mats" loading="lazy" decoding="async"><figcaption>Judo Nagekomi</figcaption></figure>
-        <figure class="am-photo"><img src="demo/ow-tea.webp" width="375" height="278" alt="Henry and the instructor kneeling in a tatami tea room" loading="lazy" decoding="async"><figcaption>Green Tea Ceremony Class</figcaption></figure>
-        <figure class="am-photo"><img src="demo/ow-exchange.webp" width="374" height="278" alt="A circle of people talking on the mats of a dojo" loading="lazy" decoding="async"><figcaption>Honolulu Japanese Language Exchange</figcaption></figure>
+        <figure class="am-photo"><img src="demo/ow-judo.webp" width="900" height="675" alt="Mid-air judo throw on blue mats" loading="lazy" decoding="async"><figcaption>Judo Nagekomi</figcaption></figure>
+        <figure class="am-photo"><img src="demo/ow-tea.webp" width="900" height="675" alt="Henry and the instructor kneeling in a tatami tea room" loading="lazy" decoding="async"><figcaption>Green Tea Ceremony Class</figcaption></figure>
+        <figure class="am-photo"><img src="demo/ow-exchange.webp" width="900" height="675" alt="A circle of people talking on the mats of a dojo" loading="lazy" decoding="async"><figcaption>Honolulu Japanese Language Exchange</figcaption></figure>
       </div>
     </div>
   </div>
@@ -936,7 +938,8 @@ function latch() { if (!unlocked || muted || !ac) return; var t = ac.currentTime
 function chime() { if (!unlocked || muted || !ac) return; var t = ac.currentTime; [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) { tone(f, 'sine', t + i * 0.11, 0.01, 0.9, 0.14); }); }
 
 /* music: an original slow loop, a warm pad on two chords, a sparse music-box line, a soft shaker, 72 bpm */
-var muted = false; try { muted = localStorage.getItem(MKEY) === 'off'; } catch (e) {}
+var muted = false, mPref = null; try { mPref = localStorage.getItem(MKEY); } catch (e) {}
+muted = mPref ? mPref === 'off' : (window.matchMedia && matchMedia('(pointer:coarse)').matches && window.innerWidth <= 900);
 var muteBtn = $('#mute');
 function paintMute() { muteBtn.setAttribute('aria-pressed', muted ? 'false' : 'true'); muteBtn.setAttribute('aria-label', muted ? 'Music off, tap to unmute' : 'Music on, tap to mute'); }
 paintMute();
@@ -1000,6 +1003,11 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
   if (lastScreen === 'hub') showHub(false);
   $('#lpNext').addEventListener('click', function (e) { showHub(e.detail ? 'pointer' : true); });
   $('#lpWork').addEventListener('click', function (e) { showHub(e.detail ? 'pointer' : true); });
+  /* Get in touch on the landing goes straight to the last screen */
+  $('#lpContact').addEventListener('click', function () {
+    if (!landingShown || Date.now() < landingLock) return;
+    showHub(false); landingLock = 0; goExtra(xScreens.length, true);
+  });
   $('#toLanding').addEventListener('click', showLanding);
   $('#toAbout').addEventListener('click', showAbout);
   document.addEventListener('keydown', function (e) {
@@ -1057,13 +1065,18 @@ function updateNav() {
 
 /* Screens after the hub (demo): 1 About me, 2 AI fluency. Earlier screens slide off to the left (up on phones). */
 var xScreens = [$('#aboutMe'), $('#videoScreen'), $('#aiFluency'), $('#outsideWork'), $('#getInTouch')], xIndex = 0;
-function goExtra(n) {
+function goExtra(n, jump) {
   n = Math.max(0, Math.min(xScreens.length, n));
   if (n === xIndex || landingShown || Date.now() < landingLock || openEl || appOpen || editing) return;
+  var from = xIndex;
   landingLock = Date.now() + 750; xIndex = n; aboutShown = n > 0;
   xScreens.forEach(function (el, k) {
     var i = k + 1;
+    /* a jump over several screens moves the ones in between without sliding them across the view */
+    var still = jump && i !== n && i !== from;
+    if (still) el.style.transition = 'none';
     el.classList.toggle('past', i < n); el.classList.toggle('away', i > n);
+    if (still) { void el.offsetWidth; el.style.transition = ''; }
     if (i === n) { el.removeAttribute('aria-hidden'); el.inert = false; el.querySelector('.am-scroll').scrollTop = 0; }
     else { el.setAttribute('aria-hidden', 'true'); el.inert = true; }
   });
