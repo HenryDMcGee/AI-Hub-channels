@@ -268,6 +268,10 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 }
 @keyframes amnudgev2{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(5px)}}
 @media (prefers-reduced-motion:reduce){.am-fchev{animation:none}}
+.ow-prose p{max-width:66ch}
+.ow-photos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:34px}
+.ow-photos img{aspect-ratio:374/278;object-fit:cover;border-radius:4px}
+@media (max-width:760px){.ow-photos{grid-template-columns:1fr;gap:18px;max-width:420px}}
 /* ---- demo: persistent screen navigation (side arrows on computers, top/bottom bars on phones) ---- */
 .scr-nav{position:fixed;top:50%;transform:translateY(-50%);z-index:66;width:56px;min-height:156px;padding:18px 0;border:1.5px solid rgba(92,191,173,.5);background:rgba(11,16,24,.84);color:#5cbfad;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,color .2s}
 .scr-nav[hidden]{display:none}
@@ -291,6 +295,7 @@ body.dnav .lp-copy{padding-right:96px}
   .scr-prev .sn-label{transform:none}
   .sn-chev{transform:rotate(90deg)}
   body.dnav .am-scroll,body.dnav #aboutMe .am-scroll{left:0;right:0;top:48px;bottom:52px}
+  body.dnav #outsideWork .am-scroll{bottom:0}
   body.dnav .lp-copy{padding-bottom:84px}
   body.dnav.lp-on-hub .ribbon{top:58px}
   body.dnav .hub{padding-top:104px}
@@ -430,6 +435,24 @@ HTML = r"""<!doctype html>
         <div><dt>Grounded in the fundamentals</dt><dd>I earned Microsoft&rsquo;s Azure AI Fundamentals certification to learn the foundations: machine learning, computer vision, language models, and responsible AI. I then took a Udemy course on Claude Code so I could run agent-driven development on a real project, not just a demo.</dd></div>
         <div><dt>CUFindIt: machine learning from the ground up</dt><dd>After graduating from Clemson, my best friend and I built CUFindIt as a COVID project: an AI scavenger hunt for Clemson students. We used transfer learning to adapt a pretrained TensorFlow model and trained it with supervised learning on labeled photos of campus locations. With OpenCV, we altered the photos using Gaussian blur, salt-and-pepper noise, and image hashing to bring out key features and avoid overfitting. Building the model end to end gave me a core understanding of how AI learns. A model is only as good as its training data, and it has to handle photos it has never seen.</dd></div>
       </dl>
+    </div>
+  </div>
+</section>
+
+<section class="about-me away" id="outsideWork" aria-label="Outside work" hidden>
+  <div class="am-scroll">
+    <div class="am-inner">
+      <h2>Outside work</h2>
+      <div class="am-prose ow-prose">
+        <p>Coaching judo for children with special needs taught me that leadership means meeting people where they are, adjusting the lesson rather than the child, and reading frustration before it became a shutdown. Patience, I found, is a skill rather than a personality trait.</p>
+        <p>Organizing a spring judo camp stretched that further: I managed scheduling, logistics, and volunteer recruitment while bridging differences in how Japanese, Hawaiian, and mainland judo communities approach hierarchy and teaching. It was hands-on experience leading a project under real constraints with a group that didn&rsquo;t share a single cultural frame of reference.</p>
+        <p>Founding the Honolulu Japanese Language Exchange tested my persistence in a different way, since attendance was thin for weeks, but I kept showing up at the same time and place and treated growth as a marketing problem, posting flyers across campus where Japanese learners and native speakers already gathered. Attendance rose steadily, and the exchange became a real community.</p>
+      </div>
+      <div class="ow-photos">
+        <figure class="am-photo"><img src="demo/ow-judo.webp" width="374" height="278" alt="Mid-air judo throw on blue mats" loading="lazy" decoding="async"><figcaption>Judo Nagekomi</figcaption></figure>
+        <figure class="am-photo"><img src="demo/ow-tea.webp" width="375" height="278" alt="Henry and the instructor kneeling in a tatami tea room" loading="lazy" decoding="async"><figcaption>Green Tea Ceremony Class</figcaption></figure>
+        <figure class="am-photo"><img src="demo/ow-exchange.webp" width="374" height="278" alt="A circle of people talking on the mats of a dojo" loading="lazy" decoding="async"><figcaption>Honolulu Japanese Language Exchange</figcaption></figure>
+      </div>
     </div>
   </div>
 </section>
@@ -962,7 +985,7 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
 
 /* Screen order: 0 Home (landing), 1 AI-HUB, 2 About me, 3 AI fluency. On computers the side arrows
    also step through the hub's pages of apps; on phones the bars move whole screens. */
-var scrPrev = $('#scrPrev'), scrNext = $('#scrNext'), dnav = false, SCR_NAMES = ['Home', 'AI-HUB', 'About me', 'AI fluency'];
+var scrPrev = $('#scrPrev'), scrNext = $('#scrNext'), dnav = false, SCR_NAMES = ['Home', 'AI-HUB', 'About me', 'AI fluency', 'Outside work'];
 function curScreen() { return landingShown ? 0 : (xIndex > 0 ? 1 + xIndex : 1); }
 function navTarget(dir, keys) {
   var sc = curScreen(), pages = layout.length / SLOTS;
@@ -984,7 +1007,7 @@ function updateNav() {
 }
 
 /* Screens after the hub (demo): 1 About me, 2 AI fluency. Earlier screens slide off to the left (up on phones). */
-var xScreens = [$('#aboutMe'), $('#aiFluency')], xIndex = 0;
+var xScreens = [$('#aboutMe'), $('#aiFluency'), $('#outsideWork')], xIndex = 0;
 function goExtra(n) {
   n = Math.max(0, Math.min(xScreens.length, n));
   if (n === xIndex || landingShown || Date.now() < landingLock || openEl || appOpen || editing) return;
@@ -997,7 +1020,7 @@ function goExtra(n) {
   });
   toLanding.hidden = n > 0;
   document.documentElement.classList.toggle('lp-lock', n > 0);
-  if (n > 0) { stopMusic(); kbFocus(xScreens[n - 1].querySelector('.am-back')); }
+  if (n > 0) { stopMusic(); kbFocus(xScreens[n - 1].querySelector('.am-back') || scrPrev); }
   else { window.scrollTo(0, 0); startMusic(); kbFocus($('#toAbout')); }
   syncAnim(); updateNav();
 }
