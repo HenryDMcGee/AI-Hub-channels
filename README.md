@@ -57,6 +57,8 @@ To embed it elsewhere:
 
 ## Performance notes
 
+The biggest fix was not the art at all: the iPhone audio-unlock trick looped a zero-length silent WAV in an `<audio>` element from the first tap onward, which pinned a core in every browser (main thread ~60 → ~900 ms per second). It is now half a second of real silence and only created on iOS.
+
 The channel art is inline SVG with SMIL animations. Left to themselves, every animated tile repaints at 60 fps, which made the first build lag in a normal browser. The build now:
 
 - pauses every SVG clock and advances only the art that can be seen (the visible page, or the open dialog) from one 15 fps ticker (`ANIM_FPS` in `.build/build.py`);
