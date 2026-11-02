@@ -279,6 +279,13 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 .scr-next{right:0;border-right:0;border-radius:18px 0 0 18px}
 .scr-nav:hover,.scr-nav:focus-visible{border-color:#5cbfad;background:rgba(18,38,42,.94);color:#8fe3d4}
 .sn-chev{display:flex}
+.scr-next .sn-chev{animation:snR 1.6s ease-in-out infinite}
+.scr-prev .sn-chev{animation:snL 1.6s ease-in-out infinite}
+@keyframes snR{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+@keyframes snL{0%,100%{transform:translateX(0)}50%{transform:translateX(-5px)}}
+@keyframes snD{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(5px)}}
+@keyframes snU{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(-5px)}}
+@media (prefers-reduced-motion:reduce){.scr-nav .sn-chev{animation:none}}
 .sn-chev svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .sn-label{writing-mode:vertical-rl;font:700 11px Archivo,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#e7eaf0;white-space:nowrap}
 .scr-prev .sn-label{transform:rotate(180deg)}
@@ -294,6 +301,8 @@ body.dnav .lp-copy{padding-right:96px}
   .sn-label{writing-mode:horizontal-tb;font-size:11.5px}
   .scr-prev .sn-label{transform:none}
   .sn-chev{transform:rotate(90deg)}
+  .scr-next .sn-chev{animation-name:snD}
+  .scr-prev .sn-chev{animation-name:snU}
   body.dnav .am-scroll,body.dnav #aboutMe .am-scroll{left:0;right:0;top:48px;bottom:52px}
   body.dnav #outsideWork .am-scroll{bottom:0}
   body.dnav .lp-copy{padding-bottom:84px}
