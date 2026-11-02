@@ -45,7 +45,7 @@ DEMOS = {
              {"box": [1.0, 83.8, 84.5, 7.6], "n": 2}]),
     S("How it works", "Tracks applications through the pipeline via emails",
       "Live updates for the status of each application are pulled from emails, with reminders on interviews, invites and decisions.",
-      img="demo/crm-activity.webp", alt="The CRM's Live activity tab listing application email updates"),
+      img="demo/crm-applications.webp", alt="The CRM's Applications tab: pipeline by stage and every application with its current status"),
     S("Design process", "Used Agile practices from Wells Fargo and Certified Scrum Product Owner course",
       "The CRM was planned with Spec Driven Development: a spec sheet pre-planned every code change, then the Jira epics and stories were generated from that document, and only then was the code written.",
       img="demo/crm-board.webp", alt="The CRM Kanban board, Email feeds epic: stories in To Do, In Progress and Done", dark=True, shot=0.76),
