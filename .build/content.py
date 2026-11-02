@@ -71,12 +71,8 @@ DEMOS = {
       "A public view of the postings Internship Watch verifies, built for MBA classmates who do not want to run the tool themselves. No login, nothing to install."),
     S("How it works", "Feedback open from all classmates",
       "Students can provide feedback that goes directly into a GitHub Issue. From there I choose whether to craft a Jira story. Claude then automatically drafts the concept and the code change architecture within the GitHub Issue, and from there I can merge it into my next release."),
-    S("Design process", "Phase 7 of the roadmap",
-      "The board was proposed as Phase 7 of the Internship Watch plan and shipped in the fig release on Oct 14, along with the switch to test-driven development. Phase 8 (guava) gave it an animated city background and a new palette, Phase 9 (hazelnut) a view counter."),
-    S("Design process", "Written for Dana",
-      "Before building, Henry wrote a persona, Dana, a classmate with her own spreadsheet system. Every story on the board is phrased as what Dana wants and why, which kept the public board smaller than the private tool."),
     S("Try it", "Open the job board",
-      "jobs.mcgeehenry.com opens in a new tab. Feedback you leave there is real and lands in Henry's inbox."),
+      "jobs.mcgeehenry.com opens in a new tab. Feedback you leave there is real and lands in Henry's inbox.", point="open"),
   ]},
   "site": {"tag": "Portfolio", "href": ITEMS["site"]["href"], "steps": [
     S("What it is", "A portfolio for PM recruiting",
