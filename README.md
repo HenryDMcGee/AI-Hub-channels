@@ -115,7 +115,7 @@ The demo is also the home page of mcgeehenry.com. That domain is served by the `
 .build/deploy_site.sh /path/to/resume-website --push   # stage, commit and push = deploy
 ```
 
-It copies `index.html` and `demo/` into `public/` and writes `public/version.txt` with the hub commit. The page carries the site's title, description, canonical URL, link-preview tags and icons (`demo/site/`), and the Email and LinkedIn links are base64 in the source and assembled on load, as on the old site. The old resume site is kept at the `classic-site` tag in that repo.
+It copies `index.html` and `demo/` into `public/` and writes `public/version.txt` with the hub commit. The page carries the site's title, description, canonical URL, link-preview tags and icons (`demo/site/`), and the Email and LinkedIn links are base64 in the source and assembled on load, as on the old site. The old resume site is kept on the `classic-site` branch of that repo.
 
 ## Demo captures
 
