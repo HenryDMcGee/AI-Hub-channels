@@ -72,9 +72,15 @@ The channel art is inline SVG with SMIL animations. Left to themselves, every an
 
 Headless profile (Chromium, software rasteriser): idle main-thread time went from ~270 ms per second to ~60.
 
-## Demo landing
+## Demo screens
 
-In demo mode the hub opens on the mcgeehenry.com hero (portrait, name, role, claim, Wells Fargo line, See the work / Get in touch) instead of the Tap to begin screen. The channel grid sits to the right on desktop and below on phones: click the Projects · AI-HUB tab or See the work, press → or scroll, or swipe up on a phone. On the grid, About Henry (or ←, or a swipe down on a phone) goes back. The last screen is remembered for the browser session. Real mode on the laptop is unchanged. `?landing=0` skips it.
+Demo mode has three screens, side by side on desktop and stacked on phones:
+
+1. **Home**, the mcgeehenry.com hero (replaces the Tap to begin screen).
+2. **AI-HUB**, the channel grid.
+3. **About me**, the About section from mcgeehenry.com with the wiring photo.
+
+Desktop: the edge tabs, the Home / About me buttons at the top right, or ← → move between them (→ from the hub only on its last page). Phones: swipe up from the bottom of a screen for the next one, swipe down from the top for the previous one. Animations and music run only on the hub. Real mode on the laptop is unchanged; `?landing=0` skips the extra screens.
 
 ## Demo CRM
 

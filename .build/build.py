@@ -145,6 +145,7 @@ button{font:inherit;color:inherit}
 .boot p{margin:0;font-size:14px;font-weight:700;letter-spacing:2.5px;color:var(--quiet);animation:blink 2.2s ease-in-out infinite}
 
 /* demo */
+.ribbon .rb-more{margin-left:-10px}
 .ribbon.update{border-color:var(--cyan);color:#CFEFFF;cursor:pointer;font:inherit;font-weight:800;letter-spacing:1.5px;font-size:12px}
 .ribbon.update i{background:var(--cyan)}
 .ribbon.update.open{max-width:min(620px,calc(100vw - 40px))}
@@ -197,15 +198,50 @@ button{font:inherit;color:inherit}
   .lp-next-label::before{content:"Swipe for "}
   .lp-next-chev{width:36px;height:36px;transform:rotate(90deg);animation:lpnudgev 1.6s ease-in-out infinite}
   .lp-next-hint{display:none}
-  .to-landing{left:12px;right:auto;top:8px;height:40px;padding:0 14px 0 10px;font-size:10.5px}
-  .to-landing svg{transform:rotate(90deg)}
-  .to-landing .tl-name{display:none}
   .lp-on-hub .ribbon{left:auto;right:12px;top:10px}
   .lp-on-hub .ribbon .rb-more{display:none}
 }
 @keyframes lpnudgev{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(6px)}}
 html.lp-lock,html.lp-lock body{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.landing{transition:none}.lp-next-chev{animation:none}}
+/* ---- demo: About me, the 3rd screen (to the right of the hub on desktop, below it on phones) ---- */
+.hub-nav{position:fixed;right:20px;top:16px;z-index:6;display:flex;gap:10px}
+.hub-nav .to-landing{position:static}
+.to-landing .tl-fwd{width:15px;height:15px;fill:none;stroke:#5cbfad;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+#toAbout{padding:0 12px 0 16px}
+.about-me{position:fixed;inset:0;z-index:64;background:#0b1018;color:#e7eaf0;font-family:"IBM Plex Sans",system-ui,sans-serif;font-weight:300;transition:transform .7s cubic-bezier(.22,.61,.36,1);will-change:transform;overscroll-behavior:contain}
+.about-me.away{transform:translateX(100%)}
+.am-back{position:absolute;left:0;top:0;bottom:0;width:92px;z-index:2;border:0;border-right:1px solid rgba(255,255,255,.08);background:linear-gradient(to left,rgba(11,16,24,0),rgba(92,191,173,.10));color:#5cbfad;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0;font:inherit}
+.am-back:hover{background:linear-gradient(to left,rgba(11,16,24,0),rgba(92,191,173,.2))}
+.am-back-label{writing-mode:vertical-rl;transform:rotate(180deg);font:700 12px Archivo,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#e7eaf0}
+.am-chev{animation:amnudge 1.6s ease-in-out infinite}
+@keyframes amnudge{0%,100%{transform:translateX(0)}50%{transform:translateX(-6px)}}
+.am-scroll{position:absolute;left:92px;right:0;top:0;bottom:0;overflow-y:auto;display:flex}
+.am-inner{margin:auto;width:min(1100px,100%);padding:56px clamp(24px,4vw,64px)}
+.am-inner h2{font-family:Archivo,sans-serif;font-weight:800;font-size:clamp(30px,3.2vw,44px);letter-spacing:-.02em;text-transform:uppercase;margin:0 0 22px;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,.13);color:#eef1f6}
+.am-grid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:44px;align-items:start}
+.am-prose p{font-size:clamp(16px,1.35vw,18.5px);line-height:1.75;color:rgba(231,234,240,.86);margin:0 0 1.1em;max-width:63ch}
+.am-photo{margin:0}
+.am-photo img{display:block;width:100%;height:auto;object-fit:cover}
+.am-photo figcaption{margin-top:10px;font-size:13px;line-height:1.45;color:rgba(231,234,240,.42)}
+@media (max-width:760px){
+  .hub-nav{left:12px;right:auto;top:8px;gap:8px}
+  .hub-nav .to-landing{height:40px;font-size:10.5px}
+  .hub-nav .tl-back{transform:rotate(90deg)}
+  .hub-nav .tl-fwd{transform:rotate(90deg)}
+  .about-me.away{transform:translateY(100%)}
+  .am-back{right:0;bottom:auto;width:auto;height:56px;flex-direction:row;gap:10px;border-right:0;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(to top,rgba(11,16,24,0),rgba(92,191,173,.12))}
+  .am-back .lp-next-hint{display:none}
+  .am-back-label{writing-mode:horizontal-tb;transform:none;font-size:11.5px;letter-spacing:.24em}
+  .am-back-label::before{content:"Swipe down for "}
+  .am-chev{width:32px;height:32px;transform:rotate(90deg);animation:amnudgev 1.6s ease-in-out infinite}
+  .am-scroll{left:0;top:56px}
+  .am-inner{padding:26px 20px 40px}
+  .am-grid{grid-template-columns:1fr;gap:24px}
+  .am-photo{max-width:260px}
+}
+@keyframes amnudgev{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(-5px)}}
+@media (prefers-reduced-motion:reduce){.about-me{transition:none}.am-chev{animation:none}}
 .ribbon{position:fixed;left:20px;top:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:999px;background:#16213A;border:2px solid var(--amber);color:#FFE9A8;font-weight:800;font-size:13px;letter-spacing:1.2px}
 .ribbon i{width:10px;height:10px;border-radius:50%;background:var(--amber);display:block;box-shadow:0 0 12px var(--amber)}
 @media (max-width:760px){.ribbon{font-size:11px;top:10px;left:12px}}
@@ -294,7 +330,31 @@ HTML = r"""<!doctype html>
     <span class="lp-next-hint">or press &rarr;</span>
   </button>
 </section>
-<button class="to-landing" id="toLanding" type="button" hidden aria-label="Back to Henry McGee"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>About<span class="tl-name">&nbsp;Henry</span></button>
+<nav class="hub-nav" id="hubNav" hidden aria-label="Screens">
+  <button class="to-landing" id="toLanding" type="button" aria-label="Home: Henry McGee"><svg class="tl-back" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Home</button>
+  <button class="to-landing" id="toAbout" type="button" aria-label="About me">About me<svg class="tl-fwd" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+</nav>
+<section class="about-me away" id="aboutMe" aria-label="About me" hidden>
+  <button class="am-back" type="button" id="amBack" aria-label="Back to AI-HUB">
+    <span class="lp-next-chev am-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span>
+    <span class="am-back-label">AI-HUB</span>
+    <span class="lp-next-hint">or press &larr;</span>
+  </button>
+  <div class="am-scroll" id="amScroll">
+    <div class="am-inner">
+      <h2>About me</h2>
+      <div class="am-grid">
+        <div class="am-prose">
+          <p>After graduating from Clemson in computer science, I built an AI scavenger hunt with my best friend as a COVID project, and it landed me a role at Wells Fargo. There, I developed a passion for bridging business and technical teams, balancing stakeholder priorities and deadlines with developers&rsquo; focus on scalability and reducing technical debt.</p>
+          <p>I have a passion for servant leadership and foreign cultures. During the 7 months gap before my MBA program started I took Japanese, green tea, classic Japanese Literature, and Judo courses at University of Hawaii. At my Hawaii Judo Dojo I used my Japanese skills to be the camp counselor for Japanese students during a Spring Judo camp. I also started Honolulu Language Exchange and was an assistant coach for kids special needs Judo classes.</p>
+          <p>As a product manager, I hope to bridge business and technology while collaborating with a team of diverse backgrounds and perspectives.</p>
+        </div>
+        <figure class="am-photo"><img src="demo/henry-wiring.webp" width="560" height="747" alt="Rewiring the dashboard of a classic car, wiring harness pulled out from under the dash" loading="lazy" decoding="async"><figcaption>A passion for system design in all its forms</figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
 <div class="ribbon" id="ribbon" hidden><i></i>DEMO<span class="rb-more">&nbsp;· TAP ANY CHANNEL FOR A WALKTHROUGH</span></div>
 <button class="ribbon update" id="update" type="button" hidden><i></i><span>UPDATE READY · <b>RELAUNCH TO APPLY</b></span></button>
 
@@ -439,7 +499,7 @@ render();
    on a hidden tab, or for people who asked for reduced motion. */
 var ANIM_FPS = 15;
 var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-var animSet = [], animT0 = performance.now(), landingShown = false;
+var animSet = [], animT0 = performance.now(), landingShown = false, aboutShown = false;
 /* quality tiers: 0 = full (15 fps art, twinkling stars), 1 = light (8 fps, no twinkles), 2 = still (art frozen).
    ?tier=N forces one; otherwise the frame monitor below steps down when the browser can't keep up. */
 var tier = Math.max(0, Math.min(2, +(q.get('tier') || 0) || 0));
@@ -451,7 +511,7 @@ function applyTier() {
 }
 function syncAnim() {
   animSet = [];
-  if (reduce || tier >= 2 || landingShown) return;
+  if (reduce || tier >= 2 || landingShown || aboutShown) return;
   var root = openEl || track.children[page];
   if (!root) return;
   Array.prototype.forEach.call(root.querySelectorAll('svg'), function (sv) {
@@ -757,7 +817,10 @@ boot.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key =
 if (location.hash === '#full' || q.get('boot') === '0') { boot.hidden = true; booted = true; document.body.classList.remove('booting'); document.body.classList.add('booted'); }
 
 /* ---------- demo landing: mcgeehenry.com hero first, AI-HUB to the right (desktop) or below (phone) ---------- */
-var landing = $('#landing'), toLanding = $('#toLanding'), landingLock = 0;
+var landing = $('#landing'), toLanding = $('#hubNav'), landingLock = 0, kbNav = false;
+document.addEventListener('keydown', function () { kbNav = true; }, true);
+['pointerdown', 'touchstart'].forEach(function (ev) { document.addEventListener(ev, function () { kbNav = false; }, { capture: true, passive: true }); });
+function kbFocus(el) { if (kbNav && el) setTimeout(function () { el.focus({ preventScroll: true }); }, 400); }
 function landingStore(v) { try { sessionStorage.setItem('aihub-screen', v); } catch (e) {} }
 function showHub(fromUser) {
   if (!landingShown || Date.now() < landingLock) return;
@@ -768,15 +831,15 @@ function showHub(fromUser) {
   if (!booted) { booted = true; document.body.classList.remove('booting'); document.body.classList.add('booted'); }
   if (fromUser) { unlockAudio(); chime(); startMusic(); }
   syncAnim();
-  var first = track.querySelector('.chan'); if (first && fromUser !== 'pointer') setTimeout(function () { first.focus({ preventScroll: true }); }, 400);
+  kbFocus(track.querySelector('.chan'));
 }
 function showLanding() {
-  if (landingShown || Date.now() < landingLock || openEl || appOpen || editing) return;
+  if (landingShown || aboutShown || Date.now() < landingLock || openEl || appOpen || editing) return;
   landingShown = true; landingLock = Date.now() + 750;
   landing.classList.remove('away'); landing.removeAttribute('aria-hidden'); landing.inert = false;
   toLanding.hidden = true; landingStore('landing'); stopMusic(); syncAnim();
   document.documentElement.classList.add('lp-lock'); document.body.classList.remove('lp-on-hub');
-  setTimeout(function () { $('#lpNext').focus({ preventScroll: true }); }, 400);
+  kbFocus($('#lpNext'));
 }
 if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
   boot.hidden = true; booted = false;
@@ -785,10 +848,13 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
   if (lastScreen === 'hub') showHub(false);
   $('#lpNext').addEventListener('click', function (e) { showHub(e.detail ? 'pointer' : true); });
   $('#lpWork').addEventListener('click', function (e) { showHub(e.detail ? 'pointer' : true); });
-  toLanding.addEventListener('click', showLanding);
+  $('#toLanding').addEventListener('click', showLanding);
+  $('#toAbout').addEventListener('click', showAbout);
   document.addEventListener('keydown', function (e) {
     if (landingShown && (e.key === 'ArrowRight' || e.key === 'PageDown')) { e.preventDefault(); showHub(true); }
-    else if (!landingShown && e.key === 'ArrowLeft' && page === 0 && !openEl && !appOpen && !editing) { e.preventDefault(); showLanding(); }
+    else if (aboutShown && (e.key === 'ArrowLeft' || e.key === 'Escape')) { e.preventDefault(); hideAbout(); }
+    else if (!landingShown && !aboutShown && e.key === 'ArrowRight' && page >= layout.length / SLOTS - 1 && !openEl && !appOpen && !editing) { e.preventDefault(); showAbout(); }
+    else if (!landingShown && !aboutShown && e.key === 'ArrowLeft' && page === 0 && !openEl && !appOpen && !editing) { e.preventDefault(); showLanding(); }
   });
   landing.addEventListener('wheel', function (e) { if (Math.abs(e.deltaY) > 18 || e.deltaX > 18) showHub(true); }, { passive: true });
   (function () {
@@ -802,10 +868,46 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
     }, { passive: true });
     document.addEventListener('touchstart', function (e) { if (!landingShown) start(e); }, { passive: true });
     document.addEventListener('touchend', function (e) {
-      if (landingShown || x0 === null || openEl || appOpen || editing) { x0 = null; return; }
+      if (landingShown || aboutShown || x0 === null || openEl || appOpen || editing) { x0 = null; return; }
       var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
-      if (dy > 80 && Math.abs(dy) > Math.abs(dx) * 1.5) showLanding();     /* swipe down on the hub: back to the landing */
+      var atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      if (dy < -80 && Math.abs(dy) > Math.abs(dx) * 1.5 && atBottom && window.innerWidth <= 760) showAbout();   /* swipe up at the bottom of the hub: About me */
+      else if (dx < -80 && Math.abs(dx) > Math.abs(dy) * 1.5 && window.innerWidth > 760 && page >= layout.length / SLOTS - 1) showAbout();
+      else if (dy > 80 && Math.abs(dy) > Math.abs(dx) * 1.5 && window.scrollY <= 0) showLanding();     /* swipe down at the top of the hub: back to the landing */
       else if (page === 0 && dx > 80 && Math.abs(dx) > Math.abs(dy) * 1.5 && window.innerWidth > 760) showLanding();
+    }, { passive: true });
+  })();
+}
+
+
+/* About me: the 3rd demo screen */
+var aboutEl = $('#aboutMe');
+function showAbout() {
+  if (aboutShown || landingShown || Date.now() < landingLock || openEl || appOpen || editing) return;
+  aboutShown = true; landingLock = Date.now() + 750;
+  aboutEl.classList.remove('away'); aboutEl.removeAttribute('aria-hidden'); aboutEl.inert = false;
+  toLanding.hidden = true; document.documentElement.classList.add('lp-lock'); stopMusic(); syncAnim();
+  $('#amScroll').scrollTop = 0;
+  kbFocus($('#amBack'));
+}
+function hideAbout() {
+  if (!aboutShown || Date.now() < landingLock) return;
+  aboutShown = false; landingLock = Date.now() + 750;
+  aboutEl.classList.add('away'); aboutEl.setAttribute('aria-hidden', 'true'); aboutEl.inert = true;
+  toLanding.hidden = false; document.documentElement.classList.remove('lp-lock'); startMusic(); syncAnim();
+  kbFocus($('#toAbout'));
+}
+if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
+  aboutEl.hidden = false; aboutEl.inert = true; aboutEl.setAttribute('aria-hidden', 'true');
+  $('#amBack').addEventListener('click', hideAbout);
+  aboutEl.addEventListener('wheel', function (e) { if (e.deltaX < -18) hideAbout(); }, { passive: true });
+  (function () {
+    var x0 = null, y0 = null, sc = $('#amScroll');
+    aboutEl.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    aboutEl.addEventListener('touchend', function (e) {
+      if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+      if (dy > 80 && Math.abs(dy) > Math.abs(dx) * 1.5 && sc.scrollTop <= 0) hideAbout();   /* swipe down at the top: back to the hub */
+      else if (dx > 80 && Math.abs(dx) > Math.abs(dy) * 1.5) hideAbout();
     }, { passive: true });
   })();
 }
