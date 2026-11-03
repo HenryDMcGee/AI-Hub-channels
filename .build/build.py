@@ -303,7 +303,7 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
   .ow-grid .ow-photos figure:first-child{grid-column:1/-1}
   .ow-grid .am-photo figcaption{font-size:12px;margin-top:6px}
   .am-prose p{font-size:clamp(14px,min(1.3vw,2.25vh),18.5px)}
-  .ow-prose p{line-height:1.65;margin-bottom:.8em}
+  .ow-prose p{line-height:1.62;margin-bottom:.75em;font-size:clamp(14px,min(1.15vw,2.2vh),18px)}
 }
 @media (min-width:1100px){
   .af-list{display:grid;grid-template-columns:1fr 1fr;column-gap:52px}
@@ -581,9 +581,9 @@ HTML = r"""<!doctype html>
       <h2>Leadership</h2>
       <div class="ow-grid">
       <div class="am-prose ow-prose">
-        <p>Coaching judo for children with special needs taught me that leadership means meeting people where they are, adjusting the lesson rather than the child, and reading frustration before it became a shutdown. Patience, I found, is a skill rather than a personality trait.</p>
-        <p>Organizing a spring judo camp stretched that further: I managed scheduling, logistics, and volunteer recruitment while bridging differences in how Japanese, Hawaiian, and mainland judo communities approach hierarchy and teaching. It was hands-on experience leading a project under real constraints with a group that didn&rsquo;t share a single cultural frame of reference.</p>
-        <p>Founding the Honolulu Japanese Language Exchange tested my persistence in a different way, since attendance was thin for weeks, but I kept showing up at the same time and place and treated growth as a marketing problem, posting flyers across campus where Japanese learners and native speakers already gathered. Attendance rose steadily, and the exchange became a real community.</p>
+        <p>At the University of Hawaii at Manoa I helped coach judo for kids with special needs, trying to meet the kids where they were. I was given &ldquo;Judo for Neurodivergent Children&rdquo; to read and had one-on-one chats with my sensei, who had a background in education. She taught me to adjust the lesson rather than the child, and to read frustration before it became a shutdown. I also learned that patience is a skill and that a positive attitude can shape an entire lesson.</p>
+        <p>At the same judo dojo I was the camp counselor for a spring judo camp. We brought over college students from 上智大学 and 南山大学. I managed scheduling, logistics, and volunteer recruitment while bridging differences in how Japanese and Hawaiian judo communities approach planning. It was hands-on experience leading a project during an island-wide flood while navigating different cultures.</p>
+        <p>I founded the Honolulu Japanese Language Exchange to bring more students to the judo dojo and to connect with the Japanese retiree community. The language exchange tested my persistence, as attendance was thin at first and I had to stay consistent until a community started to form. I spent a lot of time marketing the exchange to university students and to older Japanese immigrants who were looking for a community.</p>
       </div>
       <div class="ow-photos">
         <figure class="am-photo"><img src="demo/ow-judo.webp" width="900" height="675" alt="Mid-air judo throw on blue mats" loading="lazy" decoding="async"><figcaption>Judo Nagekomi</figcaption></figure>
