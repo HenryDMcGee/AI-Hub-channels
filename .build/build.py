@@ -302,24 +302,24 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
   .ow-grid .ow-photos{margin-top:6px;grid-template-columns:1fr 1fr;gap:14px}
   .ow-grid .ow-photos figure:first-child{grid-column:1/-1}
   .ow-grid .am-photo figcaption{font-size:12px;margin-top:6px}
-  .am-prose p{font-size:clamp(14.5px,min(1.3vw,2.45vh),18.5px)}
-  .ow-prose p{line-height:1.7;margin-bottom:.9em}
+  .am-prose p{font-size:clamp(14px,min(1.3vw,2.25vh),18.5px)}
+  .ow-prose p{line-height:1.65;margin-bottom:.8em}
 }
 @media (min-width:1100px){
   .af-list{display:grid;grid-template-columns:1fr 1fr;column-gap:52px}
-  .af-list>div{grid-template-columns:1fr;gap:6px;padding:16px 0;align-content:start}
+  .af-list>div{grid-template-columns:1fr;gap:5px;padding:clamp(10px,1.8vh,16px) 0;align-content:start}
   #aiFluency .am-inner{width:min(1260px,100%)}
   .af-list>div:nth-child(2){padding-top:4px}
   .af-list>div:nth-child(3){border-bottom:0}
-  .af-list dd{font-size:clamp(14px,min(1.1vw,2.2vh),17px);line-height:1.62;max-width:none}
-  .af-list dt{font-size:clamp(15.5px,min(1.25vw,2.5vh),18px)}
+  .af-list dd{font-size:clamp(13.5px,min(1.1vw,2vh),17px);line-height:1.58;max-width:none}
+  .af-list dt{font-size:clamp(15px,min(1.25vw,2.3vh),18px)}
 }
 @media (min-width:761px) and (max-height:860px){
-  .am-inner{padding-top:clamp(22px,4vh,34px);padding-bottom:clamp(22px,4vh,34px)}
-  .am-inner h2{font-size:clamp(28px,min(3.2vw,5.6vh),44px);margin-bottom:16px;padding-bottom:16px}
+  .am-inner{padding-top:clamp(14px,3vh,34px);padding-bottom:clamp(14px,3vh,34px)}
+  .am-inner h2{font-size:clamp(26px,min(3.2vw,5vh),44px);margin-bottom:12px;padding-bottom:12px}
   .git-inner .git-h{font-size:clamp(44px,min(5.4vw,9vh),72px)}
-  .lp-copy{padding-top:78px;padding-bottom:28px}
-  .lp-copy h1{font-size:clamp(46px,min(8.4vw,13vh),118px);margin-bottom:2.6vh}
+  .lp-copy{padding-top:64px;padding-bottom:28px}
+  .lp-copy h1{font-size:clamp(44px,min(8.4vw,12vh),118px);margin-bottom:2.4vh}
   .lp-role{margin-bottom:2.4vh;padding-top:2.4vh}
   .lp-claim{font-size:clamp(20px,min(2.5vw,4.2vh),33px);margin-bottom:2vh}
   .lp-sub{font-size:clamp(14px,2.3vh,16px);line-height:1.55;margin-bottom:3.4vh;max-width:44ch}
@@ -327,45 +327,29 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 /* when a screen still runs past the window, a fade and a hint say there is more below */
 .about-me .more-hint{position:absolute;left:0;right:0;bottom:0;height:70px;z-index:3;pointer-events:none;background:linear-gradient(to bottom,rgba(11,16,24,0),#0b1018 78%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;font:700 10.5px Archivo,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(231,234,240,.55);opacity:0;transition:opacity .25s}
 .about-me.more .more-hint{opacity:1}
-@media (max-width:760px){body.dnav .about-me .more-hint{bottom:52px}body.dnav #getInTouch .more-hint{bottom:0}}
-/* ---- demo: persistent screen navigation (side arrows on computers, top/bottom bars on phones) ---- */
-.scr-nav{position:fixed;top:50%;transform:translateY(-50%);z-index:66;width:56px;min-height:156px;padding:18px 0;border:1.5px solid rgba(92,191,173,.5);background:rgba(11,16,24,.84);color:#5cbfad;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,color .2s}
+body.dnav .about-me .more-hint{bottom:52px}body.dnav #getInTouch .more-hint{bottom:0}
+/* ---- demo: persistent screen navigation: a bar across the top (previous screen) and one across the bottom (next), on every screen size ---- */
+.scr-nav{position:fixed;left:0;right:0;z-index:66;height:48px;padding:0 16px;border:0;background:rgba(11,16,24,.95);color:#5cbfad;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent;transition:background .2s,color .2s}
 .scr-nav[hidden]{display:none}
-.scr-prev{left:0;border-left:0;border-radius:0 18px 18px 0}
-.scr-next{right:0;border-right:0;border-radius:18px 0 0 18px}
-.scr-nav:hover,.scr-nav:focus-visible{border-color:#5cbfad;background:rgba(18,38,42,.94);color:#8fe3d4}
-.sn-chev{display:flex}
-.scr-next .sn-chev{animation:snR 1.6s ease-in-out infinite}
-.scr-prev .sn-chev{animation:snL 1.6s ease-in-out infinite}
-@keyframes snR{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
-@keyframes snL{0%,100%{transform:translateX(0)}50%{transform:translateX(-5px)}}
+.scr-prev{top:0;border-bottom:1px solid rgba(92,191,173,.4)}
+.scr-next{bottom:0;height:calc(52px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);border-top:1px solid rgba(92,191,173,.4)}
+.scr-nav:hover,.scr-nav:focus-visible{background:rgba(18,38,42,.97);color:#8fe3d4}
+.sn-chev{display:flex;transform:rotate(90deg)}
+.scr-next .sn-chev{animation:snD 1.6s ease-in-out infinite}
+.scr-prev .sn-chev{animation:snU 1.6s ease-in-out infinite}
 @keyframes snD{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(5px)}}
 @keyframes snU{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(-5px)}}
 @media (prefers-reduced-motion:reduce){.scr-nav .sn-chev{animation:none}}
 .sn-chev svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.sn-label{writing-mode:vertical-rl;font:700 11px Archivo,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#e7eaf0;white-space:nowrap}
-.scr-prev .sn-label{transform:rotate(180deg)}
+.sn-label{font:700 11.5px Archivo,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#e7eaf0;white-space:nowrap}
 body.dnav .lp-next,body.dnav .am-back,body.dnav .am-fwd,body.dnav .hub-nav{display:none!important}
-body.dnav .am-scroll,body.dnav #aboutMe .am-scroll{left:56px;right:56px}
-body.dnav .lp-copy{padding-right:96px}
-@media (min-width:761px){body.dnav .hub .tab{display:none}}
-@media (max-width:760px){
-  .scr-nav{transform:none;left:0;right:0;width:auto;min-height:0;height:48px;padding:0 16px;flex-direction:row;gap:10px;border:0;border-radius:0;background:rgba(11,16,24,.95)}
-  .scr-prev{top:0;border-bottom:1px solid rgba(92,191,173,.4)}
-  .scr-next{top:auto;bottom:0;height:calc(52px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);border-top:1px solid rgba(92,191,173,.4)}
-  .scr-nav:hover{background:rgba(11,16,24,.95);color:#5cbfad}
-  .sn-label{writing-mode:horizontal-tb;font-size:11.5px}
-  .scr-prev .sn-label{transform:none}
-  .sn-chev{transform:rotate(90deg)}
-  .scr-next .sn-chev{animation-name:snD}
-  .scr-prev .sn-chev{animation-name:snU}
-  body.dnav .am-scroll,body.dnav #aboutMe .am-scroll{left:0;right:0;top:48px;bottom:52px}
-  body.dnav #getInTouch .am-scroll{bottom:0}
-  body.dnav .lp-copy{padding-bottom:84px}
-  body.dnav.lp-on-hub .ribbon{top:58px}
-  body.dnav .hub{padding-top:104px}
-  body.dnav.lp-on-hub .clock-block{padding-bottom:84px}
-}
+body.dnav .am-scroll,body.dnav #aboutMe .am-scroll{left:0;right:0;top:48px;bottom:52px}
+body.dnav #getInTouch .am-scroll{bottom:0}
+body.dnav .lp-copy{padding-bottom:72px}
+body.dnav.lp-on-hub .ribbon{top:58px}
+body.dnav .hub{padding-top:104px}
+body.dnav.lp-on-hub .clock-block{padding-bottom:72px}
+@media (max-width:760px){body.dnav .lp-copy{padding-bottom:84px}body.dnav.lp-on-hub .clock-block{padding-bottom:84px}}
 .ribbon{position:fixed;left:20px;top:16px;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;border-radius:999px;background:#16213A;border:2px solid var(--amber);color:#FFE9A8;font-weight:800;font-size:13px;letter-spacing:1.2px}
 .ribbon i{width:10px;height:10px;border-radius:50%;background:var(--amber);display:block;box-shadow:0 0 12px var(--amber)}
 @media (max-width:760px){.ribbon{font-size:11px;top:10px;left:12px}}
@@ -1127,13 +1111,12 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
 }
 
 
-/* Screen order: 0 Home (landing), 1 AI-HUB, 2 About me, 3 AI fluency. On computers the side arrows
-   also step through the hub's pages of apps; on phones the bars move whole screens. */
+/* Screen order: Home (landing), AI-HUB, then the screens after the hub. The top and bottom bars move whole screens. */
 var scrPrev = $('#scrPrev'), scrNext = $('#scrNext'), dnav = false, SCR_NAMES = ['Home', 'AI-HUB', 'About me', 'Video', 'AI fluency', 'Leadership', 'Get in touch'];
 function curScreen() { return landingShown ? 0 : (xIndex > 0 ? 1 + xIndex : 1); }
 function navTarget(dir, keys) {
   var sc = curScreen(), pages = layout.length / SLOTS;
-  if (sc === 1 && (keys || window.innerWidth > 760)) {
+  if (sc === 1 && keys) {   /* arrow keys also step through the hub's pages; the bars move whole screens */
     if (dir < 0 && page > 0) return { label: 'Previous apps', go: function () { goPage(page - 1); } };
     if (dir > 0 && page < pages - 1) return { label: 'More apps', go: function () { goPage(page + 1); } };
   }
