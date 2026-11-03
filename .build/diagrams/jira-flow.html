@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0}
+body{width:1600px;height:862px;background:radial-gradient(70% 70% at 30% 20%,#13233e 0%,#0b1220 70%);font-family:Inter,sans-serif;color:#e7eef9;position:relative;overflow:hidden}
+.box{position:absolute;border-radius:18px;background:#14213a;border:2px solid #3c568a;padding:18px 22px}
+.box h3{font-size:27px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px}
+.box p{font-size:18px;line-height:1.35;color:#b8c7e2;font-weight:500}
+.tag{display:inline-block;font-size:13px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;padding:4px 10px;border-radius:999px;margin-bottom:10px}
+.n{position:absolute;top:-16px;left:-16px;width:38px;height:38px;border-radius:50%;background:#ffd36e;color:#1a1200;font-weight:900;font-size:19px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(255,211,110,.6)}
+.spec{left:40px;top:60px;width:320px;height:270px;border:3px solid #5cbfad;box-shadow:0 0 0 6px rgba(92,191,173,.12),0 0 40px rgba(92,191,173,.25)}
+.spec .tag{background:rgba(92,191,173,.16);color:#8fe3d4}
+.claude{left:400px;top:60px;width:340px;height:270px;border:3px solid #b48bff;box-shadow:0 0 0 6px rgba(180,139,255,.12),0 0 40px rgba(180,139,255,.25)}
+.claude .tag{background:rgba(180,139,255,.16);color:#d6c2ff}
+.jira{left:790px;top:30px;width:780px;height:460px;border:3px solid #5fd4f0;background:#101c33;box-shadow:0 0 0 6px rgba(95,212,240,.12),0 0 40px rgba(95,212,240,.25)}
+.big{font-size:44px;font-weight:900;letter-spacing:-.8px;line-height:1;display:flex;align-items:baseline;gap:14px}
+.sub{font-size:20px;font-weight:700;margin:6px 0 12px}
+.big small{font-size:20px;font-weight:700;color:#9fe9ff;letter-spacing:0}
+.jira .tag{background:rgba(95,212,240,.14);color:#9fe9ff}
+.pr{left:790px;top:600px;width:360px;height:220px;border:3px solid #7fa8ff;box-shadow:0 0 0 6px rgba(127,168,255,.12),0 0 40px rgba(127,168,255,.25)}
+.pr .tag{background:rgba(127,168,255,.16);color:#c2d4ff}
+.rel{left:1220px;top:600px;width:350px;height:220px;border:3px solid #ffd36e;box-shadow:0 0 0 6px rgba(255,211,110,.12),0 0 40px rgba(255,211,110,.25)}
+.rel .tag{background:rgba(255,211,110,.16);color:#ffe9a8}
+.lane{position:absolute;left:24px;right:24px}
+.epic{top:96px;height:62px;border-radius:12px;background:#2a1f4a;border:2px solid #b48bff;display:flex;align-items:center;gap:14px;padding:0 16px;font-size:21px;font-weight:800}
+.lbl{font-size:12.5px;font-weight:900;letter-spacing:1.8px;text-transform:uppercase;padding:3px 9px;border-radius:6px}
+.epic .lbl{background:#b48bff;color:#170d33}
+.feats{top:190px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat{border-radius:12px;background:#12304a;border:2px solid #5fd4f0;padding:10px 12px;font-size:17px;font-weight:700;height:62px;display:flex;flex-direction:column;justify-content:center}
+.feat .lbl{background:#5fd4f0;color:#05202b;align-self:flex-start;margin-bottom:4px;font-size:11px}
+.stories{top:284px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.col{display:flex;flex-direction:column;gap:9px}
+.story{border-radius:9px;background:#1b2a44;border:1.5px solid #4e6a9a;padding:7px 11px;font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;color:#d7e3f7}
+.story i{width:13px;height:13px;border-radius:3px;background:#36a26b;flex:none}
+.backlog{position:absolute;right:24px;top:22px;font-size:14px;font-weight:700;color:#8aa0c4;letter-spacing:.5px}
+svg{position:absolute;inset:0}
+.cap{position:absolute;font-size:16px;font-weight:700;color:#ffd36e;letter-spacing:.3px}
+.foot{position:absolute;left:50px;bottom:40px;width:640px;font-size:19px;line-height:1.45;color:#9fb3d3;font-weight:500}
+.foot b{color:#e7eef9}
+</style></head>
+<body>
+<svg viewBox="0 0 1600 862" width="1600" height="862">
+  <defs>
+    <marker id="a" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M1 1 L11 6 L1 11 z" fill="#ffd36e"/></marker>
+    <marker id="b" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M1 1 L11 6 L1 11 z" fill="#b48bff"/></marker>
+  </defs>
+  <!-- spec -> claude -->
+  <path d="M362 195 L404 195" stroke="#ffd36e" stroke-width="4" fill="none" marker-end="url(#a)"/>
+  <!-- claude -> jira -->
+  <path d="M742 195 L782 195" stroke="#ffd36e" stroke-width="4" fill="none" marker-end="url(#a)"/>
+  <!-- jira stories -> PR -->
+  <path d="M955 494 L955 592" stroke="#ffd36e" stroke-width="4" fill="none" marker-end="url(#a)"/>
+  <!-- claude builds -> PR -->
+  <path d="M570 332 C 565 520, 640 700, 780 708" stroke="#ffd36e" stroke-width="4" fill="none" marker-end="url(#a)"/>
+  <!-- PR -> release -->
+  <path d="M1153 710 L1214 710" stroke="#ffd36e" stroke-width="4" fill="none" marker-end="url(#a)"/>
+  <!-- release -> epic (dashed) -->
+  <path d="M1405 596 L1405 500" stroke="#b48bff" stroke-width="3.5" stroke-dasharray="10 8" fill="none" marker-end="url(#b)"/>
+</svg>
+<div class="box spec"><span class="n">1</span><div class="big">Spec sheet</div><div class="sub" style="color:#8fe3d4">one per phase</div><p>The product roadmap: scope, features, acceptance criteria and tests, written before any code.</p></div>
+<div class="box claude"><span class="n">2</span><div class="big" style="white-space:nowrap;font-size:41px">Claude Code</div><div class="sub" style="color:#d6c2ff">plans, then builds</div><p>Reads the spec, drafts the tickets, then writes the code for each story.</p></div>
+<div class="box jira"><span class="n">3</span><div class="big">Jira <small>backlog: epics → features → stories</small></div>
+  <div class="lane epic"><span class="lbl">Epic</span>Phase 7: Public job board and feedback</div>
+  <div class="lane feats">
+    <div class="feat"><span class="lbl">Feature</span>Public board</div>
+    <div class="feat"><span class="lbl">Feature</span>Visitor feedback</div>
+    <div class="feat"><span class="lbl">Feature</span>Tests first (TDD)</div>
+  </div>
+  <div class="lane stories">
+    <div class="col"><div class="story"><i></i>Board at jobs.mcgeehenry.com</div><div class="story"><i></i>Hostname routing</div></div>
+    <div class="col"><div class="story"><i></i>Feedback files a GitHub issue</div><div class="story"><i></i>Private feedback controls</div></div>
+    <div class="col"><div class="story"><i></i>Jest + Playwright suites</div><div class="story"><i></i>80% coverage gates</div></div>
+  </div>
+</div>
+<div class="box pr"><span class="n">4</span><div class="big">GitHub <small style="color:#c2d4ff">pull requests</small></div><p style="margin-top:14px">Each change arrives as a pull request. CI must pass, then Henry reviews and merges.</p></div>
+<div class="box rel"><span class="n">5</span><div class="big">Release</div><div class="sub" style="color:#ffe9a8">one per epic</div><p>Merged stories ship together as a named release, e.g. "fig".</p></div>
+<div class="cap" style="left:1422px;top:530px;color:#d6c2ff">closes its epic</div>
+<div class="cap" style="left:400px;top:600px">builds each story</div>
+<div class="foot"><b>Spec-driven development:</b> every epic starts as a spec sheet and ends as a release, so the board, the code and the releases tell the same story.</div>
+</body></html>

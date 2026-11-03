@@ -91,8 +91,9 @@ DEMOS = {
       "The live site opens in a new tab."),
   ]},
   "jira": {"tag": "2 boards", "embed": "demo/jira/index.html", "open": "Open demo Internship Watch App Jira →", "steps": [
-    S("What it is", "Two Kanban boards, kept by Claude",
-      "CRM Space holds the Internship CRM deployment backlog. Watch Space holds the internship-watch board. Both are mirrors of Linear, which stays primary."),
+    S("What it is", "A practical in Agile Practices",
+      "AI apps were built using spec sheets (spec-driven development) covering the product roadmap, then sent to Claude Code to build. Each spec sheet becomes an epic, with features broken into stories. My goal was to practice the governance workflow I would use as a product manager.",
+      img="demo/jira-flow.webp", alt="Flow: a spec sheet per phase goes to Claude Code, which drafts the Jira backlog (epic, features, stories) and builds each story; changes arrive as GitHub pull requests, and merged stories ship as one release per epic, which closes the epic", zoom=True, shot=0.72),
     S("How it works", "Henry reads, Claude moves",
       "Henry never edits the boards by hand. Claude creates and moves tickets as work happens, and Henry opens the board as a read-only reference. WIP limits, no sprints, solo."),
     S("Design process", "Why a mirror at all",
