@@ -502,7 +502,7 @@ HTML = r"""<!doctype html>
   <div class="am-scroll">
     <div class="am-inner vid-inner">
       <div class="vid-frame" id="vidFrame">
-        <a class="vid-poster" href="https://youtu.be/05zyH7eds8s" target="_blank" rel="noopener" aria-label="Watch my creative intro on YouTube (opens a new tab)"><img src="demo/henry-portrait.webp" alt="" decoding="async"><span class="vid-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="vid-cta">Watch on YouTube</span></a>
+        <a class="vid-poster" href="https://youtu.be/05zyH7eds8s" target="_blank" rel="noopener" aria-label="Watch my creative intro on YouTube (opens a new tab)"><img src="demo/henry-portrait.webp" alt="" decoding="async"><span class="vid-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="vid-cta">Play my creative intro</span></a>
       </div>
       <div class="vid-caption"><p>My creative intro</p><a href="https://youtu.be/05zyH7eds8s" target="_blank" rel="noopener">Watch on YouTube</a></div>
     </div>
@@ -1087,7 +1087,6 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
     var dir = (e.key === 'ArrowRight' || e.key === 'PageDown') ? 1 : (e.key === 'ArrowLeft' || e.key === 'PageUp' || (e.key === 'Escape' && aboutShown)) ? -1 : 0;
     var t = dir && navTarget(dir, true); if (t) { e.preventDefault(); t.go(true); }
   });
-  landing.addEventListener('wheel', function (e) { if (Math.abs(e.deltaY) > 18 || e.deltaX > 18) showHub(true); }, { passive: true });
   (function () {
     var x0 = null, y0 = null;
     function start(e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }
@@ -1156,19 +1155,25 @@ function goExtra(n, jump) {
   else { window.scrollTo(0, 0); startMusic(); kbFocus($('#toAbout')); }
   syncAnim(); updateNav(); vidSync(); moreSync();
 }
-/* The video player is only created while its screen is showing (and removed on leaving, which stops playback).
-   Hosts whose content security policy blocks other sites' frames (claude.ai artifacts) keep the Watch on YouTube card. */
-var vidBlocked = false, VID_SRC = 'https://www.youtube-nocookie.com/embed/05zyH7eds8s?rel=0&playsinline=1';
+/* The video starts as a poster with a play button; the YouTube player is created only when it is clicked
+   (and removed on leaving the screen, which stops playback). Until then, scrolling over the video still changes
+   screens, which a live player would swallow. Hosts that block other sites' frames (claude.ai artifacts, file://)
+   keep the poster as a plain Watch on YouTube link. */
+var vidBlocked = /claude/i.test(location.hostname) || location.protocol === 'file:',
+    VID_SRC = 'https://www.youtube-nocookie.com/embed/05zyH7eds8s?rel=0&playsinline=1&autoplay=1';
 document.addEventListener('securitypolicyviolation', function (e) {
   if (/youtube/.test(e.blockedURI || '')) { vidBlocked = true; var f = $('#vidFrame iframe'); if (f) f.remove(); }
 });
+function vidPlay() {
+  var box = $('#vidFrame'); if (box.querySelector('iframe')) return;
+  var f = document.createElement('iframe'); f.src = VID_SRC; f.title = 'Video';
+  f.allow = 'autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen'; f.allowFullscreen = true;
+  f.referrerPolicy = 'strict-origin-when-cross-origin'; box.appendChild(f);
+}
+$('#vidFrame .vid-poster').addEventListener('click', function (e) { if (vidBlocked) return; e.preventDefault(); vidPlay(); });
 function vidSync() {
-  var on = xIndex > 0 && xScreens[xIndex - 1].id === 'videoScreen', box = $('#vidFrame'), f = box.querySelector('iframe');
-  if (on && !f && !vidBlocked) {
-    f = document.createElement('iframe'); f.src = VID_SRC; f.title = 'Video';
-    f.allow = 'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen'; f.allowFullscreen = true;
-    f.referrerPolicy = 'strict-origin-when-cross-origin'; box.appendChild(f);
-  } else if (!on && f) f.remove();
+  var on = xIndex > 0 && xScreens[xIndex - 1].id === 'videoScreen', f = $('#vidFrame iframe');
+  if (!on && f) f.remove();
 }
 function moreSync() {
   xScreens.forEach(function (el, k) {
@@ -1187,7 +1192,6 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
   xScreens.forEach(function (el) {
     el.hidden = false; el.inert = true; el.setAttribute('aria-hidden', 'true');
     el.addEventListener('click', function (e) { var b = e.target.closest('[data-xgo]'); if (b) goExtra(xIndex + (b.dataset.xgo === 'next' ? 1 : -1)); });
-    el.addEventListener('wheel', function (e) { if (e.deltaX < -18) goExtra(xIndex - 1); else if (e.deltaX > 18) goExtra(xIndex + 1); }, { passive: true });
     var x0 = null, y0 = null, sc = el.querySelector('.am-scroll');
     el.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
     el.addEventListener('touchend', function (e) {
@@ -1204,6 +1208,35 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
   scrPrev.addEventListener('click', function (e) { var t = navTarget(-1); if (t) t.go(e.detail ? 'pointer' : true); });
   scrNext.addEventListener('click', function (e) { var t = navTarget(1); if (t) t.go(e.detail ? 'pointer' : true); });
   window.addEventListener('resize', updateNav);
+  /* Scrolling (mouse wheel or trackpad) changes screens. A screen with more to read scrolls first and only moves on
+     once you are at its top or bottom. One gesture moves one screen: a trackpad's long tail of momentum is ignored
+     until the wheel has been still for a moment. */
+  (function () {
+    var acc = 0, lastT = 0, gestureDone = false, startEdge = { up: false, down: false };
+    function scroller() {
+      if (landingShown) return null;
+      if (xIndex > 0) return xScreens[xIndex - 1].querySelector('.am-scroll');
+      return document.scrollingElement || document.documentElement;
+    }
+    function atEdge(dir) {
+      var sc = scroller(); if (!sc) return true;
+      return dir > 0 ? sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 2 : sc.scrollTop <= 1;
+    }
+    window.addEventListener('wheel', function (e) {
+      if (openEl || appOpen || editing || e.ctrlKey) return;
+      var now = Date.now(), dy = e.deltaMode === 1 ? e.deltaY * 32 : e.deltaY;
+      if (Math.abs(e.deltaX) > Math.abs(dy) && !landingShown) return;   /* sideways swipes are not screen changes */
+      if (now - lastT > 220) { acc = 0; gestureDone = false; startEdge = { up: atEdge(-1), down: atEdge(1) }; }   /* a new gesture */
+      lastT = now;
+      if (gestureDone || now < landingLock) return;
+      var dir = dy > 0 ? 1 : -1;
+      if (!(dir > 0 ? startEdge.down : startEdge.up)) return;       /* still reading: let the page scroll */
+      acc += dy;
+      if (Math.abs(acc) < 40) return;
+      var t = navTarget(dir); gestureDone = true; acc = 0;
+      if (t) t.go(true);
+    }, { passive: true });
+  })();
   updateNav();
 }
 
