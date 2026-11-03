@@ -328,6 +328,38 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 .about-me .more-hint{position:absolute;left:0;right:0;bottom:0;height:70px;z-index:3;pointer-events:none;background:linear-gradient(to bottom,rgba(11,16,24,0),#0b1018 78%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;font:700 10.5px Archivo,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(231,234,240,.55);opacity:0;transition:opacity .25s}
 .about-me.more .more-hint{opacity:1}
 body.dnav .about-me .more-hint{bottom:52px}body.dnav #getInTouch .more-hint{bottom:0}
+/* ---- demo: first-visit tutorial, a game-style guide over the hub ---- */
+.tut{position:fixed;inset:0;z-index:80;cursor:default}
+.tut[hidden]{display:none}
+.tut-hole{position:fixed;left:50%;top:45%;width:0;height:0;border-radius:22px;box-shadow:0 0 0 200vmax rgba(3,7,15,.74);transition:left .45s cubic-bezier(.22,.61,.36,1),top .45s cubic-bezier(.22,.61,.36,1),width .45s cubic-bezier(.22,.61,.36,1),height .45s cubic-bezier(.22,.61,.36,1);pointer-events:none}
+.tut-hole.on{border:3px solid var(--amber);box-shadow:0 0 0 200vmax rgba(3,7,15,.74),0 0 28px rgba(255,211,110,.75),inset 0 0 18px rgba(255,211,110,.35);animation:tutGlow 1.6s ease-in-out infinite}
+@keyframes tutGlow{50%{box-shadow:0 0 0 200vmax rgba(3,7,15,.74),0 0 44px rgba(255,211,110,.95),inset 0 0 26px rgba(255,211,110,.5)}}
+.tut-hand{position:fixed;width:58px;height:58px;pointer-events:none;opacity:0;transition:left .45s cubic-bezier(.22,.61,.36,1),top .45s cubic-bezier(.22,.61,.36,1),opacity .3s;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6))}
+.tut-hand.on{opacity:1}
+.tut-hand g{animation:tutTap 1.1s ease-in-out infinite;transform-origin:20px 6px}
+@keyframes tutTap{0%,100%{transform:translate(0,0) scale(1)}45%{transform:translate(-4px,-6px) scale(.92)}55%{transform:translate(-4px,-6px) scale(.92)}}
+.tut-ripple{position:fixed;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;border:3px solid var(--amber);pointer-events:none;opacity:0}
+.tut-ripple.on{animation:tutRip 1.1s ease-out infinite}
+@keyframes tutRip{0%,40%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(.6)}100%{opacity:0;transform:scale(3.2)}}
+.tut-box{position:fixed;left:50%;bottom:72px;transform:translateX(-50%);width:min(720px,calc(100vw - 24px));display:flex;gap:16px;align-items:flex-start;padding:18px 20px 16px;border-radius:18px;background:linear-gradient(180deg,#18264a,#0f1a33);border:3px solid #ffd36e;box-shadow:0 0 0 5px #0b1120,0 0 0 7px rgba(255,211,110,.35),0 24px 60px rgba(0,0,0,.7);color:#eef4ff;font-family:Nunito,system-ui,sans-serif}
+.tut-face{flex:none;width:58px;height:58px;border-radius:14px;background:radial-gradient(circle at 35% 30%,#2bd4a6,#1b5a4f);border:2px solid #9fe8d4;display:flex;align-items:center;justify-content:center;font:900 22px Archivo,sans-serif;color:#0b1018;letter-spacing:.02em}
+.tut-body{flex:1;min-width:0}
+.tut-name{font-size:12px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#ffd36e;margin-bottom:4px}
+.tut-text{margin:0;min-height:3.2em;font-size:17.5px;line-height:1.55;font-weight:700}
+.tut-ctrl{display:flex;align-items:center;gap:10px;margin-top:12px}
+.tut-step{margin-right:auto;font-size:12px;font-weight:800;letter-spacing:1.5px;color:#9fb3d3}
+.tut-skip{background:none;border:0;color:#9fb3d3;font:800 13px Nunito,system-ui,sans-serif;cursor:pointer;padding:8px 6px;text-decoration:underline;text-underline-offset:3px}
+.tut-skip:hover{color:#eef4ff}
+.tut-next{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:0 18px;border-radius:999px;border:0;background:#ffd36e;color:#1a1200;font:900 15px Nunito,system-ui,sans-serif;cursor:pointer;box-shadow:0 0 16px rgba(255,211,110,.5)}
+.tut-next:hover,.tut-next:focus-visible{background:#ffe29a}
+.tut-next i{display:inline-block;width:0;height:0;border-left:8px solid currentColor;border-top:6px solid transparent;border-bottom:6px solid transparent;animation:tutBlink 1s steps(2) infinite}
+@keyframes tutBlink{50%{opacity:0}}
+.tut-replay{position:fixed;right:16px;top:58px;z-index:6;display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 10px;border-radius:999px;border:2px solid rgba(255,211,110,.7);background:#16213A;color:#FFE9A8;font:800 12px Nunito,system-ui,sans-serif;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer}
+.tut-replay[hidden]{display:none}
+.tut-replay:hover{border-color:#ffd36e}
+.tut-replay b{display:inline-flex;width:18px;height:18px;border-radius:50%;background:#ffd36e;color:#1a1200;align-items:center;justify-content:center;font-size:12px}
+@media (max-width:760px){.tut-box{bottom:62px;padding:14px 14px 12px;gap:12px}.tut-face{width:44px;height:44px;font-size:17px;border-radius:11px}.tut-text{font-size:15.5px}.tut-replay{top:auto;bottom:62px;right:12px}}
+@media (prefers-reduced-motion:reduce){.tut-hole,.tut-hand{transition:none}.tut-hole.on,.tut-hand g,.tut-ripple.on,.tut-next i{animation:none}}
 /* ---- demo: persistent screen navigation: a bar across the top (previous screen) and one across the bottom (next), on every screen size ---- */
 .scr-nav{position:fixed;left:0;right:0;z-index:66;height:48px;padding:0 16px;border:0;background:rgba(11,16,24,.95);color:#5cbfad;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent;transition:background .2s,color .2s}
 .scr-nav[hidden]{display:none}
@@ -469,6 +501,20 @@ HTML = r"""<!doctype html>
   <button class="to-landing" id="toLanding" type="button" aria-label="Home: Henry McGee"><svg class="tl-back" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Home</button>
   <button class="to-landing" id="toAbout" type="button" aria-label="About me">About me<svg class="tl-fwd" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
 </nav>
+<div class="tut" id="tut" hidden>
+  <div class="tut-hole" id="tutHole"></div>
+  <span class="tut-ripple" id="tutRipple"></span>
+  <svg class="tut-hand" id="tutHand" viewBox="0 0 48 56" aria-hidden="true"><g><path d="M19 4c2.8 0 4.6 2 4.6 4.8v14.4l1.6-.4c2.2-.6 4.2.6 4.8 2.4l1.8-.4c2.2-.4 4 .8 4.6 2.6l1.4-.2c2.4-.2 4.4 1.6 4.4 4v8.6c0 7.4-5.6 13.8-13.2 13.8h-3.4c-4 0-7.6-2-9.8-5.4L7.4 33.6c-1.4-2-.8-4.6 1.2-5.8 1.8-1 4-.6 5.4 1l.4.6V8.8C14.4 6 16.2 4 19 4z" fill="#fff4dc" stroke="#1a1200" stroke-width="2.4" stroke-linejoin="round"/><path d="M23.6 23v8M30 25.4v6.6M36 27.6v5.4" stroke="#1a1200" stroke-width="2" stroke-linecap="round"/></g></svg>
+  <div class="tut-box" role="dialog" aria-modal="true" aria-labelledby="tutName">
+    <div class="tut-face" aria-hidden="true">HM</div>
+    <div class="tut-body">
+      <div class="tut-name" id="tutName">Henry</div>
+      <p class="tut-text" id="tutText" aria-live="polite"></p>
+      <div class="tut-ctrl"><span class="tut-step" id="tutStep"></span><button class="tut-skip" type="button" id="tutSkip">Skip tutorial</button><button class="tut-next" type="button" id="tutNext"><span id="tutNextLabel">Next</span> <i></i></button></div>
+    </div>
+  </div>
+</div>
+<button class="tut-replay" type="button" id="tutReplay" hidden aria-label="Replay the tutorial"><b>?</b>Tutorial</button>
 <button class="scr-nav scr-prev" id="scrPrev" type="button" hidden><span class="sn-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span><span class="sn-label"></span></button>
 <button class="scr-nav scr-next" id="scrNext" type="button" hidden><span class="sn-label"></span><span class="sn-chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span></button>
 <section class="about-me away" id="aboutMe" aria-label="About me" hidden>
@@ -1058,12 +1104,14 @@ function showHub(fromUser) {
   if (fromUser) { unlockAudio(); chime(); startMusic(); }
   syncAnim(); updateNav();
   kbFocus(track.querySelector('.chan'));
+  tutMaybe();
 }
 function showLanding() {
+  if (tutOn) return;
   if (landingShown || aboutShown || Date.now() < landingLock || openEl || appOpen || editing) return;
   landingShown = true; landingLock = Date.now() + 750;
   landing.classList.remove('away'); landing.removeAttribute('aria-hidden'); landing.inert = false;
-  toLanding.hidden = true; landingStore('landing'); stopMusic(); syncAnim(); updateNav();
+  toLanding.hidden = true; landingStore('landing'); stopMusic(); syncAnim(); updateNav(); $('#tutReplay').hidden = true;
   document.documentElement.classList.add('lp-lock'); document.body.classList.remove('lp-on-hub');
   kbFocus($('#lpNext'));
 }
@@ -1135,6 +1183,7 @@ function updateNav() {
 /* Screens after the hub (demo): 1 About me, 2 AI fluency. Earlier screens slide off to the left (up on phones). */
 var xScreens = [$('#aboutMe'), $('#videoScreen'), $('#aiFluency'), $('#outsideWork'), $('#getInTouch')], xIndex = 0;
 function goExtra(n, jump) {
+  if (tutOn) return;
   n = Math.max(0, Math.min(xScreens.length, n));
   if (n === xIndex || landingShown || Date.now() < landingLock || openEl || appOpen || editing) return;
   var from = xIndex;
@@ -1154,6 +1203,7 @@ function goExtra(n, jump) {
   if (n > 0) { stopMusic(); kbFocus(xScreens[n - 1].querySelector('.am-back') || scrPrev); }
   else { window.scrollTo(0, 0); startMusic(); kbFocus($('#toAbout')); }
   syncAnim(); updateNav(); vidSync(); moreSync();
+  $('#tutReplay').hidden = !(MODE === 'demo' && dnav && n === 0);
 }
 /* The video starts as a poster with a play button; the YouTube player is created only when it is clicked
    (and removed on leaving the screen, which stops playback). Until then, scrolling over the video still changes
@@ -1240,6 +1290,100 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
   updateNav();
 }
 
+
+
+/* ---------- demo tutorial: an RPG-style text box that introduces the hub, then points at each channel ---------- */
+var tutOn = false, tutI = 0, tutSteps = [], tutTimer = 0, tutTyping = false;
+var TUT_LINES = {
+  crm: 'CRM tracks my networking and my internship applications. Tap it for a short walkthrough, then open a demo copy with sample data.',
+  watch: 'internship-watch checks about 100 company career sites every morning for Summer 2027 product internships.',
+  jobs: 'The Public Job Board shares what internship-watch finds with other UT students, with a feedback form that files GitHub issues.',
+  jira: 'Jira shows how I planned the work: spec sheets turned into epics and stories, plus a read-only copy of the board.',
+  github: 'GitHub lists the code behind every app, one repository each.',
+  starr: 'STARR Story Bank keeps my interview stories and lets me practice them on video.',
+  planner: 'McCombs Course Planner helps me spend my class-bidding points. The demo uses made-up data.'
+};
+function tutDone() { try { return localStorage.getItem('aihub-tutorial-v1') === 'done'; } catch (e) { return false; } }
+function tutBuild() {
+  var s = [
+    { text: "Hi, I'm Henry! Welcome to AI-HUB, my channel menu of apps I built with AI. Let me show you around." },
+    { text: 'Each tile is a channel. Tap one and a short walkthrough explains what the app does and how I built it.', target: function () { return $('#track .page'); } }
+  ];
+  Array.prototype.forEach.call(track.querySelectorAll('.chan[data-id]'), function (c) {
+    var id = c.dataset.id; if (!TUT_LINES[id]) return;
+    s.push({ text: TUT_LINES[id], target: function () { return track.querySelector('.chan[data-id="' + id + '"]'); }, tap: true, name: ITEMS[id] && ITEMS[id].name });
+  });
+  s.push({ text: 'When you are done exploring, the bar at the bottom (or scrolling down) takes you to About me, a video, AI fluency, Leadership and how to reach me.', target: function () { return scrNext.hidden ? null : scrNext; }, pad: 0 });
+  s.push({ text: 'Your turn! Tap any channel to start. You can replay this from the Tutorial button.', last: true });
+  return s;
+}
+function tutPlace(el, pad, tap) {
+  var hole = $('#tutHole'), hand = $('#tutHand'), rip = $('#tutRipple');
+  if (!el) { hole.classList.remove('on'); hole.style.left = '50%'; hole.style.top = '45%'; hole.style.width = '0px'; hole.style.height = '0px'; hand.classList.remove('on'); rip.classList.remove('on'); return; }
+  var r = el.getBoundingClientRect(), p = pad == null ? 8 : pad;
+  hole.classList.add('on');
+  hole.style.left = (r.left - p) + 'px'; hole.style.top = (r.top - p) + 'px'; hole.style.width = (r.width + 2 * p) + 'px'; hole.style.height = (r.height + 2 * p) + 'px';
+  hole.style.borderRadius = p ? '22px' : '0';
+  if (tap) {
+    var x = r.left + r.width * 0.62, y = r.top + r.height * 0.5;
+    hand.style.left = (x - 14) + 'px'; hand.style.top = (y - 4) + 'px'; hand.classList.add('on');
+    rip.style.left = (x + 4) + 'px'; rip.style.top = (y) + 'px'; rip.classList.add('on');
+  } else { hand.classList.remove('on'); rip.classList.remove('on'); }
+}
+function tutType(text) {
+  var p = $('#tutText'); clearInterval(tutTimer);
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { p.textContent = text; tutTyping = false; return; }
+  var i = 0; p.textContent = ''; tutTyping = true;
+  tutTimer = setInterval(function () { i += 2; p.textContent = text.slice(0, i); if (i >= text.length) { clearInterval(tutTimer); tutTyping = false; } }, 22);
+}
+function tutShow(i) {
+  tutI = i; var st = tutSteps[i]; if (!st) { tutEnd(); return; }
+  $('#tutStep').textContent = (i + 1) + ' / ' + tutSteps.length;
+  $('#tutNextLabel').textContent = st.last ? "Let's go" : 'Next';
+  $('#tutSkip').hidden = !!st.last;
+  $('#tutName').textContent = st.name ? 'Henry · ' + st.name : 'Henry';
+  var el = st.target ? st.target() : null;
+  if (el && el !== scrNext) {
+    var r = el.getBoundingClientRect(), boxTop = $('.tut-box').getBoundingClientRect().top;
+    if (r.top < 60 || r.bottom > boxTop - 12) { el.scrollIntoView({ block: 'center' }); }
+  }
+  tutPlace(null); setTimeout(function () { if (tutI === i && tutOn) tutPlace(el, st.pad, st.tap); }, el ? 60 : 0);
+  tutType(st.text);
+}
+function tutNextStep() {
+  if (tutTyping) { clearInterval(tutTimer); tutTyping = false; $('#tutText').textContent = tutSteps[tutI].text; return; }
+  tutShow(tutI + 1);
+}
+function tutStart() {
+  if (MODE !== 'demo' || landingShown || aboutShown || openEl || appOpen) return;
+  tutSteps = tutBuild(); tutOn = true; window.scrollTo(0, 0);
+  var t = $('#tut'); t.hidden = false; $('#tutReplay').hidden = true;
+  tutShow(0); setTimeout(function () { $('#tutNext').focus({ preventScroll: true }); }, 50);
+}
+function tutEnd() {
+  tutOn = false; clearInterval(tutTimer); $('#tut').hidden = true; tutPlace(null);
+  try { localStorage.setItem('aihub-tutorial-v1', 'done'); } catch (e) {}
+  window.scrollTo(0, 0); $('#tutReplay').hidden = !(MODE === 'demo' && !landingShown && !aboutShown);
+  var c = track.querySelector('.chan'); if (c) c.focus({ preventScroll: true });
+}
+function tutMaybe() {
+  if (MODE !== 'demo') return;
+  $('#tutReplay').hidden = false;
+  if (!tutDone() && q.get('tutorial') !== '0') setTimeout(function () { if (!landingShown && !aboutShown && !openEl && !appOpen && !tutOn) tutStart(); }, 900);
+}
+if (MODE === 'demo') {
+  $('#tutNext').addEventListener('click', tutNextStep);
+  $('#tutSkip').addEventListener('click', tutEnd);
+  $('#tutReplay').addEventListener('click', tutStart);
+  document.addEventListener('keydown', function (e) {
+    if (!tutOn) return;
+    if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); tutEnd(); }
+    else if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); e.stopImmediatePropagation(); tutNextStep(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); e.stopImmediatePropagation(); if (tutI > 0) tutShow(tutI - 1); }
+  }, true);
+  window.addEventListener('wheel', function (e) { if (tutOn) e.stopImmediatePropagation(); }, { capture: true, passive: true });
+  window.addEventListener('resize', function () { if (tutOn) { var st = tutSteps[tutI]; tutPlace(st && st.target ? st.target() : null, st && st.pad, st && st.tap); } });
+}
 
 /* ---------- demo walkthroughs ---------- */
 var demoId = null, demoStep = 0;
