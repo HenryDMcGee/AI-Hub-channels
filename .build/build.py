@@ -155,7 +155,7 @@ button{font:inherit;color:inherit}
 .ribbon.update.open span{white-space:normal;letter-spacing:.4px;text-transform:none;font-weight:600;font-size:13px}
 /* ---- demo landing: the mcgeehenry.com hero first, AI-HUB one click or swipe away ---- */
 .landing{position:fixed;inset:0;z-index:65;touch-action:none;overscroll-behavior:contain;display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);grid-template-rows:minmax(0,1fr);overflow:hidden;color:#fff;font-family:"IBM Plex Sans",system-ui,sans-serif;font-weight:300;background:radial-gradient(85% 70% at 22% 12%,rgba(92,191,173,.10),transparent 62%),radial-gradient(70% 60% at 78% 88%,rgba(47,109,98,.12),transparent 70%),#0b1018;transition:transform .7s cubic-bezier(.22,.61,.36,1);will-change:transform}
-.landing.away{transform:translateX(-100%)}
+.landing.away{transform:translateY(-100%)}
 .landing a{color:inherit}
 .lp-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:30px clamp(18px,3.4vw,48px);z-index:3}
 .lp-mark{font-family:Archivo,sans-serif;font-weight:700;font-size:15px;letter-spacing:.02em}
@@ -213,7 +213,7 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 .to-landing .tl-fwd{width:15px;height:15px;fill:none;stroke:#5cbfad;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 #toAbout{padding:0 12px 0 16px}
 .about-me{position:fixed;inset:0;z-index:64;background:#0b1018;color:#e7eaf0;font-family:"IBM Plex Sans",system-ui,sans-serif;font-weight:300;transition:transform .7s cubic-bezier(.22,.61,.36,1);will-change:transform;overscroll-behavior:contain}
-.about-me.away{transform:translateX(100%)}
+.about-me.away{transform:translateY(100%)}
 .am-back{position:absolute;left:0;top:0;bottom:0;width:92px;z-index:2;border:0;border-right:1px solid rgba(255,255,255,.08);background:linear-gradient(to left,rgba(11,16,24,0),rgba(92,191,173,.10));color:#5cbfad;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0;font:inherit}
 .am-back:hover{background:linear-gradient(to left,rgba(11,16,24,0),rgba(92,191,173,.2))}
 .am-back-label{writing-mode:vertical-rl;transform:rotate(180deg);font:700 12px Archivo,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#e7eaf0}
@@ -245,7 +245,7 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 }
 @keyframes amnudgev{0%,100%{transform:rotate(90deg) translateX(0)}50%{transform:rotate(90deg) translateX(-5px)}}
 @media (prefers-reduced-motion:reduce){.about-me{transition:none}.am-chev{animation:none}}
-.about-me.past{transform:translateX(-100%)}
+.about-me.past{transform:translateY(-100%)}
 .am-fwd{position:absolute;right:0;top:0;bottom:0;width:92px;z-index:2;border:0;border-left:1px solid rgba(255,255,255,.08);background:linear-gradient(to right,rgba(11,16,24,0),rgba(92,191,173,.10));color:#5cbfad;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0;font:inherit}
 .am-fwd:hover{background:linear-gradient(to right,rgba(11,16,24,0),rgba(92,191,173,.2))}
 .am-fwd-label{writing-mode:vertical-rl;font:700 12px Archivo,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#e7eaf0}
