@@ -2,7 +2,7 @@
 setlocal
 rem AI-HUB laptop launcher (Windows).
 rem 1) pulls the latest hub from GitHub (skipped quietly when offline or when you have local edits)
-rem 2) opens index.html in Chrome or Edge as an app window (no address bar)
+rem 2) opens index.html in Firefox (a new window), or in Chrome or Edge as an app window if Firefox is missing
 rem Change CHANNEL to "release" to follow tagged releases instead of main.
 set "CHANNEL=main"
 
@@ -36,6 +36,13 @@ if %errorlevel%==0 (
 :open
 set "URL=file:///%ABS:\=/%/index.html"
 set "PF86=%ProgramFiles(x86)%"
+set "FIREFOX="
+if exist "%ProgramFiles%\Mozilla Firefox\firefox.exe" set "FIREFOX=%ProgramFiles%\Mozilla Firefox\firefox.exe"
+if not defined FIREFOX if exist "%PF86%\Mozilla Firefox\firefox.exe" set "FIREFOX=%PF86%\Mozilla Firefox\firefox.exe"
+if defined FIREFOX (
+  start "" "%FIREFOX%" -new-window "%URL%"
+  goto done
+)
 set "BROWSER="
 if exist "%ProgramFiles%\Google\Chrome\Application\chrome.exe" set "BROWSER=%ProgramFiles%\Google\Chrome\Application\chrome.exe"
 if not defined BROWSER if exist "%PF86%\Google\Chrome\Application\chrome.exe" set "BROWSER=%PF86%\Google\Chrome\Application\chrome.exe"
@@ -48,5 +55,6 @@ if defined BROWSER (
 ) else (
   start "" "%URL%"
 )
+:done
 popd
 endlocal
