@@ -2,7 +2,7 @@
 setlocal
 rem AI-HUB laptop launcher (Windows).
 rem 1) pulls the latest hub from GitHub (skipped quietly when offline or when you have local edits)
-rem 2) opens index.html in Firefox (a new window), or in Chrome or Edge as an app window if Firefox is missing
+rem 2) opens index.html as an app window (Edge, else Chrome: no tabs or address bar)
 rem Change CHANNEL to "release" to follow tagged releases instead of main.
 set "CHANNEL=main"
 
@@ -36,25 +36,17 @@ if %errorlevel%==0 (
 :open
 set "URL=file:///%ABS:\=/%/index.html"
 set "PF86=%ProgramFiles(x86)%"
-set "FIREFOX="
-if exist "%ProgramFiles%\Mozilla Firefox\firefox.exe" set "FIREFOX=%ProgramFiles%\Mozilla Firefox\firefox.exe"
-if not defined FIREFOX if exist "%PF86%\Mozilla Firefox\firefox.exe" set "FIREFOX=%PF86%\Mozilla Firefox\firefox.exe"
-if defined FIREFOX (
-  start "" "%FIREFOX%" -new-window "%URL%"
-  goto done
-)
 set "BROWSER="
-if exist "%ProgramFiles%\Google\Chrome\Application\chrome.exe" set "BROWSER=%ProgramFiles%\Google\Chrome\Application\chrome.exe"
+if exist "%PF86%\Microsoft\Edge\Application\msedge.exe" set "BROWSER=%PF86%\Microsoft\Edge\Application\msedge.exe"
+if not defined BROWSER if exist "%ProgramFiles%\Microsoft\Edge\Application\msedge.exe" set "BROWSER=%ProgramFiles%\Microsoft\Edge\Application\msedge.exe"
+if not defined BROWSER if exist "%ProgramFiles%\Google\Chrome\Application\chrome.exe" set "BROWSER=%ProgramFiles%\Google\Chrome\Application\chrome.exe"
 if not defined BROWSER if exist "%PF86%\Google\Chrome\Application\chrome.exe" set "BROWSER=%PF86%\Google\Chrome\Application\chrome.exe"
 if not defined BROWSER if exist "%LocalAppData%\Google\Chrome\Application\chrome.exe" set "BROWSER=%LocalAppData%\Google\Chrome\Application\chrome.exe"
-if not defined BROWSER if exist "%PF86%\Microsoft\Edge\Application\msedge.exe" set "BROWSER=%PF86%\Microsoft\Edge\Application\msedge.exe"
-if not defined BROWSER if exist "%ProgramFiles%\Microsoft\Edge\Application\msedge.exe" set "BROWSER=%ProgramFiles%\Microsoft\Edge\Application\msedge.exe"
 
 if defined BROWSER (
-  start "" "%BROWSER%" --app="%URL%" --window-size=1280,860
+  start "" "%BROWSER%" --app="%URL%" --window-size=1366,860
 ) else (
   start "" "%URL%"
 )
-:done
 popd
 endlocal
