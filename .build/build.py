@@ -716,6 +716,8 @@ var logEv = (function () {
     if (localStorage.getItem('mh-notrack') === '1') on = false;
   } catch (e) {}
   if (navigator.globalPrivacyControl) on = false;
+  if (q.get('view')) on = false;   /* a screen preview inside /insights, not a visit */
+  var heat = {}, heatN = 0;
   var t0 = Date.now(), sid = '', queue = [], sent = 0, lastKey = '', via = 'load', viaT = 0, CAP = 600;
   function clarity() { if (typeof window.clarity === 'function') try { window.clarity.apply(null, arguments); } catch (e) {} }
   if (on) {
@@ -738,16 +740,34 @@ var logEv = (function () {
     document.addEventListener('visibilitychange', function () { if (document.hidden) flush(true); });
     window.addEventListener('pagehide', function () { send('end', { s: Math.round((Date.now() - t0) / 1000) }); flush(true); });
     setInterval(function () { flush(false); }, 8000);
+    /* mouse heatmap: where the pointer rests and clicks, binned into an 80 x 45 grid of the window, per screen
+       (send.ctx, set further down, names it). Ten samples a second while the mouse is moving or was in the last 3 s. */
+    if (matchMedia('(pointer: fine)').matches) {
+      var mx = -1, my = -1, mt = 0;
+      var cell = function (x, y) { return Math.min(44, Math.max(0, Math.floor(y / innerHeight * 45))) * 80 + Math.min(79, Math.max(0, Math.floor(x / innerWidth * 80))); };
+      var wc = function () { return innerWidth >= 1600 ? 'wide' : innerWidth >= 1000 ? 'laptop' : 'small'; };
+      var bump = function (x, y, k) {
+        var c = send.ctx && send.ctx(); if (!c) return;
+        var id = c + '|' + wc() + '|' + cell(x, y), h = heat[id] || (heat[id] = [0, 0]); h[k]++; heatN++;
+      };
+      window.addEventListener('mousemove', function (e) { mx = e.clientX; my = e.clientY; mt = Date.now(); }, { passive: true });
+      document.addEventListener('mouseleave', function () { mx = -1; });
+      window.addEventListener('blur', function () { mx = -1; });
+      window.addEventListener('pointerdown', function (e) { if (e.pointerType === 'mouse') bump(e.clientX, e.clientY, 1); }, { capture: true, passive: true });
+      setInterval(function () { if (mx >= 0 && !document.hidden && Date.now() - mt < 3000) bump(mx, my, 0); }, 100);
+    }
     fetch('/api/t/on', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
-      if (j && j.on === false) { on = false; send.on = false; queue.length = 0; var pn = document.getElementById('gitPrivacy'); if (pn) pn.hidden = true; }
+      if (j && j.on === false) { on = false; send.on = false; queue.length = 0; heat = {}; var pn = document.getElementById('gitPrivacy'); if (pn) pn.hidden = true; }
     }).catch(function () {});
   }
   function flush(beacon) {
-    if (!queue.length) return;
-    var body = JSON.stringify({ sid: sid, meta: meta(), ev: queue.splice(0, 60) });
+    if (!on || (!queue.length && !heatN)) return;
+    var hk = Object.keys(heat).slice(0, 400), hv = hk.map(function (k) { var p = k.split('|'); return [p[0], p[1], +p[2], heat[k][0], heat[k][1]]; });
+    hk.forEach(function (k) { delete heat[k]; }); heatN = Object.keys(heat).length;
+    var body = JSON.stringify({ sid: sid, meta: meta(), ev: queue.splice(0, 60), heat: hv });
     if (beacon && navigator.sendBeacon) navigator.sendBeacon('/api/t', new Blob([body], { type: 'application/json' }));
     else fetch('/api/t', { method: 'POST', headers: { 'content-type': 'application/json' }, body: body, keepalive: true }).catch(function () {});
-    if (queue.length) flush(beacon);
+    if (queue.length || heatN) flush(beacon);
   }
   var ret = false;
   if (on) try { ret = sessionStorage.getItem('mh-ret') === '1' || (!sessionStorage.getItem('mh-ret') && !!localStorage.getItem('mh-seen')); sessionStorage.setItem('mh-ret', ret ? '1' : '0'); localStorage.setItem('mh-seen', '1'); } catch (e) {}
@@ -1197,7 +1217,7 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
   boot.hidden = true; booted = false;
   var lastScreen = null; try { lastScreen = sessionStorage.getItem('aihub-screen'); } catch (e) {}
   landing.hidden = false; landingShown = true; document.documentElement.classList.add('lp-lock'); syncAnim();
-  if (lastScreen === 'hub') showHub(false);
+  if (lastScreen === 'hub' && !q.get('view')) showHub(false);
   $('#lpNext').addEventListener('click', function (e) { showHub(e.detail ? 'pointer' : true); });
   $('#lpWork').addEventListener('click', function (e) { showHub(e.detail ? 'pointer' : true); });
   /* Get in touch on the landing goes straight to the last screen */
@@ -1256,6 +1276,13 @@ function trackScreen() {
   var sc = curScreen(); if (sc === lastScr) return;
   lastScr = sc; logEv('screen', { to: SCR_NAMES[sc] });
 }
+/* what the visitor is looking at, for the mouse heatmap (null: a demo app, whose frame the hub cannot see into) */
+logEv.ctx = function () {
+  if (appOpen || !$('#lightbox').hidden) return null;
+  if (openEl) return openEl.id === 'demo' ? 'Walkthrough' : openEl.id === 'folder' ? 'GitHub list' : null;
+  if (tutOn) return 'Tutorial';
+  return SCR_NAMES[curScreen()];
+};
 function updateNav() {
   trackScreen();
   if (!dnav) return;
@@ -1548,6 +1575,16 @@ document.addEventListener('click', function (e) {
   else if (a.id === 'folder-more') logEv('repo', { name: 'profile' });
   else if (/^https?:/.test(h)) logEv('out', { host: a.hostname });
 }, true);
+/* ?view=<screen> opens straight onto one screen without logging anything: the backdrops for /insights' heatmaps */
+(function () {
+  var v = q.get('view'); if (MODE !== 'demo' || !v || v === 'Home') return;
+  var n = SCR_NAMES.indexOf(v);
+  showHub(false); landingLock = 0;
+  if (n > 1) goExtra(n - 1, true);
+  else if (v === 'Walkthrough') openDemo(q.get('channel') || 'watch');
+  else if (v === 'GitHub list') openDemo('github');
+  else if (v === 'Tutorial') { tutStart(); if (tutSteps.length > 2) tutShow(2); }
+})();
 /* first screen of the visit; screen changes are logged from updateNav from here on */
 if (logEv.on) { $('#gitPrivacy').hidden = false; navReady = true; logEv('land', { lp: !!landingShown }); lastScr = curScreen(); }
 })();

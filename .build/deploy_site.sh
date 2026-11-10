@@ -26,7 +26,7 @@ if [ -n "$CLARITY_ID" ]; then
   python3 -I - "$SITE/public" "$CLARITY_ID" <<'PY'
 import sys, pathlib
 root, cid = pathlib.Path(sys.argv[1]), sys.argv[2]
-tag = ('<script>(function(){try{if(navigator.globalPrivacyControl||/[?&]notrack=1/.test(location.search)||localStorage.getItem("mh-notrack")==="1")return}catch(e){}'
+tag = ('<script>(function(){try{if(navigator.globalPrivacyControl||/[?&](notrack=1|view=)/.test(location.search)||localStorage.getItem("mh-notrack")==="1")return}catch(e){}'
        'window.clarity=window.clarity||function(){(window.clarity.q=window.clarity.q||[]).push(arguments)};'
        'fetch("/api/t/on",{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||j.on===false)return;'
        'var t=document.createElement("script");t.async=1;t.src="https://www.clarity.ms/tag/' + cid + '";document.head.appendChild(t)}).catch(function(){})})();</script>')
