@@ -706,12 +706,13 @@ var $ = function (s, r) { return (r || document).querySelector(s); };
    walkthrough, which demo app, whether they reach out) are batched and sent to /api/t, where mcgeehenry.com/insights/
    compares them with the happy path. No names, no addresses, no typing is recorded. The same events go to Microsoft
    Clarity (when its tag is on the page) so recordings can be filtered by them. Off for: the claude.ai artifact, local
-   files, browsers with Global Privacy Control, and any browser that opened /insights/ or ?notrack=1 (Henry's own). */
+   files, browsers with Global Privacy Control, and any browser that opened /insights/ or ?notrack=1 (Henry's own).
+   Henry can also switch recording off for everyone on /insights/: the hub asks /api/t/on first and stops if it is off. */
 var logEv = (function () {
   var on = MODE === 'demo' && (/(^|\.)mcgeehenry\.com$|\.workers\.dev$/.test(location.hostname) || q.get('track') === '1');
   try {
     if (q.get('notrack') === '1') localStorage.setItem('mh-notrack', '1');
-    if (q.get('notrack') === '0') localStorage.removeItem('mh-notrack');
+    if (q.get('notrack') === '0') localStorage.setItem('mh-notrack', '0');
     if (localStorage.getItem('mh-notrack') === '1') on = false;
   } catch (e) {}
   if (navigator.globalPrivacyControl) on = false;
@@ -737,6 +738,9 @@ var logEv = (function () {
     document.addEventListener('visibilitychange', function () { if (document.hidden) flush(true); });
     window.addEventListener('pagehide', function () { send('end', { s: Math.round((Date.now() - t0) / 1000) }); flush(true); });
     setInterval(function () { flush(false); }, 8000);
+    fetch('/api/t/on', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+      if (j && j.on === false) { on = false; send.on = false; queue.length = 0; var pn = document.getElementById('gitPrivacy'); if (pn) pn.hidden = true; }
+    }).catch(function () {});
   }
   function flush(beacon) {
     if (!queue.length) return;
