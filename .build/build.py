@@ -279,6 +279,7 @@ html.lp-lock,html.lp-lock body{overflow:hidden}
 .git-p{font-size:clamp(17px,1.45vw,20px);line-height:1.75;color:rgba(231,234,240,.8);max-width:44ch;margin:0 0 34px}
 .git-inner .lp-btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 30px;font-size:15px}
 .git-inner .lp-btn[hidden]{display:none}
+.git-privacy{margin:18px 0 0;font-size:12.5px;line-height:1.5;color:rgba(231,234,240,.4)}
 .git-foot{display:flex;justify-content:space-between;gap:20px;margin-top:64px;padding-top:28px;border-top:1px solid rgba(255,255,255,.13);font-size:14.5px;color:rgba(231,234,240,.45)}
 @media (max-width:760px){.git-inner .git-h{font-size:44px}.git-p{font-size:16.5px}.git-foot{margin-top:44px}}
 .vid-inner{width:min(1180px,100%)}
@@ -603,6 +604,7 @@ HTML = r"""<!doctype html>
       <p class="git-p">I&rsquo;m looking for a product management internship for summer 2027. If you&rsquo;re hiring, or you just want to talk about what the work is really like, I&rsquo;d like to hear from you.</p>
       <div class="lp-actions"><a class="lp-btn" data-mail="aGVucnltY2dlZUBteS51dGV4YXMuZWR1">Email me</a><a class="lp-btn lp-ghost" id="gitLinkedIn" data-url="aHR0cHM6Ly93d3cubGlua2VkaW4uY29tL2luL2hlbnJ5LW1jZ2VlLw==" target="_blank" rel="noopener">LinkedIn</a></div>
       <div class="git-foot"><span>Henry McGee</span><span>Austin, Texas</span></div>
+      <p class="git-privacy" id="gitPrivacy" hidden>To improve this site, visits are recorded anonymously (which screens and apps you open, plus Microsoft Clarity heatmaps and replays). No names or typing are kept. Browsers with Global Privacy Control are skipped.</p>
     </div>
   </div>
 </section>
@@ -698,6 +700,74 @@ else document.title = 'AI-HUB';
 if (MODE === 'demo') delete DEMOS.github;
 
 var $ = function (s, r) { return (r || document).querySelector(s); };
+
+/* ---------- visit path log (mcgeehenry.com only) ----------
+   Each visit gets a random id for this tab. The decisions a visitor makes (which screen, which channel, how far into a
+   walkthrough, which demo app, whether they reach out) are batched and sent to /api/t, where mcgeehenry.com/insights/
+   compares them with the happy path. No names, no addresses, no typing is recorded. The same events go to Microsoft
+   Clarity (when its tag is on the page) so recordings can be filtered by them. Off for: the claude.ai artifact, local
+   files, browsers with Global Privacy Control, and any browser that opened /insights/ or ?notrack=1 (Henry's own). */
+var logEv = (function () {
+  var on = MODE === 'demo' && (/(^|\.)mcgeehenry\.com$|\.workers\.dev$/.test(location.hostname) || q.get('track') === '1');
+  try {
+    if (q.get('notrack') === '1') localStorage.setItem('mh-notrack', '1');
+    if (q.get('notrack') === '0') localStorage.removeItem('mh-notrack');
+    if (localStorage.getItem('mh-notrack') === '1') on = false;
+  } catch (e) {}
+  if (navigator.globalPrivacyControl) on = false;
+  var t0 = Date.now(), sid = '', queue = [], sent = 0, lastKey = '', via = 'load', viaT = 0, CAP = 600;
+  function clarity() { if (typeof window.clarity === 'function') try { window.clarity.apply(null, arguments); } catch (e) {} }
+  if (on) {
+    try { sid = sessionStorage.getItem('mh-sid') || ''; var st = +sessionStorage.getItem('mh-t0'); if (sid && st) t0 = st; } catch (e) {}
+    if (!sid) {
+      sid = Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(9)), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+      try { sessionStorage.setItem('mh-sid', sid); sessionStorage.setItem('mh-t0', String(t0)); } catch (e) {}
+    }
+    clarity('identify', sid, sid);
+    /* how the visitor moved: the input that came just before a change */
+    var mark = function (k) { return function (e) { via = typeof k === 'function' ? k(e) : k; viaT = Date.now(); }; };
+    window.addEventListener('wheel', mark('scroll'), { capture: true, passive: true });
+    window.addEventListener('keydown', mark(function (e) { return 'key:' + e.key; }), true);
+    window.addEventListener('touchend', mark('swipe'), { capture: true, passive: true });
+    window.addEventListener('click', mark(function (e) {
+      var b = e.target.closest && e.target.closest('button,a,[role="button"]');
+      if (!b) return 'tap';
+      return b.id === 'scrPrev' || b.id === 'scrNext' ? 'bar' : (b.id || (b.className && String(b.className).split(' ')[0]) || 'link');
+    }), true);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) flush(true); });
+    window.addEventListener('pagehide', function () { send('end', { s: Math.round((Date.now() - t0) / 1000) }); flush(true); });
+    setInterval(function () { flush(false); }, 8000);
+  }
+  function flush(beacon) {
+    if (!queue.length) return;
+    var body = JSON.stringify({ sid: sid, meta: meta(), ev: queue.splice(0, 60) });
+    if (beacon && navigator.sendBeacon) navigator.sendBeacon('/api/t', new Blob([body], { type: 'application/json' }));
+    else fetch('/api/t', { method: 'POST', headers: { 'content-type': 'application/json' }, body: body, keepalive: true }).catch(function () {});
+    if (queue.length) flush(beacon);
+  }
+  var ret = false;
+  if (on) try { ret = sessionStorage.getItem('mh-ret') === '1' || (!sessionStorage.getItem('mh-ret') && !!localStorage.getItem('mh-seen')); sessionStorage.setItem('mh-ret', ret ? '1' : '0'); localStorage.setItem('mh-seen', '1'); } catch (e) {}
+  function meta() {
+    var r = ''; try { r = document.referrer ? new URL(document.referrer).hostname : ''; } catch (e) {}
+    return { w: innerWidth, h: innerHeight, touch: matchMedia('(pointer: coarse)').matches, ret: ret, ref: r === location.hostname ? '' : r, utm: q.get('utm_source') || q.get('ref') || '', v: BUILD };
+  }
+  function send(name, data) {
+    if (!on || sent >= CAP) return;
+    var key = name + JSON.stringify(data || {});
+    if (key === lastKey && name !== 'end') return;     /* the same thing twice in a row is one decision */
+    lastKey = key; sent++;
+    var ev = { n: name, t: Date.now() - t0 };
+    if (data) ev.d = data;
+    if (Date.now() - viaT < 1500 && /^(screen|walk_close|close|app_close)$/.test(name)) ev.via = via;
+    queue.push(ev);
+    clarity('event', name === 'screen' ? 'screen_' + String(data.to).toLowerCase().replace(/[^a-z]+/g, '_') : name === 'channel' ? 'channel_' + data.id : name);
+    if (name === 'channel') clarity('set', 'channel', data.id);
+    if (name === 'contact') clarity('set', 'contacted', data.kind);
+    if (queue.length >= 20) flush(false);
+  }
+  send.on = on; send.sid = sid; send.clarity = clarity;
+  return send;
+})();
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function art(id) { if (ART[id + '_layers']) return ART[id + '_layers']; return '<svg class="art" viewBox="0 0 232 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' + (ART[id] || '') + '</svg>'; }
 
@@ -858,22 +928,26 @@ function openDialog(el, from) {
   var f = el.querySelector('button, a[href], [tabindex="0"]'); if (f) f.focus();
   syncAnim(); updateNav();
 }
-var appOpen = false;
+var appOpen = false, appT = 0;
 function openApp(src, name) {
   closeDialog(true);
   var v = $('#app'), f = $('#app-frame');
   $('#app-title').textContent = name || ''; f.title = name || 'Demo app';
   $('#app-note').hidden = /demo\/(jira|specs)\//.test(src);   /* the board is a real snapshot, not sample data */
+  logEv('app', { name: name || '', src: String(src).replace(/^.*?demo\//, '').replace(/\/index\.html$/, '') }); appT = Date.now();
   f.src = src; v.hidden = false; appOpen = true; animSet = []; stopMusic();
   $('#app-back').focus(); updateNav();
 }
 function closeApp() {
   if (!appOpen) return;
   var v = $('#app'), f = $('#app-frame');
+  logEv('app_close', { s: Math.round((Date.now() - appT) / 1000) });
   v.hidden = true; appOpen = false; f.src = 'about:blank'; syncAnim(); if (booted) startMusic(); updateNav();
 }
 function closeDialog(quiet) {
   if (!openEl) return;
+  if (openEl.id === 'demo' && DEMOS[demoId]) logEv('walk_close', { id: demoId, n: demoStep + 1, of: DEMOS[demoId].steps.length });
+  else logEv('close', { what: openEl.id });
   openEl.hidden = true; openEl = null;
   scrim.classList.remove('show'); scrim.hidden = true;
   if (opener && document.body.contains(opener)) opener.focus();
@@ -1071,7 +1145,7 @@ function playStep(i, t) { if (i % 16 === 0) padChord(t, CHORDS[(i / 16) % 2]); v
 function scheduler() { while (nextTime < ac.currentTime + 0.25) { playStep(step, nextTime); nextTime += STEP; step++; } }
 function startMusic() { if (muted || musicTimer || !unlocked || !ac) return; if (!musicGain) { musicGain = ac.createGain(); musicGain.connect(master); } var t = ac.currentTime; musicGain.gain.cancelScheduledValues(t); musicGain.gain.setValueAtTime(0.0001, t); musicGain.gain.exponentialRampToValueAtTime(0.5, t + 1.5); nextTime = t + 0.1; step = 0; scheduler(); musicTimer = setInterval(scheduler, 50); }
 function stopMusic() { if (!musicTimer) return; clearInterval(musicTimer); musicTimer = null; var t = ac.currentTime; musicGain.gain.cancelScheduledValues(t); musicGain.gain.setValueAtTime(Math.max(musicGain.gain.value, 0.0001), t); musicGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.5); }
-muteBtn.addEventListener('click', function () { muted = !muted; paintMute(); try { localStorage.setItem(MKEY, muted ? 'off' : 'on'); } catch (e) {} if (muted) stopMusic(); else { unlockAudio(); startMusic(); } });
+muteBtn.addEventListener('click', function () { muted = !muted; logEv('music', { on: !muted }); paintMute(); try { localStorage.setItem(MKEY, muted ? 'off' : 'on'); } catch (e) {} if (muted) stopMusic(); else { unlockAudio(); startMusic(); } });
 ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) { document.addEventListener(ev, function () { if (!unlocked) unlockAudio(); if (ac && ac.state === 'suspended') ac.resume(); if (booted) startMusic(); }, { passive: true }); });
 document.addEventListener('visibilitychange', function () { if (document.hidden) stopMusic(); else if (booted) startMusic(); });
 
@@ -1125,7 +1199,9 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
   /* Get in touch on the landing goes straight to the last screen */
   $('#lpContact').addEventListener('click', function () {
     if (!landingShown || Date.now() < landingLock) return;
+    navReady = false;   /* the hub is only passed through: log the jump as Home -> Get in touch */
     showHub(false); landingLock = 0; goExtra(xScreens.length, true);
+    navReady = logEv.on; trackScreen();
   });
   $('#toLanding').addEventListener('click', showLanding);
   $('#toAbout').addEventListener('click', showAbout);
@@ -1170,7 +1246,14 @@ function navTarget(dir, keys) {
   var t = sc + dir; if (t < 0 || t >= SCR_NAMES.length) return null;
   return { label: SCR_NAMES[t], go: function (how) { if (t === 0) showLanding(); else if (sc === 0) showHub(how || true); else goExtra(t - 1); } };
 }
+var lastScr = -1, navReady = false;
+function trackScreen() {
+  if (!navReady) return;
+  var sc = curScreen(); if (sc === lastScr) return;
+  lastScr = sc; logEv('screen', { to: SCR_NAMES[sc] });
+}
 function updateNav() {
+  trackScreen();
   if (!dnav) return;
   var block = openEl || appOpen || editing;
   [[scrPrev, -1], [scrNext, 1]].forEach(function (p) {
@@ -1216,6 +1299,7 @@ document.addEventListener('securitypolicyviolation', function (e) {
 });
 function vidPlay() {
   var box = $('#vidFrame'); if (box.querySelector('iframe')) return;
+  logEv('video');
   var f = document.createElement('iframe'); f.src = VID_SRC; f.title = 'Video';
   f.allow = 'autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen'; f.allowFullscreen = true;
   f.referrerPolicy = 'strict-origin-when-cross-origin'; box.appendChild(f);
@@ -1356,11 +1440,12 @@ function tutNextStep() {
 }
 function tutStart() {
   if (MODE !== 'demo' || landingShown || aboutShown || openEl || appOpen) return;
-  tutSteps = tutBuild(); tutOn = true; window.scrollTo(0, 0);
+  tutSteps = tutBuild(); tutOn = true; logEv('tut_start'); window.scrollTo(0, 0);
   var t = $('#tut'); t.hidden = false; $('#tutReplay').hidden = true;
   tutShow(0); setTimeout(function () { $('#tutNext').focus({ preventScroll: true }); }, 50);
 }
 function tutEnd() {
+  logEv('tut_end', { n: tutI + 1, of: tutSteps.length });
   tutOn = false; clearInterval(tutTimer); $('#tut').hidden = true; tutPlace(null);
   try { localStorage.setItem('aihub-tutorial-v1', 'done'); } catch (e) {}
   window.scrollTo(0, 0); $('#tutReplay').hidden = !(MODE === 'demo' && !landingShown && !aboutShown);
@@ -1388,8 +1473,8 @@ if (MODE === 'demo') {
 /* ---------- demo walkthroughs ---------- */
 var demoId = null, demoStep = 0;
 function openDemo(id, from) {
-  var d = DEMOS[id]; if (!d) { if (ITEMS[id].kind === 'folder') openFolder(id, from); else openZoom(id, from); return; }
-  demoId = id; demoStep = 0;
+  var d = DEMOS[id]; if (!d) { logEv('channel', { id: id }); if (ITEMS[id].kind === 'folder') openFolder(id, from); else openZoom(id, from); return; }
+  demoId = id; demoStep = 0; logEv('channel', { id: id });
   $('#demo-tag').textContent = 'DEMO · ' + d.tag.toUpperCase(); $('#demo-title').textContent = ITEMS[id].name; var op = $('#demo-open'); op.textContent = d.open || 'Open the real app ↗';
   if (d.embed) { op.removeAttribute('href'); op.removeAttribute('target'); op.setAttribute('role', 'button'); op.tabIndex = 0; op.dataset.embed = d.embed; }
   else { op.href = d.href || ITEMS[id].href; op.target = '_blank'; op.removeAttribute('role'); delete op.dataset.embed; }
@@ -1409,6 +1494,7 @@ function demoGo(i) {
 function demoRender() {
   var d = DEMOS[demoId]; if (!d || openEl !== $('#demo')) return;
   var i = demoStep, s = d.steps[i];
+  logEv('step', { id: demoId, n: i + 1, of: d.steps.length });
   Array.prototype.forEach.call($('#steps').children, function (b, j) { b.classList.toggle('on', j === i); b.classList.toggle('done', j < i); });
   Array.prototype.forEach.call($('#pdots').children, function (b, j) { b.classList.toggle('on', j === i); });
   $('#demo-kind').textContent = s.kind.toUpperCase() + ' · STEP ' + (i + 1) + ' OF ' + d.steps.length;
@@ -1435,7 +1521,7 @@ function demoRender() {
 }
 $('#steps').addEventListener('click', function (e) { var b = e.target.closest('.step'); if (b) { demoGo(+b.dataset.step); tick(); } });
 /* click-to-enlarge for step images marked zoom */
-function openLightbox(src, alt) { var lb = $('#lightbox'); $('#lightbox-img').src = src; $('#lightbox-img').alt = alt || ''; lb.hidden = false; $('#lightbox-x').focus(); }
+function openLightbox(src, alt) { logEv('zoom', { img: String(src).split('/').pop() }); var lb = $('#lightbox'); $('#lightbox-img').src = src; $('#lightbox-img').alt = alt || ''; lb.hidden = false; $('#lightbox-x').focus(); }
 function closeLightbox() { var lb = $('#lightbox'); if (lb.hidden) return false; lb.hidden = true; $('#lightbox-img').removeAttribute('src'); var sh = $('#demo-shot'); if (sh && !sh.hidden) sh.focus(); return true; }
 $('#demo-shot').addEventListener('click', function () { if (this.dataset.zoom) openLightbox(this.dataset.zoom, $('#demo-img').alt || ''); });
 $('#demo-shot').addEventListener('keydown', function (e) { if (this.dataset.zoom && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openLightbox(this.dataset.zoom, ''); } });
@@ -1447,6 +1533,19 @@ $('#demo-open').addEventListener('keydown', function (e) { if (this.dataset.embe
 $('#app-back').addEventListener('click', function () { closeApp(); tick(); });
 $('#demo-next').addEventListener('click', function () { demoGo(demoStep + 1); tick(); });
 $('#demo-back').addEventListener('click', function () { demoGo(demoStep - 1); tick(); });
+
+/* reaching out, and links that leave the site */
+document.addEventListener('click', function (e) {
+  var a = e.target.closest && e.target.closest('a[href]'); if (!a) return;
+  var h = a.getAttribute('href') || '', where = SCR_NAMES[curScreen()];
+  if (/outlook\.office\.com|^mailto:/.test(h)) logEv('contact', { kind: 'email', where: where });
+  else if (/linkedin\.com/.test(h)) logEv('contact', { kind: 'linkedin', where: where });
+  else if (a.closest('#kids')) logEv('repo', { name: (a.querySelector('.name') || a).firstChild.textContent });
+  else if (a.id === 'folder-more') logEv('repo', { name: 'profile' });
+  else if (/^https?:/.test(h)) logEv('out', { host: a.hostname });
+}, true);
+/* first screen of the visit; screen changes are logged from updateNav from here on */
+if (logEv.on) { $('#gitPrivacy').hidden = false; navReady = true; logEv('land', { lp: !!landingShown }); lastScr = curScreen(); }
 })();
 </script>
 </body>
