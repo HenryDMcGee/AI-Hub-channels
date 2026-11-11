@@ -829,9 +829,9 @@ if (MODE === 'demo') layout = pad(DEFAULT.filter(function (id) { return DEMO_HID
    own from a shared Claude artifact link. This prototype keeps everything in this browser: the store page writes
    aihub-store-v1 = { published: [...], installed: [listing snapshots] } and tells the hub through postMessage; the hub
    turns each installed listing into a channel ('u:<id>') with generated art and keeps the demo layout in
-   aihub-demo-layout-v1 so added tiles, drags and removals stick. ?store=0 turns it off. */
+   aihub-demo-layout-v2 so added tiles, drags and removals stick. ?store=0 turns it off. */
 var STORE_ON = MODE === 'demo' && q.get('store') !== '0';
-var SKEY = 'aihub-store-v1', DKEY = 'aihub-demo-layout-v1';
+var SKEY = 'aihub-store-v1', DKEY = 'aihub-demo-layout-v2';   /* v2: App Store moved to the last channel */
 var STORE_PAL = { amber: ['#9a6a22', '#8d611f'], teal: ['#2f8f86', '#2a827a'], blue: ['#3b6fb6', '#355f9c'], purple: ['#6a4f9c', '#5f4690'], coral: ['#b85c4a', '#a65242'] };
 var STORE_ICONS = {
   timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/>', chart: '<path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/>',
@@ -861,7 +861,7 @@ function storeRegister(list) {
 }
 function storeBase() {
   var b = DEFAULT.filter(function (id) { return DEMO_HIDE.indexOf(id) < 0; });
-  b.unshift('store');
+  b.push('store');   /* the store sits after Henry's channels; apps added from it follow */
   storeInstalled.forEach(function (a) { b.push('u:' + a.id); });
   return pad(b);
 }
