@@ -2,7 +2,7 @@
 
 Everything the hub does today, grouped by where it runs, with the newest feature last. Details for each live in the [README](README.md).
 
-Status: **Shipped** is live (in the real hub, the demo, or both). **Planned** is designed but not built yet.
+Status: **Shipped** is live (in the real hub, the demo, or both). **Prototype** works for testing but isn't the finished feature. **Planned** is designed but not built yet.
 
 ## Hub (both modes)
 
@@ -56,7 +56,7 @@ Status: **Shipped** is live (in the real hub, the demo, or both). **Planned** is
 
 | Feature | What it does | Status |
 | --- | --- | --- |
-| App Store | A shared store inside AI-HUB where students publish their own apps and add classmates' apps to a personal dashboard | Planned |
+| App Store | A shared store inside AI-HUB where students publish their own apps and add classmates' apps to a personal dashboard | Prototype in the demo (one browser); shared version planned |
 
 How it would work:
 
@@ -66,3 +66,7 @@ How it would work:
 - **Sign-in and safety.** UT-email sign-in, generated tile art only (no uploaded images or logos), a report button with an admin hide switch, and a daily check that grays out apps whose links stop working.
 
 Wireframe: [AI-HUB App Store wireframe](https://claude.ai/artifact/FjeTmAeYdgrXoVHq8tKM9C) (dashboard, store, app listing and publish form, clickable).
+
+Prototype (in the demo now): the App Store channel is the first tile. Browse, search and filter apps, add them to the dashboard (they take the next free slot and glow NEW), publish your own with a shared Claude artifact link and an optional GitHub repo, edit or unpublish it, and press and hold a tile to rearrange or remove it. Everything is saved in the visitor's own browser, so nothing is shared between people yet. The store lists Henry's demo apps (which open inside the hub) and sample listings. `?store=0` turns it off. Test copy: [AI-HUB — App Store test](https://claude.ai/artifact/9PsttxYzjQjdrmvv7XrPjB).
+
+Still to build for the shared version: UT sign-in, a store database and per-student dashboards on the server, a report queue with an admin hide switch, and a daily link check.
