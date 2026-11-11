@@ -74,6 +74,8 @@ button{font:inherit;color:inherit}
 .editing .del{display:flex}
 .editing .track{touch-action:none}
 .slot.dragging .chan{opacity:.25;animation:none}
+.slot.fresh .chan{border-color:#e0b45a;box-shadow:0 0 0 3px rgba(224,180,90,.55),0 10px 24px rgba(0,0,0,.45)}
+.slot.fresh .chan::after{content:'NEW';position:absolute;top:8px;right:8px;font:700 10px/1 system-ui,sans-serif;letter-spacing:.08em;padding:4px 7px;border-radius:999px;background:#e0b45a;color:#1a1205}
 .slot.target .chan,.slot.target .empty{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(95,212,240,.25)}
 .ghost{position:fixed;z-index:50;pointer-events:none;border-radius:18px;overflow:hidden;box-shadow:0 24px 50px rgba(0,0,0,.6);transform:scale(1.06);opacity:.95}
 .editbar{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 18px;border-radius:999px;background:#16213A;border:2px solid var(--rim-lit);box-shadow:0 14px 40px rgba(0,0,0,.6);font-weight:700;font-size:13.5px;color:#C9D8F2}
@@ -811,11 +813,80 @@ function load() {
   } catch (e) {}
   return pad(DEFAULT.slice());
 }
-function save() { try { localStorage.setItem(KEY, JSON.stringify({ order: trim(layout), known: Object.keys(ITEMS), v: VERSION })); } catch (e) {} }
+function save() {
+  try {
+    if (MODE === 'demo') { if (STORE_ON) localStorage.setItem(DKEY, JSON.stringify({ order: trim(layout), v: VERSION })); return; }
+    localStorage.setItem(KEY, JSON.stringify({ order: trim(layout), known: Object.keys(ITEMS), v: VERSION }));
+  } catch (e) {}
+}
 layout = load();
 /* the demo shows a fixed set of channels: no Henry Website or Mars tiles */
 var DEMO_HIDE = ['site', 'mars'];
 if (MODE === 'demo') layout = pad(DEFAULT.filter(function (id) { return DEMO_HIDE.indexOf(id) < 0; }));
+
+/* ---------- App Store (prototype, demo only) ----------
+   The App Store channel opens demo/store/, where visitors browse apps, add them to this dashboard and publish their
+   own from a shared Claude artifact link. This prototype keeps everything in this browser: the store page writes
+   aihub-store-v1 = { published: [...], installed: [listing snapshots] } and tells the hub through postMessage; the hub
+   turns each installed listing into a channel ('u:<id>') with generated art and keeps the demo layout in
+   aihub-demo-layout-v2 so added tiles, drags and removals stick. ?store=0 turns it off. */
+var STORE_ON = MODE === 'demo' && q.get('store') !== '0';
+var SKEY = 'aihub-store-v1', DKEY = 'aihub-demo-layout-v2';   /* v2: App Store moved to the last channel */
+var STORE_PAL = { amber: ['#9a6a22', '#8d611f'], teal: ['#2f8f86', '#2a827a'], blue: ['#3b6fb6', '#355f9c'], purple: ['#6a4f9c', '#5f4690'], coral: ['#b85c4a', '#a65242'] };
+var STORE_ICONS = {
+  timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/>', chart: '<path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/>',
+  case: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>', book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+  chat: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>', star: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+  cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/>', code: '<path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>'
+};
+/* tile art from a listing's style: a colour, a pattern (stripes | rings | bars) and an icon; no images, no logos */
+function storeArt(st) {
+  st = st || {}; var c = STORE_PAL[st.color] || STORE_PAL.teal, o = '<rect width="232" height="140" fill="' + c[0] + '"/>', i;
+  if (st.pattern === 'rings') { for (i = 16; i < 280; i += 18) o += '<circle cx="196" cy="24" r="' + i + '" fill="none" stroke="' + c[1] + '" stroke-width="8"/>'; }
+  else if (st.pattern === 'bars') { for (i = 0; i < 232; i += 30) o += '<rect x="' + i + '" y="0" width="15" height="140" fill="' + c[1] + '"/>'; }
+  else { for (i = -140; i < 232; i += 22) o += '<path d="M' + i + ' 140L' + (i + 140) + ' 0" stroke="' + c[1] + '" stroke-width="11"/>'; }
+  return o + '<g transform="translate(16 12) scale(2.3)" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + (STORE_ICONS[st.icon] || STORE_ICONS.star) + '</g>';
+}
+function storeRead() { try { var d = JSON.parse(localStorage.getItem(SKEY)); if (d && Array.isArray(d.installed)) return d; } catch (e) {} return { published: [], installed: [] }; }
+var storeInstalled = [];
+function storeRegister(list) {
+  Object.keys(ITEMS).forEach(function (id) { if (id.indexOf('u:') === 0) { delete ITEMS[id]; delete ART[id]; } });
+  storeInstalled = list || storeRead().installed;
+  storeInstalled.forEach(function (a) {
+    if (!a || !a.id) return;
+    var id = 'u:' + a.id;
+    ITEMS[id] = { kind: 'store-app', name: a.name, sub: 'by ' + (a.author || 'a classmate'), href: a.url || '', embed: a.embed || '', desc: a.pitch || '', sample: !!a.sample };
+    ART[id] = storeArt(a.style);
+  });
+}
+function storeBase() {
+  var b = DEFAULT.filter(function (id) { return DEMO_HIDE.indexOf(id) < 0; });
+  b.push('store');   /* the store sits after Henry's channels; apps added from it follow */
+  storeInstalled.forEach(function (a) { b.push('u:' + a.id); });
+  return pad(b);
+}
+/* fit the layout to what is installed: new apps take the first free slot, uninstalled ones leave */
+function storeFit() {
+  var have = {};
+  layout = layout.map(function (id) { if (id && !ITEMS[id]) return null; if (id) have[id] = 1; return id; });
+  var added = [];
+  storeInstalled.forEach(function (a) {
+    var id = 'u:' + a.id; if (have[id]) return;
+    var i = layout.indexOf(null); if (i < 0) { layout = pad(layout.concat([null])); i = layout.indexOf(null); }
+    layout[i] = id; added.push(id);
+  });
+  layout = trim(layout);
+  return added;
+}
+if (STORE_ON) {
+  ITEMS.store = { kind: 'store', name: 'App Store', sub: "Classmates' apps" };
+  ART.store = '<rect width="232" height="140" fill="#10233a"/><g fill="#5cbfad" opacity=".35"><circle cx="30" cy="26" r="1.6"/><circle cx="196" cy="20" r="1.3"/><circle cx="210" cy="96" r="1.6"/><circle cx="48" cy="104" r="1.2"/><circle cx="160" cy="44" r="1"/></g>' +
+    '<g transform="translate(88 18) scale(2.35)" fill="none" stroke="#5cbfad" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></g>';
+  storeRegister();
+  layout = storeBase();
+  try { var sl = JSON.parse(localStorage.getItem(DKEY)); if (sl && Array.isArray(sl.order)) layout = trim(sl.order.filter(function (id) { return !id || ITEMS[id]; })); } catch (e) {}
+  storeFit();
+}
 
 /* ---------- render ---------- */
 var track = $('#track'), dots = $('#dots'), page = 0;
@@ -957,7 +1028,7 @@ function openApp(src, name) {
   closeDialog(true);
   var v = $('#app'), f = $('#app-frame');
   $('#app-title').textContent = name || ''; f.title = name || 'Demo app';
-  $('#app-note').hidden = /demo\/(jira|specs)\//.test(src);   /* the board is a real snapshot, not sample data */
+  $('#app-note').hidden = /demo\/(jira|specs|store)\//.test(src);   /* the board is a real snapshot, not sample data */
   logEv('app', { name: name || '', src: String(src).replace(/^.*?demo\//, '').replace(/\/index\.html$/, '') }); appT = Date.now();
   f.src = src; v.hidden = false; appOpen = true; animSet = []; stopMusic();
   $('#app-back').focus(); updateNav();
@@ -967,6 +1038,7 @@ function closeApp() {
   var v = $('#app'), f = $('#app-frame');
   logEv('app_close', { s: Math.round((Date.now() - appT) / 1000) });
   v.hidden = true; appOpen = false; f.src = 'about:blank'; syncAnim(); if (booted) startMusic(); updateNav();
+  if (STORE_ON) storeRefresh();
 }
 function closeDialog(quiet) {
   if (!openEl) return;
@@ -1003,7 +1075,8 @@ function openZoom(id, from) {
   var it = ITEMS[id];
   $('#zoom-art').innerHTML = art(id);
   $('#zoom-title').textContent = it.name; $('#zoom-desc').textContent = it.desc || ''; $('#zoom-url').textContent = (it.href || '').replace(/^https?:\/\//, '');
-  $('#zoom-start').href = it.href;
+  $('#zoom-start').href = it.href || '#'; $('#zoom-start').hidden = !it.href;
+  if (it.kind === 'store-app') { $('#zoom-url').textContent = it.href ? 'Shared Claude artifact · ' + it.href.replace(/^https?:\/\//, '') : 'Sample listing: there is no app behind it in this prototype.'; $('#zoom-desc').textContent = it.desc + ' (' + it.sub + ')'; }
   openDialog($('#zoom'), from); blip();
 }
 
@@ -1024,16 +1097,19 @@ var hovered = null;
 
 /* ---------- edit mode ---------- */
 var editing = false, suppressClick = false, pressTimer = null, drag = null;
-function enterEdit() { if (editing || MODE === 'demo') return; editing = true; document.body.classList.add('editing'); $('#editbar').hidden = false; closeDialog(true); goPage(page, true); }
+function enterEdit() { if (editing || (MODE === 'demo' && !STORE_ON)) return; editing = true; document.body.classList.add('editing'); $('#editbar').hidden = false; closeDialog(true); goPage(page, true); }
 function exitEdit() { if (!editing) return; editing = false; document.body.classList.remove('editing'); $('#editbar').hidden = true; layout = trim(layout); save(); render(); }
 $('#done').addEventListener('click', exitEdit);
-$('#reset').addEventListener('click', function () { layout = pad(DEFAULT.slice()); page = 0; save(); render(); exitEdit(); });
+$('#reset').addEventListener('click', function () {
+  layout = MODE === 'demo' ? (STORE_ON ? storeBase() : pad(DEFAULT.filter(function (id) { return DEMO_HIDE.indexOf(id) < 0; }))) : pad(DEFAULT.slice());
+  page = 0; save(); render(); exitEdit();
+});
 
 track.addEventListener('pointerdown', function (e) {
   var slot = e.target.closest('.slot'); if (!slot || e.target.closest('.del')) return;
   if (e.pointerType === 'mouse' && e.button !== 0) return;
   if (!editing) {
-    if (MODE === 'demo') return;
+    if (MODE === 'demo' && !STORE_ON) return;   /* the demo dashboard is editable only with the App Store on */
     var last = e;
     var cancel = function () { clearTimeout(pressTimer); pressTimer = null; window.removeEventListener('pointerup', cancel); window.removeEventListener('pointercancel', cancel); window.removeEventListener('pointermove', move); };
     var move = function (ev) { last = ev; if (Math.abs(ev.clientX - e.clientX) > 8 || Math.abs(ev.clientY - e.clientY) > 8) cancel(); };
@@ -1082,8 +1158,40 @@ function endDrag() {
 var pending = null;
 track.addEventListener('click', function (e) { var b = e.target.closest('.del'); if (!b) return; e.preventDefault(); pending = b.dataset.del; $('#alert-h').textContent = 'Remove ' + ITEMS[pending].name + '?'; $('#alert').hidden = false; $('#alert-ok').focus(); });
 function closeAlert() { $('#alert').hidden = true; pending = null; }
+
+/* App Store <-> dashboard. The store page (inside the app viewer) posts { type: 'aihub-store', action, installed, id }:
+   changed = the installed list changed; dashboard = go back and show the app just added; open = run an in-hub demo app. */
+var storeFresh = null;
+function storeWrite(d) { try { localStorage.setItem(SKEY, JSON.stringify(d)); } catch (e) {} }
+function storeUninstall(aid) {
+  var d = storeRead(); d.installed = storeInstalled.filter(function (a) { return a.id !== aid; }); storeWrite(d);
+  storeRegister(d.installed);
+}
+function storeRefresh(list) {
+  storeRegister(list || storeInstalled); var added = storeFit(); save(); render();
+  var show = storeFresh || added[added.length - 1]; storeFresh = null;
+  if (!show) return;
+  var i = layout.indexOf(show); if (i < 0) return;
+  goPage(Math.floor(i / SLOTS), true);
+  var sl = track.querySelector('.slot[data-id="' + show + '"]');
+  if (sl) { sl.classList.add('fresh'); setTimeout(function () { sl.classList.remove('fresh'); }, 4500); }
+}
+window.addEventListener('message', function (e) {
+  if (!STORE_ON || !e.data || e.data.type !== 'aihub-store' || e.source !== $('#app-frame').contentWindow) return;
+  var d = e.data, list = Array.isArray(d.installed) ? d.installed : null;
+  if (d.action === 'changed') { storeRegister(list); storeFit(); save(); if (d.id) storeFresh = 'u:' + d.id; }
+  else if (d.action === 'dashboard') { if (d.id) storeFresh = 'u:' + d.id; if (list) storeRegister(list); closeApp(); }
+  else if (d.action === 'open' && typeof d.src === 'string' && /^demo\/[a-z]+\/index\.html$/.test(d.src)) openApp(d.src, String(d.name || ''));
+});
 $('#alert-cancel').addEventListener('click', closeAlert);
-$('#alert-ok').addEventListener('click', function () { if (pending) { var i = layout.indexOf(pending); if (i >= 0) layout[i] = null; save(); render(); } closeAlert(); });
+$('#alert-ok').addEventListener('click', function () {
+  if (pending) {
+    var i = layout.indexOf(pending); if (i >= 0) layout[i] = null;
+    if (pending.indexOf('u:') === 0) storeUninstall(pending.slice(2));   /* off this dashboard only; it stays in the store */
+    save(); render();
+  }
+  closeAlert();
+});
 
 /* ---------- stars: the field is painted once on a canvas; only a few twinkles animate, as
    CSS opacity on their own layers (compositor work, not main-thread paint) ---------- */
@@ -1410,6 +1518,7 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
 /* ---------- demo tutorial: an RPG-style text box that introduces the hub, then points at each channel ---------- */
 var tutOn = false, tutI = 0, tutSteps = [], tutTimer = 0, tutTyping = false;
 var TUT_LINES = {
+  store: 'The App Store lists apps made by classmates. Add one and it shows up right here on your dashboard, or publish your own with a shared Claude artifact link.',
   crm: 'CRM tracks my networking and my internship applications. Tap it for a short walkthrough, then open a demo copy with sample data.',
   watch: 'internship-watch checks about 100 company career sites every morning for Summer 2027 product internships.',
   jobs: 'The Public Job Board shares what internship-watch finds with other UT students, with a feedback form that files GitHub issues.',
@@ -1504,6 +1613,12 @@ if (MODE === 'demo') {
 /* ---------- demo walkthroughs ---------- */
 var demoId = null, demoStep = 0;
 function openDemo(id, from) {
+  if (id === 'store') { logEv('channel', { id: 'store' }); openApp('demo/store/index.html', 'App Store'); return; }
+  if (ITEMS[id] && ITEMS[id].kind === 'store-app') {
+    var sa = ITEMS[id]; logEv('channel', { id: 'store-app' });
+    if (sa.embed) openApp(sa.embed, sa.name); else openZoom(id, from);
+    return;
+  }
   var d = DEMOS[id]; if (!d) { logEv('channel', { id: id }); if (ITEMS[id].kind === 'folder') openFolder(id, from); else openZoom(id, from); return; }
   demoId = id; demoStep = 0; logEv('channel', { id: id });
   $('#demo-tag').textContent = 'DEMO · ' + d.tag.toUpperCase(); $('#demo-title').textContent = ITEMS[id].name; var op = $('#demo-open'); op.textContent = d.open || 'Open the real app ↗';
