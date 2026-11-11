@@ -4,6 +4,8 @@ A night-time channel grid that links every one of my projects from one screen. O
 
 Spec: [AI-HUB — Night Edition: Spec Sheet](https://claude.ai/artifact/XUH9Redzv7cTBvRYtWawcg). Mockup: [AI-HUB — Night Edition: Mockup](https://claude.ai/artifact/UYk5sQJYx9CNSym66UuVv2).
 
+Every feature, newest last (currently the planned App Store): [FEATURES.md](FEATURES.md).
+
 ## Two modes, one file
 
 The page picks its mode from where it is opened.
@@ -45,6 +47,10 @@ python3 .build/build.py
 ```
 
 The build writes `index.html`. Commit the result. The `.build/` folder and `.build-art.json` are the source of the art and copy, not something the page loads.
+
+## How changes land
+
+Changes go through pull requests: each one starts on a branch named for the change (for example `docs/feature-list` or `feat/app-store`), is opened as a PR against `main`, and is merged once reviewed. Update [FEATURES.md](FEATURES.md) in the same PR whenever a feature is added, changed or removed.
 
 ## Releases and deployment
 
