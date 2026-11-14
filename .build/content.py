@@ -30,6 +30,8 @@ ITEMS = {
            "desc": "A working simulation, investment model and control dashboard for a phased Mars outpost plan."},
   "planner": {"kind": "app", "name": "McCombs Course Planner", "sub": "Spring 2027", "href": "https://claude.ai/artifact/Nj94CadWKnVYo7RjZD1jWp",
               "desc": "Eight sources, one planner: schedule, catalog, bid history, ratings and concentration rules for Spring 2027 bidding."},
+  "sponsor": {"kind": "app", "name": "Visa Sponsor Lookup", "sub": "MBA sponsors · recent filings", "href": "https://claude.ai/artifact/DcS4fejKMhfxyHPkmESGaP",
+              "desc": "Which companies sponsor MBA roles, from the newest Department of Labor filings, plus a shared list of student confirmed companies."},
 }
 
 def S(kind, title, body, **kw):

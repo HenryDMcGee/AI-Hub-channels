@@ -682,7 +682,7 @@ var VERSION = '__VERSION__', BUILD = '__BUILD__';
 var ITEMS = __ITEMS__;
 var ART = __ART__;
 var DEMOS = __DEMOS__;
-var DEFAULT = ['crm','watch','jobs','site','jira','github','starr','mars','planner'];
+var DEFAULT = ['crm','watch','jobs','site','jira','github','starr','mars','planner','sponsor'];
 var KEY = 'aihub-layout-v1', MKEY = 'aihub-music', SLOTS = 12;
 
 /* ---------- mode: a local file or localhost is the real hub, anything hosted is the demo ---------- */
@@ -820,8 +820,8 @@ function save() {
   } catch (e) {}
 }
 layout = load();
-/* the demo shows a fixed set of channels: no Henry Website or Mars tiles */
-var DEMO_HIDE = ['site', 'mars'];
+/* the demo shows a fixed set of channels: no Henry Website, Mars or Visa Sponsor Lookup tiles */
+var DEMO_HIDE = ['site', 'mars', 'sponsor'];
 if (MODE === 'demo') layout = pad(DEFAULT.filter(function (id) { return DEMO_HIDE.indexOf(id) < 0; }));
 
 /* ---------- App Store (prototype, demo only) ----------
