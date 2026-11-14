@@ -36,7 +36,7 @@ Status: **Shipped** is live (in the real hub, the demo, or both). **Prototype** 
 | Image zoom | Walkthrough images can open full size in a lightbox | Shipped |
 | Video | YouTube video that loads on click (and links out where frames are blocked) | Shipped |
 | Tutorial | Game-style guide on the first visit with a spotlight and tapping hand, plus a replay button | Shipped |
-| Demo-only channel set | Personal channels (site, Mars) are hidden in the demo | Shipped |
+| Demo-only channel set | Personal channels (site, Mars, Visa Sponsor Lookup) are hidden in the demo | Shipped |
 
 ## mcgeehenry.com
 
