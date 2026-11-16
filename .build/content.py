@@ -32,6 +32,30 @@ ITEMS = {
               "desc": "Eight sources, one planner: schedule, catalog, bid history, ratings and concentration rules for Spring 2027 bidding."},
 }
 
+# The release build (python3 .build/build.py --release, written to dist/): the hub for classmates. Only the channels in
+# "order" are written into that page, followed by the App Store. "items" holds channels that exist only in the release,
+# and "store" is the App Store's catalog there (pinned = already on every dashboard, so it has no Add or Remove).
+RELEASE = {
+  "title": "McCombs-Student-Apples",
+  "description": "Recruiting and coursework apps for McCombs MBA students on one dashboard, with an App Store to add more.",
+  "order": ["visa", "starr", "planner"],
+  "items": {
+    "visa": {"kind": "app", "name": "Visa Sponsor Lookup", "sub": "MBA roles · recent filings", "href": "https://claude.ai/artifact/DcS4fejKMhfxyHPkmESGaP",
+             "desc": "Type a company name to see whether it has sponsored visas for MBA-level roles in recent filings, plus the companies classmates have confirmed."},
+  },
+  "store": [
+    {"id": "m-visa", "name": "Visa Sponsor Lookup", "author": "Henry M.", "cat": "Recruiting", "pitch": "Check whether a company sponsors visas for MBA roles.",
+     "desc": "Type a company name to see whether it has sponsored visas for MBA-level roles in recent filings. The Student confirmed companies tab lists companies classmates have added.",
+     "url": "https://claude.ai/artifact/DcS4fejKMhfxyHPkmESGaP", "style": {"color": "purple", "pattern": "rings", "icon": "case"}, "pinned": True, "added": "2026-11-15"},
+    {"id": "m-starr", "name": "STARR Story Bank", "author": "Henry M.", "cat": "Recruiting", "pitch": "Keep and practice your behavioral interview stories.",
+     "desc": "Write interview stories in STARR form (Situation, Task, Action, Result, Reflection), tie each one to a competency and a company, and practice them. Each person gets a private story bank.",
+     "url": ITEMS["starr"]["href"], "repo": "https://github.com/HenryDMcGee/starr-story-bank", "style": {"color": "teal", "pattern": "stripes", "icon": "chat"}, "pinned": True, "added": "2026-11-15"},
+    {"id": "m-planner", "name": "McCombs Course Planner", "author": "Henry M.", "cat": "Coursework", "pitch": "Plan class bids with schedules, bid history and ratings in one place.",
+     "desc": "Schedule, catalog, bid history and concentration rules for Spring 2027 bidding, on one page.",
+     "url": ITEMS["planner"]["href"], "repo": "https://github.com/HenryDMcGee/mccombs-course-planner", "style": {"color": "blue", "pattern": "bars", "icon": "book"}, "pinned": True, "added": "2026-11-15"},
+  ],
+}
+
 def S(kind, title, body, **kw):
     d = {"kind": kind, "title": title, "body": body}
     d.update(kw)

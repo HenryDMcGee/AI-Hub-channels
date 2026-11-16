@@ -52,6 +52,15 @@ Status: **Shipped** is live (in the real hub, the demo, or both). **Prototype** 
 | Microsoft Clarity | Recordings and heatmaps tied to the same visit IDs, added at deploy time | Shipped, waiting on a Clarity project ID |
 | Private-page sign-in | `/insights` and the feedback responses sit behind Cloudflare Access (email code), shared with Internship Watch | Shipped |
 
+## Release for classmates (McCombs-Student-Apples)
+
+| Feature | What it does | Status |
+| --- | --- | --- |
+| Release build | `python3 .build/build.py --release` writes `dist/`: a hub with only Visa Sponsor Lookup, STARR Story Bank, McCombs Course Planner and the App Store, for a static host such as Cloudflare Pages | Shipped on the `release/mccombs-student-apples` branch, not deployed yet |
+| Release-only page | Other channels, walkthroughs, the portfolio screens, the tutorial and the visit log are left out of the page source, and the build checks for leaks | Shipped |
+| Visa Sponsor Lookup channel | A channel for the visa sponsor app with its own tile art, in the release only | Shipped |
+| Featured apps in the store | The release apps are listed as FEATURED and marked as already on the dashboard | Shipped |
+
 ## Latest: App Store
 
 | Feature | What it does | Status |

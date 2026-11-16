@@ -183,6 +183,7 @@ form{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px}
   var ICON_NAMES = { timer: 'Timer', chart: 'Chart', case: 'Briefcase', book: 'Book', chat: 'Chat', star: 'Star', cal: 'Calendar', code: 'Code' };
   var PATTERNS = { stripes: 'Stripes', rings: 'Rings', bars: 'Bars' };
 
+  /* SEED:start */
   /* Henry's own apps run here as their demo copies (sample data, inside AI-HUB); the rest are sample listings */
   var SEED = [
     { id: 'h-crm', name: 'Internship CRM', author: 'Henry M.', cat: 'Recruiting', pitch: 'Networking contacts and the application pipeline in one editable grid.', desc: 'Track who you have met, where each application stands and what to do next. This listing opens the demo copy with sample data.', embed: 'demo/crm/index.html', repo: 'https://github.com/HenryDMcGee/CRM', style: { color: 'teal', pattern: 'stripes', icon: 'case' }, demo: true, added: '2026-11-01' },
@@ -195,6 +196,7 @@ form{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px}
     { id: 's-week', name: 'Week Planner', author: 'Sample student', cat: 'Productivity', pitch: 'Classes, recruiting events and deadlines on one weekly view.', style: { color: 'purple', pattern: 'stripes', icon: 'cal' }, sample: true, added: '2026-11-04' },
     { id: 's-trivia', name: 'Trivia Night', author: 'Sample student', cat: 'Just for fun', pitch: 'A quick team trivia game for section socials.', style: { color: 'amber', pattern: 'rings', icon: 'star' }, sample: true, added: '2026-11-03' }
   ];
+  /* SEED:end */
 
   var $ = function (s) { return document.getElementById(s); };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -245,8 +247,10 @@ form{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px}
     var op = e.target.closest('[data-open]'); if (op) { e.preventDefault(); openApp(op.dataset.open); return; }
   });
 
-  function badge(a) { return a.demo ? '<span class="badge demo">DEMO</span>' : a.sample ? '<span class="badge">SAMPLE</span>' : a.mine ? '<span class="badge mine">YOURS</span>' : ''; }
+  function badge(a) { return a.pinned ? '<span class="badge demo">FEATURED</span>' : a.demo ? '<span class="badge demo">DEMO</span>' : a.sample ? '<span class="badge">SAMPLE</span>' : a.mine ? '<span class="badge mine">YOURS</span>' : ''; }
   function addBtn(a) {
+    /* pinned: a release app that is on every dashboard already, so there is nothing to add or remove */
+    if (a.pinned) return '<button class="btn small added" type="button" data-go="listing" data-id="' + esc(a.id) + '" aria-label="' + esc(a.name) + ' is on your dashboard">On your dashboard</button>';
     return isAdded(a.id)
       ? '<button class="btn small added" type="button" data-go="listing" data-id="' + esc(a.id) + '" aria-label="' + esc(a.name) + ' is on your dashboard"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Added</button>'
       : '<button class="btn small primary" type="button" data-add="' + esc(a.id) + '" aria-label="Add ' + esc(a.name) + ' to your dashboard">Add</button>';
@@ -293,7 +297,7 @@ form{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px}
           '<span class="meta" style="font-size:14px">by ' + esc(a.author) + ' · ' + esc(a.cat) + (a.added ? ' · added ' + esc(a.added) : '') + '</span>' + (badge(a) ? '<span>' + badge(a).replace('margin-left:6px', '') + '</span>' : '') +
           '<span class="pitch" style="font-size:15px">' + esc(a.pitch) + '</span>' +
           '<div class="btns">' +
-            (added ? '<button class="btn danger" type="button" data-remove="' + esc(a.id) + '">Remove from my dashboard</button>' : '<button class="btn primary" type="button" data-add="' + esc(a.id) + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add to my dashboard</button>') +
+            (a.pinned ? '' : added ? '<button class="btn danger" type="button" data-remove="' + esc(a.id) + '">Remove from my dashboard</button>' : '<button class="btn primary" type="button" data-add="' + esc(a.id) + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add to my dashboard</button>') +
             (a.embed ? '<button class="btn" type="button" data-open="' + esc(a.id) + '">Open</button>'
               : a.url ? '<a class="btn" href="' + esc(a.url) + '" target="_blank" rel="noopener">Open ↗</a>'
               : '<button class="btn" type="button" disabled>Open</button>') +
@@ -302,7 +306,7 @@ form{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px}
         '<section class="box"><h3>The app</h3>' + where + '</section>' +
         (repo ? '<section class="box dash"><h3>Source code <span class="meta" style="font-weight:400">· added by the author</span></h3><div class="row"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8ecf3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg><div style="flex:1 1 220px"><b style="font-size:14px">' + esc(rp) + '</b><div class="meta">GitHub repository</div></div><a class="btn" href="' + esc(repo) + '" target="_blank" rel="noopener">View code ↗</a><a class="btn" href="' + esc(repo) + '/fork" target="_blank" rel="noopener">Fork it ↗</a></div></section>' : '') +
       '</div><aside>' +
-        '<div class="box"><b>' + esc(a.author) + '</b><div class="meta">' + (a.mine ? 'You published this app' : a.demo ? 'Built AI-HUB and this app' : 'Sample author') + '</div></div>' +
+        '<div class="box"><b>' + esc(a.author) + '</b><div class="meta">' + (a.mine ? 'You published this app' : a.demo || a.pinned ? 'Built AI-HUB and this app' : 'Sample author') + '</div></div>' +
         (a.mine ? '<div class="box" style="display:flex;flex-direction:column;gap:8px"><button class="btn" type="button" id="editMine">Edit listing</button><button class="btn danger" type="button" id="unpub">Unpublish</button></div>' : '<button class="btn" type="button" id="report" style="align-self:flex-start">Report this app</button>') +
       '</aside></div>';
     var em = $('editMine'); if (em) em.addEventListener('click', function () { openForm(a); });

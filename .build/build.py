@@ -4,7 +4,25 @@ import json, os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-from content import ITEMS, DEMOS, VERSION
+from content import ITEMS, DEMOS, VERSION, RELEASE as REL
+
+# python3 .build/build.py             index.html: the real hub (local file) and the demo (hosted)
+# python3 .build/build.py --release   dist/: the release hub for classmates, see RELEASE in content.py
+RELEASE = '--release' in sys.argv
+DEFAULT = ['crm', 'watch', 'jobs', 'site', 'jira', 'github', 'starr', 'mars', 'planner']   # channel order on a fresh hub
+DEMO_HIDE = ['site', 'mars']                                                               # personal channels the demo leaves out
+VID_SRC = 'https://www.youtube-nocookie.com/embed/05zyH7eds8s?rel=0&playsinline=1&autoplay=1'
+# the demo tutorial's line for each channel
+TUT_LINES = {
+  'store': 'The App Store lists apps made by classmates. Add one and it shows up right here on your dashboard, or publish your own with a shared Claude artifact link.',
+  'crm': 'CRM tracks my networking and my internship applications. Tap it for a short walkthrough, then open a demo copy with sample data.',
+  'watch': 'internship-watch checks about 100 company career sites every morning for Summer 2027 product internships.',
+  'jobs': 'The Public Job Board shares what internship-watch finds with other UT students, with a feedback form that files GitHub issues.',
+  'jira': 'Jira shows how I planned the work: spec sheets turned into epics and stories, plus a read-only copy of the board.',
+  'github': 'GitHub lists the code behind every app, one repository each.',
+  'starr': 'STARR Story Bank keeps my interview stories and lets me practice them on video.',
+  'planner': 'McCombs Course Planner helps me spend my class-bidding points. The demo uses made-up data.',
+}
 
 A = json.load(open(os.path.join(ROOT, '.build-art.json')))
 ART, STARS, MOON, CLOCK_DEFS = A['art'], A['stars'], A['moon'], A['clock_defs']
@@ -444,28 +462,7 @@ HTML = r"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Henry McGee — Product Management</title>
-<meta name="description" content="Henry McGee - aspiring product manager and MBA candidate at UT Austin McCombs. Former software engineer on Wells Fargo's currency trading platform. Projects built with AI, each with a walkthrough.">
-<meta name="theme-color" content="#0B1120">
-<link rel="canonical" href="https://mcgeehenry.com/">
-<link rel="icon" href="demo/site/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="demo/site/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="demo/site/favicon-16.png">
-<link rel="apple-touch-icon" href="demo/site/apple-touch-icon.png">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Henry McGee">
-<meta property="og:title" content="Henry McGee - Product Management">
-<meta property="og:description" content="Aspiring product manager and MBA candidate at UT Austin McCombs. Former software engineer on Wells Fargo's currency trading platform.">
-<meta property="og:url" content="https://mcgeehenry.com/">
-<meta property="og:image" content="https://mcgeehenry.com/demo/site/og-image.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Henry McGee - bridging business and technology">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Henry McGee - Product Management">
-<meta name="twitter:description" content="Aspiring product manager and MBA candidate at UT Austin McCombs.">
-<meta name="twitter:image" content="https://mcgeehenry.com/demo/site/og-image.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+__HEAD__<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Kalam:wght@700&family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@300;400&display=swap">
 <style>__CSS__</style>
@@ -480,7 +477,7 @@ HTML = r"""<!doctype html>
 
 <div class="boot" id="boot" role="button" tabindex="0" aria-label="Tap to begin">
   <svg class="crescent" viewBox="0 0 160 160" aria-hidden="true">__MOON__</svg>
-  <h1>AI-HUB</h1>
+  <h1>__BOOT_TITLE__</h1>
   <p>TAP TO BEGIN</p>
 </div>
 
@@ -682,15 +679,16 @@ var VERSION = '__VERSION__', BUILD = '__BUILD__';
 var ITEMS = __ITEMS__;
 var ART = __ART__;
 var DEMOS = __DEMOS__;
-var DEFAULT = ['crm','watch','jobs','site','jira','github','starr','mars','planner'];
+var RELEASE = __RELEASE__;   /* true only in the release build (build.py --release) */
+var DEFAULT = __DEFAULT__;
 var KEY = 'aihub-layout-v1', MKEY = 'aihub-music', SLOTS = 12;
 
 /* ---------- mode: a local file or localhost is the real hub, anything hosted is the demo ---------- */
 function isLocal() { return location.protocol === 'file:' || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname); }
 var q = new URLSearchParams(location.search);
-var MODE = (!isLocal() || q.get('mode') === 'demo') ? 'demo' : 'real';
+var MODE = (RELEASE || !isLocal() || q.get('mode') === 'demo') ? 'demo' : 'real';   /* the release runs as a hosted hub wherever it is opened */
 console.log('AI-HUB v' + VERSION + ' (build ' + BUILD + ') · ' + MODE + ' mode · ' + (isLocal() ? 'local origin' : location.hostname));
-if (MODE === 'demo') document.getElementById('ribbon').hidden = false;
+if (MODE === 'demo') document.getElementById('ribbon').hidden = RELEASE;
 else document.title = 'AI-HUB';
 /* contact links are assembled on load so the address never sits in the page source (same as the old mcgeehenry.com); Email opens a new message in Outlook on the web */
 (function () {
@@ -711,7 +709,7 @@ var $ = function (s, r) { return (r || document).querySelector(s); };
    files, browsers with Global Privacy Control, and any browser that opened /insights/ or ?notrack=1 (Henry's own).
    Henry can also switch recording off for everyone on /insights/: the hub asks /api/t/on first and stops if it is off. */
 var logEv = (function () {
-  var on = MODE === 'demo' && (/(^|\.)mcgeehenry\.com$|\.workers\.dev$/.test(location.hostname) || q.get('track') === '1');
+  var on = !RELEASE && MODE === 'demo' && (/(^|\.)mcgeehenry\.com$|\.workers\.dev$/.test(location.hostname) || q.get('track') === '1');
   try {
     if (q.get('notrack') === '1') localStorage.setItem('mh-notrack', '1');
     if (q.get('notrack') === '0') localStorage.setItem('mh-notrack', '0');
@@ -821,7 +819,7 @@ function save() {
 }
 layout = load();
 /* the demo shows a fixed set of channels: no Henry Website or Mars tiles */
-var DEMO_HIDE = ['site', 'mars'];
+var DEMO_HIDE = __DEMO_HIDE__;
 if (MODE === 'demo') layout = pad(DEFAULT.filter(function (id) { return DEMO_HIDE.indexOf(id) < 0; }));
 
 /* ---------- App Store (prototype, demo only) ----------
@@ -831,7 +829,7 @@ if (MODE === 'demo') layout = pad(DEFAULT.filter(function (id) { return DEMO_HID
    turns each installed listing into a channel ('u:<id>') with generated art and keeps the demo layout in
    aihub-demo-layout-v2 so added tiles, drags and removals stick. ?store=0 turns it off. */
 var STORE_ON = MODE === 'demo' && q.get('store') !== '0';
-var SKEY = 'aihub-store-v1', DKEY = 'aihub-demo-layout-v2';   /* v2: App Store moved to the last channel */
+var SKEY = 'aihub-store-v1', DKEY = RELEASE ? 'aihub-release-layout-v1' : 'aihub-demo-layout-v2', STORE_SRC = RELEASE ? 'store/index.html' : 'demo/store/index.html';   /* v2: App Store moved to the last channel */
 var STORE_PAL = { amber: ['#9a6a22', '#8d611f'], teal: ['#2f8f86', '#2a827a'], blue: ['#3b6fb6', '#355f9c'], purple: ['#6a4f9c', '#5f4690'], coral: ['#b85c4a', '#a65242'] };
 var STORE_ICONS = {
   timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/>', chart: '<path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/>',
@@ -1028,7 +1026,7 @@ function openApp(src, name) {
   closeDialog(true);
   var v = $('#app'), f = $('#app-frame');
   $('#app-title').textContent = name || ''; f.title = name || 'Demo app';
-  $('#app-note').hidden = /demo\/(jira|specs|store)\//.test(src);   /* the board is a real snapshot, not sample data */
+  $('#app-note').hidden = RELEASE || /demo\/(jira|specs|store)\//.test(src);   /* the board is a real snapshot, not sample data */
   logEv('app', { name: name || '', src: String(src).replace(/^.*?demo\//, '').replace(/\/index\.html$/, '') }); appT = Date.now();
   f.src = src; v.hidden = false; appOpen = true; animSet = []; stopMusic();
   $('#app-back').focus(); updateNav();
@@ -1321,7 +1319,7 @@ function showLanding() {
   document.documentElement.classList.add('lp-lock'); document.body.classList.remove('lp-on-hub');
   kbFocus($('#lpNext'));
 }
-if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
+if (MODE === 'demo' && !RELEASE && q.get('boot') !== '0' && q.get('landing') !== '0') {
   boot.hidden = true; booted = false;
   var lastScreen = null; try { lastScreen = sessionStorage.getItem('aihub-screen'); } catch (e) {}
   landing.hidden = false; landingShown = true; document.documentElement.classList.add('lp-lock'); syncAnim();
@@ -1403,7 +1401,7 @@ function updateNav() {
 }
 
 /* Screens after the hub (demo): 1 About me, 2 AI fluency. Earlier screens slide off to the left (up on phones). */
-var xScreens = [$('#aboutMe'), $('#videoScreen'), $('#aiFluency'), $('#outsideWork'), $('#getInTouch')], xIndex = 0;
+var xScreens = [$('#aboutMe'), $('#videoScreen'), $('#aiFluency'), $('#outsideWork'), $('#getInTouch')].filter(Boolean), xIndex = 0;   /* none of them are in the release page */
 function goExtra(n, jump) {
   if (tutOn) return;
   n = Math.max(0, Math.min(xScreens.length, n));
@@ -1432,7 +1430,7 @@ function goExtra(n, jump) {
    screens, which a live player would swallow. Hosts that block other sites' frames (claude.ai artifacts, file://)
    keep the poster as a plain Watch on YouTube link. */
 var vidBlocked = /claude/i.test(location.hostname) || location.protocol === 'file:',
-    VID_SRC = 'https://www.youtube-nocookie.com/embed/05zyH7eds8s?rel=0&playsinline=1&autoplay=1';
+    VID_SRC = '__VID_SRC__';
 document.addEventListener('securitypolicyviolation', function (e) {
   if (/youtube/.test(e.blockedURI || '')) { vidBlocked = true; var f = $('#vidFrame iframe'); if (f) f.remove(); }
 });
@@ -1443,7 +1441,7 @@ function vidPlay() {
   f.allow = 'autoplay; accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen'; f.allowFullscreen = true;
   f.referrerPolicy = 'strict-origin-when-cross-origin'; box.appendChild(f);
 }
-$('#vidFrame .vid-poster').addEventListener('click', function (e) { if (vidBlocked) return; e.preventDefault(); vidPlay(); });
+if ($('#vidFrame .vid-poster')) $('#vidFrame .vid-poster').addEventListener('click', function (e) { if (vidBlocked) return; e.preventDefault(); vidPlay(); });
 function vidSync() {
   var on = xIndex > 0 && xScreens[xIndex - 1].id === 'videoScreen', f = $('#vidFrame iframe');
   if (!on && f) f.remove();
@@ -1461,7 +1459,7 @@ xScreens.forEach(function (el) {
 window.addEventListener('resize', moreSync);
 function showAbout() { goExtra(1); }
 function hideAbout() { goExtra(xIndex - 1); }
-if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
+if (MODE === 'demo' && !RELEASE && q.get('boot') !== '0' && q.get('landing') !== '0') {
   xScreens.forEach(function (el) {
     el.hidden = false; el.inert = true; el.setAttribute('aria-hidden', 'true');
     el.addEventListener('click', function (e) { var b = e.target.closest('[data-xgo]'); if (b) goExtra(xIndex + (b.dataset.xgo === 'next' ? 1 : -1)); });
@@ -1517,16 +1515,7 @@ if (MODE === 'demo' && q.get('boot') !== '0' && q.get('landing') !== '0') {
 
 /* ---------- demo tutorial: an RPG-style text box that introduces the hub, then points at each channel ---------- */
 var tutOn = false, tutI = 0, tutSteps = [], tutTimer = 0, tutTyping = false;
-var TUT_LINES = {
-  store: 'The App Store lists apps made by classmates. Add one and it shows up right here on your dashboard, or publish your own with a shared Claude artifact link.',
-  crm: 'CRM tracks my networking and my internship applications. Tap it for a short walkthrough, then open a demo copy with sample data.',
-  watch: 'internship-watch checks about 100 company career sites every morning for Summer 2027 product internships.',
-  jobs: 'The Public Job Board shares what internship-watch finds with other UT students, with a feedback form that files GitHub issues.',
-  jira: 'Jira shows how I planned the work: spec sheets turned into epics and stories, plus a read-only copy of the board.',
-  github: 'GitHub lists the code behind every app, one repository each.',
-  starr: 'STARR Story Bank keeps my interview stories and lets me practice them on video.',
-  planner: 'McCombs Course Planner helps me spend my class-bidding points. The demo uses made-up data.'
-};
+var TUT_LINES = __TUT_LINES__;
 function tutDone() { try { return localStorage.getItem('aihub-tutorial-v1') === 'done'; } catch (e) { return false; } }
 function tutBuild() {
   var s = [
@@ -1596,7 +1585,7 @@ function tutMaybe() {
   $('#tutReplay').hidden = false;
   if (!tutDone() && q.get('tutorial') !== '0') setTimeout(function () { if (!landingShown && !aboutShown && !openEl && !appOpen && !tutOn) tutStart(); }, 900);
 }
-if (MODE === 'demo') {
+if (MODE === 'demo' && !RELEASE) {
   $('#tutNext').addEventListener('click', tutNextStep);
   $('#tutSkip').addEventListener('click', tutEnd);
   $('#tutReplay').addEventListener('click', tutStart);
@@ -1613,7 +1602,7 @@ if (MODE === 'demo') {
 /* ---------- demo walkthroughs ---------- */
 var demoId = null, demoStep = 0;
 function openDemo(id, from) {
-  if (id === 'store') { logEv('channel', { id: 'store' }); openApp('demo/store/index.html', 'App Store'); return; }
+  if (id === 'store') { logEv('channel', { id: 'store' }); openApp(STORE_SRC, 'App Store'); return; }
   if (ITEMS[id] && ITEMS[id].kind === 'store-app') {
     var sa = ITEMS[id]; logEv('channel', { id: 'store-app' });
     if (sa.embed) openApp(sa.embed, sa.name); else openZoom(id, from);
@@ -1692,7 +1681,7 @@ document.addEventListener('click', function (e) {
 }, true);
 /* ?view=<screen> opens straight onto one screen without logging anything: the backdrops for /insights' heatmaps */
 (function () {
-  var v = q.get('view'); if (MODE !== 'demo' || !v || v === 'Home') return;
+  var v = q.get('view'); if (MODE !== 'demo' || RELEASE || !v || v === 'Home') return;
   var n = SCR_NAMES.indexOf(v);
   showHub(false); landingLock = 0;
   if (n > 1) goExtra(n - 1, true);
@@ -1708,9 +1697,80 @@ if (logEv.on) { $('#gitPrivacy').hidden = false; navReady = true; logEv('land', 
 </html>
 """
 
-out = HTML.replace('__CSS__', CSS).replace('__MOON__', MOON).replace('__CLOCK_DEFS__', CLOCK_DEFS)
-import datetime
+HEAD = r"""<title>Henry McGee — Product Management</title>
+<meta name="description" content="Henry McGee - aspiring product manager and MBA candidate at UT Austin McCombs. Former software engineer on Wells Fargo's currency trading platform. Projects built with AI, each with a walkthrough.">
+<meta name="theme-color" content="#0B1120">
+<link rel="canonical" href="https://mcgeehenry.com/">
+<link rel="icon" href="demo/site/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="demo/site/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="demo/site/favicon-16.png">
+<link rel="apple-touch-icon" href="demo/site/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Henry McGee">
+<meta property="og:title" content="Henry McGee - Product Management">
+<meta property="og:description" content="Aspiring product manager and MBA candidate at UT Austin McCombs. Former software engineer on Wells Fargo's currency trading platform.">
+<meta property="og:url" content="https://mcgeehenry.com/">
+<meta property="og:image" content="https://mcgeehenry.com/demo/site/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Henry McGee - bridging business and technology">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Henry McGee - Product Management">
+<meta name="twitter:description" content="Aspiring product manager and MBA candidate at UT Austin McCombs.">
+<meta name="twitter:image" content="https://mcgeehenry.com/demo/site/og-image.jpg">
+"""
+import datetime, shutil
 BUILD = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%d-%H%M')
-out = out.replace('__VERSION__', VERSION).replace('__BUILD__', BUILD).replace('__ITEMS__', json.dumps(ITEMS, ensure_ascii=False)).replace('__ART__', json.dumps(ART, ensure_ascii=False)).replace('__DEMOS__', json.dumps(DEMOS, ensure_ascii=False))
-open(os.path.join(ROOT, 'index.html'), 'w').write(out)
-print('index.html', len(out), 'bytes')
+
+def used_art(items):
+    """Art for these channels only: their own, their layered version, and their folder kids'."""
+    keys = set()
+    for k, it in items.items():
+        keys.update([k, k + '_layers'])
+        keys.update(kid.get('art') for kid in it.get('kids', []))
+    return {k: v for k, v in ART.items() if k in keys}
+
+def page(items, demos, default, demo_hide, tut_lines, head, boot_title, release):
+    out = HTML.replace('__CSS__', CSS).replace('__MOON__', MOON).replace('__CLOCK_DEFS__', CLOCK_DEFS)
+    out = out.replace('__HEAD__', head).replace('__BOOT_TITLE__', boot_title)
+    if release:
+        # the portfolio screens (landing, tutorial, About me, Video, AI fluency, Leadership, Get in touch) are cut out of
+        # the page, not hidden: nothing personal is left in the source
+        a, b = out.index('<section class="landing" id="landing"'), out.index('<div class="ribbon" id="ribbon"')
+        out = out[:a] + out[b:]
+    J = lambda v: json.dumps(v, ensure_ascii=False)
+    out = out.replace('__VERSION__', VERSION).replace('__BUILD__', BUILD).replace('__RELEASE__', 'true' if release else 'false')
+    out = out.replace('__DEFAULT__', J(default)).replace('__DEMO_HIDE__', J(demo_hide)).replace('__TUT_LINES__', J(tut_lines))
+    out = out.replace('__VID_SRC__', '' if release else VID_SRC)
+    return out.replace('__ITEMS__', J(items)).replace('__ART__', J(used_art(items))).replace('__DEMOS__', J(demos))
+
+def write(path, text):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    open(path, 'w').write(text)
+    print(os.path.relpath(path, ROOT), len(text), 'bytes')
+
+if not RELEASE:
+    write(os.path.join(ROOT, 'index.html'), page(ITEMS, DEMOS, DEFAULT, DEMO_HIDE, TUT_LINES, HEAD, 'AI-HUB', False))
+else:
+    # Only the release channels are written into the page: no other channel's link, art or walkthrough.
+    title, esc = REL['title'], lambda t: t.replace('&', '&amp;').replace('<', '&lt;').replace('"', '&quot;')
+    items = {k: REL.get('items', {}).get(k) or ITEMS[k] for k in REL['order']}
+    # the page icon is the hub's moon, inline, so the release ships no image files
+    from urllib.parse import quote
+    icon = '<link rel="icon" href="data:image/svg+xml,%s">\n' % quote('<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 20 120 120"><rect x="20" y="20" width="120" height="120" rx="26" fill="#0B1120"/>' + MOON + '</svg>', safe='')
+    head = ('<title>%s</title>\n<meta name="description" content="%s">\n<meta name="theme-color" content="#0B1120">\n'
+            % (esc(title), esc(REL['description']))) + icon
+    DIST = os.path.join(ROOT, 'dist')
+    shutil.rmtree(DIST, ignore_errors=True)
+    write(os.path.join(DIST, 'index.html'), page(items, {}, REL['order'], [], {}, head, esc(title), True))
+    # the App Store page, with the release catalog in place of the demo one
+    store = open(os.path.join(ROOT, 'demo', 'store', 'index.html')).read()
+    a, b = store.index('  /* SEED:start */'), store.index('  /* SEED:end */')
+    store = store[:a] + '  var SEED = ' + json.dumps(REL['store'], ensure_ascii=False) + ';\n' + store[b + len('  /* SEED:end */\n'):]
+    assert '<title>App Store · AI-HUB</title>' in store
+    store = store.replace('<title>App Store · AI-HUB</title>', '<title>App Store · %s</title>\n%s' % (esc(title), icon.strip()))
+    write(os.path.join(DIST, 'store', 'index.html'), store)
+    write(os.path.join(DIST, 'version.txt'), '%s %s build %s\n' % (title, VERSION, BUILD))
+    # a last check that nothing outside the release made it in
+    leaked = [k for k in ITEMS if k not in items and ITEMS[k].get('href') and ITEMS[k]['href'] in open(os.path.join(DIST, 'index.html')).read()]
+    assert not leaked, 'channels outside the release leaked into dist: %s' % leaked
