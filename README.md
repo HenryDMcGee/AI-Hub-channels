@@ -62,7 +62,7 @@ To embed it elsewhere:
 <iframe src="https://henrydmcgee.github.io/AI-Hub-channels/" title="AI-HUB demo" style="width:100%;aspect-ratio:16/10;border:0;border-radius:20px" allow="autoplay"></iframe>
 ```
 
-## Release build (McCombs-Student-Apples)
+## Release build (HerdAI)
 
 The hub for classmates is a separate build, not the demo:
 

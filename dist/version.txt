@@ -1,1 +1,1 @@
-McCombs-Student-Apples 0.1.0 build 20261116-0125
+HerdAI 0.1.0 build 20261116-0132
