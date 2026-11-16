@@ -52,7 +52,7 @@ Status: **Shipped** is live (in the real hub, the demo, or both). **Prototype** 
 | Microsoft Clarity | Recordings and heatmaps tied to the same visit IDs, added at deploy time | Shipped, waiting on a Clarity project ID |
 | Private-page sign-in | `/insights` and the feedback responses sit behind Cloudflare Access (email code), shared with Internship Watch | Shipped |
 
-## Release for classmates (HerdAI)
+## Release for classmates (HornsApps, hornsapps.com)
 
 | Feature | What it does | Status |
 | --- | --- | --- |

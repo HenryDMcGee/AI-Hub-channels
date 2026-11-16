@@ -36,7 +36,7 @@ ITEMS = {
 # "order" are written into that page, followed by the App Store. "items" holds channels that exist only in the release,
 # and "store" is the App Store's catalog there (pinned = already on every dashboard, so it has no Add or Remove).
 RELEASE = {
-  "title": "HerdAI",
+  "title": "HornsApps",
   "description": "Recruiting and coursework apps for McCombs MBA students on one dashboard, with an App Store to add more.",
   "order": ["visa", "starr", "planner"],
   "items": {
