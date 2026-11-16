@@ -49,6 +49,7 @@ Status: **Shipped** is live (in the real hub, the demo, or both). **Prototype** 
 | Happy-path report | `/insights` compares every visit with the seven-step happy path: funnel, what people did instead, walkthrough depth, input methods, routes and a per-visit log | Shipped |
 | Recording switch | Turn recording off or on for the whole site, and choose whether your own browser is counted | Shipped |
 | Mouse heatmaps | Per-screen movement and click heatmaps drawn over a live preview of each screen | Shipped |
+| Grafana dashboard | The same visit decisions sent to Grafana Cloud (Frontend Observability), charted as visits, the happy-path funnel, channels, walkthrough depth, input methods, exit screens and devices, alongside page-speed and error reports | Shipped with this change |
 | Microsoft Clarity | Recordings and heatmaps tied to the same visit IDs, added at deploy time | Shipped, waiting on a Clarity project ID |
 | Private-page sign-in | `/insights` and the feedback responses sit behind Cloudflare Access (email code), shared with Internship Watch | Shipped |
 
