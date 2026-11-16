@@ -606,7 +606,7 @@ HTML = r"""<!doctype html>
       <p class="git-p">I&rsquo;m looking for a product management internship for summer 2027. If you&rsquo;re hiring, or you just want to talk about what the work is really like, I&rsquo;d like to hear from you.</p>
       <div class="lp-actions"><a class="lp-btn" data-mail="aGVucnltY2dlZUBteS51dGV4YXMuZWR1">Email me</a><a class="lp-btn lp-ghost" id="gitLinkedIn" data-url="aHR0cHM6Ly93d3cubGlua2VkaW4uY29tL2luL2hlbnJ5LW1jZ2VlLw==" target="_blank" rel="noopener">LinkedIn</a></div>
       <div class="git-foot"><span>Henry McGee</span><span>Austin, Texas</span></div>
-      <p class="git-privacy" id="gitPrivacy" hidden>To improve this site, visits are recorded anonymously (which screens and apps you open, plus Microsoft Clarity heatmaps and replays). No names or typing are kept. Browsers with Global Privacy Control are skipped.</p>
+      <p class="git-privacy" id="gitPrivacy" hidden>To improve this site, visits are recorded anonymously (which screens and apps you open, plus Microsoft Clarity heatmaps and replays and Grafana Cloud page-speed and error reports). No names or typing are kept. Browsers with Global Privacy Control are skipped.</p>
     </div>
   </div>
 </section>
@@ -722,6 +722,28 @@ var logEv = (function () {
   var heat = {}, heatN = 0;
   var t0 = Date.now(), sid = '', queue = [], sent = 0, lastKey = '', via = 'load', viaT = 0, CAP = 600;
   function clarity() { if (typeof window.clarity === 'function') try { window.clarity.apply(null, arguments); } catch (e) {} }
+  /* Grafana Cloud (Frontend Observability / Faro): the same decisions as custom events, so the Grafana dashboard
+     "mcgeehenry.com: visits vs. the happy path" can chart them. The SDK is loaded by the tag deploy_site.sh adds (only
+     on mcgeehenry.com, only while recording is on); events made before it is ready wait in faroQ. Attributes are strings:
+     the visit id, the screen, the device, how the visitor moved, and the event's own details, plus done=1 when a
+     walkthrough or the tutorial was read to the end and early=1 when a walkthrough was closed before its last step. */
+  var faroQ = [], devKind = (matchMedia('(pointer: coarse)').matches || innerWidth < 760) ? 'phone' : 'desktop';
+  function faroApi() { var F = window.GrafanaFaroWebSdk; return F && F.faro && F.faro.api ? F.faro.api : null; }
+  function faro(ev) {
+    var d = ev.d || {}, a = { sid: sid, t: String(ev.t), device: devKind, ret: ret ? '1' : '0' }, k;
+    for (k in d) if (d[k] != null) a[k] = String(d[k]);
+    if (ev.via) a.via = ev.via;
+    if ((ev.n === 'step' || ev.n === 'tut_end') && +d.n >= +d.of) a.done = '1';
+    if (ev.n === 'walk_close' && +d.n < +d.of) a.early = '1';   /* closed before the last step (LogQL can't compare two fields) */
+    try { if (send.where) a.screen = send.where() || ''; } catch (e) {}
+    var api = faroApi();
+    if (api) { try { api.pushEvent(ev.n, a, 'hub', { skipDedupe: true }); } catch (e) {} }
+    else if (faroQ.length < 300) faroQ.push([ev.n, a]);
+  }
+  window.addEventListener('faro-ready', function () {
+    var api = faroApi(); if (!api) return;
+    faroQ.splice(0).forEach(function (x) { try { api.pushEvent(x[0], x[1], 'hub', { skipDedupe: true }); } catch (e) {} });
+  });
   if (on) {
     try { sid = sessionStorage.getItem('mh-sid') || ''; var st = +sessionStorage.getItem('mh-t0'); if (sid && st) t0 = st; } catch (e) {}
     if (!sid) {
@@ -739,7 +761,13 @@ var logEv = (function () {
       if (!b) return 'tap';
       return b.id === 'scrPrev' || b.id === 'scrNext' ? 'bar' : (b.id || (b.className && String(b.className).split(' ')[0]) || 'link');
     }), true);
-    document.addEventListener('visibilitychange', function () { if (document.hidden) flush(true); });
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) return;
+      /* Grafana only: where the visitor was when the tab was hidden or closed. Pushed here because Faro sends its queue on
+         this same event, before 'pagehide' (the D1 log keeps using 'end'). */
+      if (on) faro({ n: 'leave', t: Date.now() - t0, d: { s: Math.round((Date.now() - t0) / 1000) } });
+      flush(true);
+    });
     window.addEventListener('pagehide', function () { send('end', { s: Math.round((Date.now() - t0) / 1000) }); flush(true); });
     setInterval(function () { flush(false); }, 8000);
     /* mouse heatmap: where the pointer rests and clicks, binned into an 80 x 45 grid of the window, per screen
@@ -759,7 +787,7 @@ var logEv = (function () {
       setInterval(function () { if (mx >= 0 && !document.hidden && Date.now() - mt < 3000) bump(mx, my, 0); }, 100);
     }
     fetch('/api/t/on', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
-      if (j && j.on === false) { on = false; send.on = false; queue.length = 0; heat = {}; var pn = document.getElementById('gitPrivacy'); if (pn) pn.hidden = true; }
+      if (j && j.on === false) { on = false; send.on = false; queue.length = 0; heat = {}; faroQ.length = 0; var pn = document.getElementById('gitPrivacy'); if (pn) pn.hidden = true; }
     }).catch(function () {});
   }
   function flush(beacon) {
@@ -786,6 +814,7 @@ var logEv = (function () {
     if (data) ev.d = data;
     if (Date.now() - viaT < 1500 && /^(screen|walk_close|close|app_close)$/.test(name)) ev.via = via;
     queue.push(ev);
+    faro(ev);
     clarity('event', name === 'screen' ? 'screen_' + String(data.to).toLowerCase().replace(/[^a-z]+/g, '_') : name === 'channel' ? 'channel_' + data.id : name);
     if (name === 'channel') clarity('set', 'channel', data.id);
     if (name === 'contact') clarity('set', 'contacted', data.kind);
@@ -1384,6 +1413,7 @@ function trackScreen() {
   var sc = curScreen(); if (sc === lastScr) return;
   lastScr = sc; logEv('screen', { to: SCR_NAMES[sc] });
 }
+logEv.where = function () { return SCR_NAMES[curScreen()]; };
 /* what the visitor is looking at, for the mouse heatmap (null: a demo app, whose frame the hub cannot see into) */
 logEv.ctx = function () {
   if (appOpen || !$('#lightbox').hidden) return null;

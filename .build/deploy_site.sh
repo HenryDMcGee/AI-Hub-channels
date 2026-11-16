@@ -40,6 +40,31 @@ PY
 else
   echo "no Clarity id (.build/clarity_id): skipping the Clarity tag"
 fi
+# Grafana Cloud Frontend Observability (Faro): page speed, JavaScript errors, and the hub's decisions as custom events
+# for the Grafana dashboard "mcgeehenry.com: visits vs. the happy path". Home page only (not the demo frames or the
+# private pages). The SDK is served from this site (demo/vendor/faro, Apache-2.0), and the tag follows the same rules
+# as Clarity's: off for Global Privacy Control, Henry's own browsers and previews, and while recording is switched off.
+FARO_URL="${FARO_URL:-$(cat "$HUB/.build/faro_url" 2>/dev/null || true)}"
+FARO_URL="$(printf '%s' "$FARO_URL" | tr -cd 'a-zA-Z0-9:/._-')"
+if [ -n "$FARO_URL" ]; then
+  python3 -I - "$SITE/public/index.html" "$FARO_URL" "$(cd "$HUB" && git rev-parse --short HEAD)" <<'PY'
+import sys, pathlib
+p, url, ver = pathlib.Path(sys.argv[1]), sys.argv[2], sys.argv[3]
+tag = ('<script>(function(){try{if(navigator.globalPrivacyControl||/[?&](notrack=1|view=)/.test(location.search)||localStorage.getItem("mh-notrack")==="1")return}catch(e){}'
+       'fetch("/api/t/on",{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||j.on===false)return;'
+       'var s=document.createElement("script");s.src="/demo/vendor/faro/faro-web-sdk.iife.js";'
+       's.onload=function(){var F=window.GrafanaFaroWebSdk;if(!F)return;try{F.initializeFaro({url:"' + url + '",'
+       'app:{name:"mcgeehenry-com",version:"' + ver + '",environment:"production"},'
+       'instrumentations:F.getWebInstrumentations({captureConsole:false})});window.dispatchEvent(new Event("faro-ready"))}catch(e){}};'
+       'document.head.appendChild(s)}).catch(function(){})})();</script>')
+s = p.read_text()
+if 'faro-web-sdk.iife.js' not in s:
+    p.write_text(s.replace('<head>', '<head>\n' + tag, 1))
+print('faro tag added')
+PY
+else
+  echo "no Faro collector URL (.build/faro_url): skipping the Grafana tag"
+fi
 echo "staged $(du -sh "$SITE/public" | cut -f1) into $SITE/public"
 if [ "${2:-}" = "--push" ]; then
   cd "$SITE"
