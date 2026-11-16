@@ -70,7 +70,7 @@ The hub for classmates is a separate build, not the demo:
 python3 .build/build.py --release
 ```
 
-It writes `dist/` (`index.html`, `store/index.html`, `version.txt`), which is committed on the `release/mccombs-student-apples` branch so a static host can serve it with no build step. For Cloudflare Pages: connect this repo, pick that branch as the production branch, leave the build command empty and set the output directory to `dist`.
+It writes `dist/` (`index.html`, `store/index.html`, `version.txt`), which is committed on the `release/mccombs-student-apples` branch so a static host can serve it with no build step. It is deployed by the `ai-hub-channels` Cloudflare Pages project, which serves hornsapps.com: that branch is the production branch, the build command is empty and the build output directory is `dist`. Every push to the branch deploys, so rebuild and commit `dist/` to ship a change.
 
 What is in it is set by `RELEASE` in `.build/content.py`: the title, the channels in order (Visa Sponsor Lookup, STARR Story Bank, McCombs Course Planner) and the App Store catalog. The App Store channel follows them. Tapping an app opens its preview with a Start button that opens the shared Claude artifact in a new tab.
 
